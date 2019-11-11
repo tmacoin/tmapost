@@ -18,8 +18,8 @@ import javax.swing.JTextField;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.tma.peer.Network;
+import org.tma.peer.thin.Balance;
 import org.tma.peer.thin.GetBalanceRequest;
-import org.tma.peer.thin.GetBalanceResponse;
 
 public class GetBalanceAction extends AbstractAction implements Caller {
 
@@ -40,13 +40,13 @@ public class GetBalanceAction extends AbstractAction implements Caller {
 		frame.getContentPane().removeAll();
 		new GetBalanceRequest(Network.getInstance(), address.getText()).start();
 		
-		logger.debug("balance: {}", GetBalanceResponse.getResult());
+		logger.debug("balance: {}", Balance.getInstance().getBalance());
 		
 		JLabel label = new JLabel("Balance for " + address.getText());
 		label.setBounds(20, 104, 350, 14);
 		frame.getContentPane().add(label);
 		
-		JLabel balance = new JLabel(GetBalanceResponse.getResult());
+		JLabel balance = new JLabel(Balance.getInstance().getBalance());
 		balance.setBounds(20, 144, 350, 14);
 		frame.getContentPane().add(balance);
 		
