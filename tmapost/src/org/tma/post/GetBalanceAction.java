@@ -20,6 +20,8 @@ import org.apache.logging.log4j.Logger;
 import org.tma.peer.Network;
 import org.tma.peer.thin.Balance;
 import org.tma.peer.thin.GetBalanceRequest;
+import org.tma.util.ThreadExecutor;
+import org.tma.util.TmaRunnable;
 
 public class GetBalanceAction extends AbstractAction implements Caller {
 
@@ -37,21 +39,34 @@ public class GetBalanceAction extends AbstractAction implements Caller {
 	}
 
 	public void actionPerformed(ActionEvent e) {
+		String tmaAddress = address.getText();
 		frame.getContentPane().removeAll();
-		new GetBalanceRequest(Network.getInstance(), address.getText()).start();
 		
-		logger.debug("balance: {}", Balance.getInstance().getBalance());
-		
-		JLabel label = new JLabel("Balance for " + address.getText());
+		JLabel label = new JLabel("Please wait, processing.");
 		label.setBounds(20, 104, 350, 14);
 		frame.getContentPane().add(label);
-		
-		JLabel balance = new JLabel(Balance.getInstance().getBalance());
-		balance.setBounds(20, 144, 350, 14);
-		frame.getContentPane().add(balance);
-		
-		
 		frame.getContentPane().repaint();
+		
+		ThreadExecutor.getInstance().execute(new TmaRunnable("GetBalanceAction") {
+			public void doRun() {
+				GetBalanceRequest request = new GetBalanceRequest(Network.getInstance(), tmaAddress);
+				request.start();
+				String balance = Balance.getInstance().getBalance(request.getCorrelationId()); 
+				
+				logger.debug("balance: {} for {}", balance, tmaAddress);
+				
+				frame.getContentPane().removeAll();
+				JLabel label = new JLabel("Balance for " + tmaAddress);
+				label.setBounds(20, 104, 350, 14);
+				frame.getContentPane().add(label);
+				
+				JLabel balanceLabel = new JLabel(balance);
+				balanceLabel.setBounds(20, 144, 350, 14);
+				frame.getContentPane().add(balanceLabel);
+				frame.getContentPane().repaint();
+			}
+		});
+		
 	}
 
 	public void log(String message) {
