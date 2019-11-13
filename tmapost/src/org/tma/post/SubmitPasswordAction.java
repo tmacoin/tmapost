@@ -12,6 +12,9 @@ import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 
@@ -50,9 +53,38 @@ public class SubmitPasswordAction extends AbstractAction implements Caller {
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 		}
+		addMenu();
 	}
 	
 	public void log(String message) {
 		JOptionPane.showMessageDialog(frame, message);
+	}
+	
+	private void addMenu() {
+		JMenuBar menuBar = new JMenuBar();
+		frame.setJMenuBar(menuBar);
+		
+		JMenu mnFile = new JMenu("File");
+		menuBar.add(mnFile);
+		
+		JMenuItem mntmExit = new JMenuItem("Exit");
+		mntmExit.setAction(new ExitAction());
+		mnFile.add(mntmExit);
+		
+		JMenu mnTools = new JMenu("Tools");
+		menuBar.add(mnTools);
+		
+		JMenuItem mntmChangePassword = new JMenuItem("Change Password");
+		mntmChangePassword.setAction(new ChangePassword(frame));
+		mnTools.add(mntmChangePassword);
+		
+		JMenuItem mntmGetBalance = new JMenuItem("Get Balance");
+		mntmGetBalance.setAction(new GetBalance(frame));
+		mnTools.add(mntmGetBalance);
+		
+		JMenuItem mntmSendTransaction = new JMenuItem("Send Transaction");
+		mntmSendTransaction.setAction(new SendTransaction(frame));
+		mnTools.add(mntmSendTransaction);
+		menuBar.updateUI();
 	}
 }
