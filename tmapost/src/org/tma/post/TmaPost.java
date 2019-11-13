@@ -141,6 +141,10 @@ public class TmaPost {
 		JMenuItem mntmGetBalance = new JMenuItem("Get Balance");
 		mntmGetBalance.setAction(new GetBalance(frame));
 		mnTools.add(mntmGetBalance);
+		
+		JMenuItem mntmSendTransaction = new JMenuItem("Send Transaction");
+		mntmSendTransaction.setAction(new SendTransaction(frame));
+		mnTools.add(mntmSendTransaction);
 	}
 	
 	private void setIcon() {
