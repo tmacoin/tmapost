@@ -8,6 +8,7 @@
 package org.tma.post;
 
 import java.awt.event.ActionEvent;
+import java.util.Set;
 
 import javax.swing.AbstractAction;
 import javax.swing.JFrame;
@@ -17,9 +18,15 @@ import javax.swing.JTextField;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.tma.blockchain.Transaction;
+import org.tma.blockchain.TransactionData;
+import org.tma.blockchain.TransactionOutput;
+import org.tma.blockchain.Wallet;
 import org.tma.peer.Network;
-import org.tma.peer.thin.Balance;
-import org.tma.peer.thin.GetBalanceRequest;
+import org.tma.peer.SendTransactionRequest;
+import org.tma.peer.thin.GetInputsRequest;
+import org.tma.peer.thin.Inputs;
+import org.tma.util.Coin;
 import org.tma.util.ThreadExecutor;
 import org.tma.util.TmaRunnable;
 
@@ -30,16 +37,30 @@ public class SendTransactionAction extends AbstractAction implements Caller {
 	
 	private JFrame frame;
 	private JTextField address;
+	private JTextField amount; 
+	private JTextField fee; 
+	private JTextField data; 
+	private JTextField expire; 
+	private JTextField expiringData;
 
-	public SendTransactionAction(JFrame frame, JTextField address) {
+	public SendTransactionAction(JFrame frame, JTextField address, JTextField amount, JTextField fee, JTextField data, JTextField expire, JTextField expiringData) {
 		putValue(NAME, "Send Transaction");
 		putValue(SHORT_DESCRIPTION, "Send Transaction Action");
 		this.frame = frame;
 		this.address = address;
+		this.amount = amount;
+		this.fee = fee;
+		this.data = data;
+		this.expire = expire;
+		this.expiringData = expiringData;
 	}
 
 	public void actionPerformed(ActionEvent e) {
-		String tmaAddress = address.getText();
+		String tmaAddress = Network.getInstance().getTmaAddress();
+		String recipient = address.getText();
+		Coin total = Coin.ONE.multiply(Double.parseDouble(amount.getText())).add(new Coin(Integer.parseInt(fee.getText())));
+		Wallet wallet = Wallets.getInstance().getWallets().get(0);
+		TransactionData expiringData = new TransactionData(this.expiringData.getText(), Long.parseLong(expire.getText()));
 		frame.getContentPane().removeAll();
 		
 		JLabel label = new JLabel("Please wait, processing.");
@@ -49,20 +70,19 @@ public class SendTransactionAction extends AbstractAction implements Caller {
 		
 		ThreadExecutor.getInstance().execute(new TmaRunnable("SendTransactionAction") {
 			public void doRun() {
-				GetBalanceRequest request = new GetBalanceRequest(Network.getInstance(), tmaAddress);
+				GetInputsRequest request = new GetInputsRequest(Network.getInstance(), tmaAddress, total);
 				request.start();
-				String balance = Balance.getInstance().getBalance(request.getCorrelationId()); 
-				
-				logger.debug("balance: {} for {}", balance, tmaAddress);
+				Set<TransactionOutput> inputs = Inputs.getInstance().getInputs(request.getCorrelationId()); 
+				logger.debug("number of inputs: {} for {}", inputs.size(), tmaAddress);
+				Transaction transaction = new Transaction(wallet.getPublicKey(), recipient, Coin.ONE.multiply(Double.parseDouble(amount.getText())), 
+						new Coin(Integer.parseInt(fee.getText())), inputs, wallet.getPrivateKey(), data.getText(), expiringData);
+				logger.debug("transaction: {}", transaction);
+				new SendTransactionRequest(Network.getInstance(), transaction).start();
 				
 				frame.getContentPane().removeAll();
-				JLabel label = new JLabel("Balance for " + tmaAddress);
+				JLabel label = new JLabel("Got #Inputs " + inputs.size());
 				label.setBounds(20, 104, 350, 14);
 				frame.getContentPane().add(label);
-				
-				JLabel balanceLabel = new JLabel(balance);
-				balanceLabel.setBounds(20, 144, 350, 14);
-				frame.getContentPane().add(balanceLabel);
 				frame.getContentPane().repaint();
 			}
 		});

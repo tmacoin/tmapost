@@ -87,7 +87,7 @@ public class SendTransaction extends AbstractAction implements Caller {
 		
 		
 		JButton btnSubmit = new JButton("Submit");
-		btnSubmit.setAction(new SendTransactionAction(frame, address));
+		btnSubmit.setAction(new SendTransactionAction(frame, address, amount, fee, data, expire, expiringData));
 		btnSubmit.setBounds(269, 152, 150, 23);
 		frame.getContentPane().add(btnSubmit);
 		
