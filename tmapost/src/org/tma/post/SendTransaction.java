@@ -69,6 +69,7 @@ public class SendTransaction extends AbstractAction implements Caller {
 		
 		JTextField data = new JTextField(36);
 		data.setBounds(160, 74, 260, 20);
+		data.setToolTipText("Limited to 1024 chars");
 		frame.getContentPane().add(data);
 		
 		label = new JLabel("Expire after # blocks:");
@@ -84,6 +85,7 @@ public class SendTransaction extends AbstractAction implements Caller {
 		frame.getContentPane().add(label);
 		
 		JTextArea expiringData = new JTextArea();
+		expiringData.setToolTipText("Limited to 32672 chars");
 		JScrollPane scroll = new JScrollPane (expiringData);
 		scroll.setBounds(160, 116, 260, 130);
 		frame.getContentPane().add(scroll);
