@@ -15,7 +15,6 @@ import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 
 import org.apache.logging.log4j.LogManager;
@@ -29,6 +28,7 @@ public class SubmitPasswordAction extends AbstractAction implements Caller {
 	
 	private JFrame frame;
 	private JPasswordField passwordField;
+	private JLabel label;
 	
 	public SubmitPasswordAction(JFrame frame, JPasswordField passwordField) {
 		putValue(NAME, "Submit");
@@ -45,19 +45,19 @@ public class SubmitPasswordAction extends AbstractAction implements Caller {
 				return;
 			}
 			frame.getContentPane().removeAll();
-			JLabel label = new JLabel("Passphrase Accepted");
-			label.setBounds(160, 124, 160, 14);
+			label = new JLabel("Passphrase accepted, starting network");
+			label.setBounds(100, 124, 250, 14);
 			frame.getContentPane().add(label);
 			frame.getContentPane().repaint();
-			StartNetwork.getInstance().start();
+			StartNetwork.getInstance().start(this);
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 		}
-		addMenu();
 	}
 	
 	public void log(String message) {
-		JOptionPane.showMessageDialog(frame, message);
+		label.setText(message);
+		addMenu();
 	}
 	
 	private void addMenu() {

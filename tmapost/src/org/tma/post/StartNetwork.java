@@ -25,13 +25,14 @@ public class StartNetwork {
 		return instance;
 	}
 	
-	public void start() {
+	public void start(Caller caller) {
 		ThreadExecutor.getInstance().execute(new TmaRunnable("StartNetwork") {
 			public void doRun() {
 				Wallet wallet = Wallets.getInstance().getWallets().get(0);
 				String tmaAddress = wallet.getTmaAddress();
 				try {
 					new Network(tmaAddress);
+					caller.log("Network started");
 				} catch (UnknownHostException e) {
 					logger.error(e.getMessage(), e);
 				}

@@ -14,6 +14,8 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 public class SendTransaction extends AbstractAction implements Caller {
@@ -45,20 +47,20 @@ public class SendTransaction extends AbstractAction implements Caller {
 		address.setBounds(160, 11, 260, 20);
 		frame.getContentPane().add(address);
 		
-		label = new JLabel("Amount:");
+		label = new JLabel("Amount in coins:");
 		label.setBounds(20, 35, 160, 14);
 		frame.getContentPane().add(label);
 		
 		JTextField amount = new JTextField(36);
-		amount.setBounds(160, 32, 260, 20);
+		amount.setBounds(160, 32, 200, 20);
 		frame.getContentPane().add(amount);
 		
-		label = new JLabel("Fee:");
+		label = new JLabel("Fee in satoshis:");
 		label.setBounds(20, 56, 160, 14);
 		frame.getContentPane().add(label);
 		
 		JTextField fee = new JTextField(36);
-		fee.setBounds(160, 53, 260, 20);
+		fee.setBounds(160, 53, 200, 20);
 		frame.getContentPane().add(fee);
 		
 		label = new JLabel("Data:");
@@ -74,24 +76,27 @@ public class SendTransaction extends AbstractAction implements Caller {
 		frame.getContentPane().add(label);
 		
 		JTextField expire = new JTextField(36);
-		expire.setBounds(160, 95, 260, 20);
+		expire.setBounds(160, 95, 150, 20);
 		frame.getContentPane().add(expire);
 		
 		label = new JLabel("Expiring Data:");
 		label.setBounds(20, 119, 160, 14);
 		frame.getContentPane().add(label);
 		
-		JTextField expiringData = new JTextField(36);
-		expiringData.setBounds(160, 116, 260, 20);
-		frame.getContentPane().add(expiringData);
+		JTextArea expiringData = new JTextArea();
+		JScrollPane scroll = new JScrollPane (expiringData);
+		scroll.setBounds(160, 116, 260, 130);
+		frame.getContentPane().add(scroll);
 		
 		
 		JButton btnSubmit = new JButton("Submit");
 		btnSubmit.setAction(new SendTransactionAction(frame, address, amount, fee, data, expire, expiringData));
-		btnSubmit.setBounds(269, 152, 150, 23);
+		btnSubmit.setBounds(269, 252, 150, 23);
 		frame.getContentPane().add(btnSubmit);
 		
 		frame.getRootPane().setDefaultButton(btnSubmit);
+		frame.setSize(450, 370);
+		frame.getContentPane().revalidate();
 		frame.getContentPane().repaint();
 		
 		address.grabFocus();

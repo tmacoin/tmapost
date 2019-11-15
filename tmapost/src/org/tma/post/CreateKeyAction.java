@@ -16,7 +16,6 @@ import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 
 import org.apache.logging.log4j.LogManager;
@@ -37,6 +36,7 @@ public class CreateKeyAction extends AbstractAction implements Caller {
 	private JFrame frame;
 	private JPasswordField passwordField;
 	private JPasswordField confirmPasswordField;
+	private JLabel label;
 	
 	public CreateKeyAction(JFrame frame, JPasswordField passwordField, JPasswordField confirmPasswordField) {
 		putValue(NAME, "Submit");
@@ -57,11 +57,11 @@ public class CreateKeyAction extends AbstractAction implements Caller {
 			PasswordUtil passwordUtil = new PasswordUtil(this);
 			passwordUtil.generateKey(passphrase, confirmPassword);
 			frame.getContentPane().removeAll();
-			JLabel label = new JLabel("New key generated");
-			label.setBounds(160, 124, 160, 14);
+			label = new JLabel("New key generated, starting network");
+			label.setBounds(100, 124, 250, 14);
 			frame.getContentPane().add(label);
 			frame.getContentPane().repaint();
-			StartNetwork.getInstance().start();
+			StartNetwork.getInstance().start(this);
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 		}
@@ -69,8 +69,10 @@ public class CreateKeyAction extends AbstractAction implements Caller {
 	}
 
 	public void log(String message) {
-		JOptionPane.showMessageDialog(frame, message);
+		label.setText(message);
+		addMenu();
 	}
+
 	
 	private void addMenu() {
 		JMenuBar menuBar = new JMenuBar();

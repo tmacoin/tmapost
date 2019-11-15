@@ -14,6 +14,7 @@ import javax.swing.AbstractAction;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 import org.apache.logging.log4j.LogManager;
@@ -41,9 +42,10 @@ public class SendTransactionAction extends AbstractAction implements Caller {
 	private JTextField fee; 
 	private JTextField data; 
 	private JTextField expire; 
-	private JTextField expiringData;
+	private JTextArea expiringData;
+	private JLabel label;
 
-	public SendTransactionAction(JFrame frame, JTextField address, JTextField amount, JTextField fee, JTextField data, JTextField expire, JTextField expiringData) {
+	public SendTransactionAction(JFrame frame, JTextField address, JTextField amount, JTextField fee, JTextField data, JTextField expire, JTextArea expiringData) {
 		putValue(NAME, "Send Transaction");
 		putValue(SHORT_DESCRIPTION, "Send Transaction Action");
 		this.frame = frame;
@@ -63,8 +65,8 @@ public class SendTransactionAction extends AbstractAction implements Caller {
 		TransactionData expiringData = new TransactionData(this.expiringData.getText(), Long.parseLong(expire.getText()));
 		frame.getContentPane().removeAll();
 		
-		JLabel label = new JLabel("Please wait, processing.");
-		label.setBounds(20, 104, 350, 14);
+		label = new JLabel("Please wait, processing.");
+		label.setBounds(100, 124, 250, 14);
 		frame.getContentPane().add(label);
 		frame.getContentPane().repaint();
 		
@@ -76,14 +78,10 @@ public class SendTransactionAction extends AbstractAction implements Caller {
 				logger.debug("number of inputs: {} for {}", inputs.size(), tmaAddress);
 				Transaction transaction = new Transaction(wallet.getPublicKey(), recipient, Coin.ONE.multiply(Double.parseDouble(amount.getText())), 
 						new Coin(Integer.parseInt(fee.getText())), inputs, wallet.getPrivateKey(), data.getText(), expiringData);
-				logger.debug("transaction: {}", transaction);
+				logger.debug("sent {}", transaction);
 				new SendTransactionRequest(Network.getInstance(), transaction).start();
 				
-				frame.getContentPane().removeAll();
-				JLabel label = new JLabel("Got #Inputs " + inputs.size());
-				label.setBounds(20, 104, 350, 14);
-				frame.getContentPane().add(label);
-				frame.getContentPane().repaint();
+				label.setText("Transaction was sent");
 			}
 		});
 		
