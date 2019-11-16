@@ -21,6 +21,7 @@ import javax.swing.JPasswordField;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.tma.post.key.PasswordUtil;
+import org.tma.util.StringUtil;
 
 public class SubmitPasswordAction extends AbstractAction implements Caller {
 	
@@ -39,7 +40,7 @@ public class SubmitPasswordAction extends AbstractAction implements Caller {
 	}
 	
 	public void actionPerformed(ActionEvent actionEvent) {
-		String passphrase = new String(passwordField.getPassword());
+		String passphrase = StringUtil.trim(new String(passwordField.getPassword()));
 		try {
 			PasswordUtil passwordUtil = new PasswordUtil(this);
 			if(!passwordUtil.loadKeys(passphrase)) {

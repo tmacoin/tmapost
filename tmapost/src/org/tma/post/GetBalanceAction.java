@@ -20,6 +20,7 @@ import org.apache.logging.log4j.Logger;
 import org.tma.peer.Network;
 import org.tma.peer.thin.Balance;
 import org.tma.peer.thin.GetBalanceRequest;
+import org.tma.util.StringUtil;
 import org.tma.util.ThreadExecutor;
 import org.tma.util.TmaRunnable;
 
@@ -29,17 +30,23 @@ public class GetBalanceAction extends AbstractAction implements Caller {
 	private static final Logger logger = LogManager.getLogger();
 	
 	private JFrame frame;
-	private JTextField address;
+	private JTextField jAddress;
+	private String address;
 
 	public GetBalanceAction(JFrame frame, JTextField address) {
 		putValue(NAME, "Get Balance");
 		putValue(SHORT_DESCRIPTION, "Get Balance Action");
 		this.frame = frame;
-		this.address = address;
+		this.jAddress = address;
 	}
 
 	public void actionPerformed(ActionEvent e) {
-		String tmaAddress = address.getText();
+		address = StringUtil.trim(jAddress.getText());
+		if(!StringUtil.isTmaAddressValid(address)) {
+			JOptionPane.showMessageDialog(frame, "TMA Address is not valid");
+			return;
+		}
+		
 		frame.getContentPane().removeAll();
 		
 		JLabel label = new JLabel("Please wait, processing.");
@@ -49,14 +56,14 @@ public class GetBalanceAction extends AbstractAction implements Caller {
 		
 		ThreadExecutor.getInstance().execute(new TmaRunnable("GetBalanceAction") {
 			public void doRun() {
-				GetBalanceRequest request = new GetBalanceRequest(Network.getInstance(), tmaAddress);
+				GetBalanceRequest request = new GetBalanceRequest(Network.getInstance(), address);
 				request.start();
 				String balance = Balance.getInstance().getBalance(request.getCorrelationId()); 
 				
-				logger.debug("balance: {} for {}", balance, tmaAddress);
+				logger.debug("balance: {} for {}", balance, address);
 				
 				frame.getContentPane().removeAll();
-				JLabel label = new JLabel("Balance for " + tmaAddress);
+				JLabel label = new JLabel("Balance for " + address);
 				label.setBounds(20, 104, 350, 14);
 				frame.getContentPane().add(label);
 				

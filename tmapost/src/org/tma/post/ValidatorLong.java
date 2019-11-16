@@ -13,6 +13,8 @@ import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
+import org.tma.util.StringUtil;
+
 public class ValidatorLong implements DocumentListener {
 	
 	public static final Color VERY_LIGHT_RED = new Color(255,200,200);
@@ -38,12 +40,13 @@ public class ValidatorLong implements DocumentListener {
 	}
 	
 	private void validate() {
-		if("".equals(tf.getText())) {
+		String value = StringUtil.trim(tf.getText());
+		if("".equals(value)) {
 			tf.setBackground(Color.white);
 			return;
 		}
 		try {
-			Long.parseLong(tf.getText());
+			Long.parseLong(value);
 			tf.setBackground(Color.white);
 		} catch (Exception e) {
 			tf.setBackground(VERY_LIGHT_RED);

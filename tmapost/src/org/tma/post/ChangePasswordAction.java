@@ -18,6 +18,7 @@ import javax.swing.JPasswordField;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.tma.post.key.PasswordUtil;
+import org.tma.util.StringUtil;
 
 public class ChangePasswordAction extends AbstractAction implements Caller {
 	
@@ -39,9 +40,9 @@ public class ChangePasswordAction extends AbstractAction implements Caller {
 	}
 	
 	public void actionPerformed(ActionEvent actionEvent) {
-		String oldPassword = new String(oldPasswordField.getPassword());
-		String newPassword = new String(newPasswordField.getPassword());
-		String confirmPassword = new String(confirmPasswordField.getPassword());
+		String oldPassword = StringUtil.trim(new String(oldPasswordField.getPassword()));
+		String newPassword = StringUtil.trim(new String(newPasswordField.getPassword()));
+		String confirmPassword = StringUtil.trim(new String(confirmPasswordField.getPassword()));
 		if(!newPassword.equals(confirmPassword)) {
 			log("New and reentered new passwords do not match");
 			return;

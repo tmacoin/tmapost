@@ -28,6 +28,7 @@ import org.tma.peer.SendTransactionRequest;
 import org.tma.peer.thin.GetInputsRequest;
 import org.tma.peer.thin.Inputs;
 import org.tma.util.Coin;
+import org.tma.util.StringUtil;
 import org.tma.util.ThreadExecutor;
 import org.tma.util.TmaRunnable;
 
@@ -37,32 +38,72 @@ public class SendTransactionAction extends AbstractAction implements Caller {
 	private static final Logger logger = LogManager.getLogger();
 	
 	private JFrame frame;
-	private JTextField address;
-	private JTextField amount; 
-	private JTextField fee; 
-	private JTextField data; 
-	private JTextField expire; 
-	private JTextArea expiringData;
+	
+	private JTextField jaddress;
+	private JTextField jamount;
+	private JTextField jfee;
+	private JTextField jdata;
+	private JTextField jexpire;
+	private JTextArea jexpiringData;
+	
+	
+	private String recipient;
+	private String amount; 
+	private String fee; 
+	private String data; 
+	private String expire; 
+	private String expiringData;
 	private JLabel label;
 
 	public SendTransactionAction(JFrame frame, JTextField address, JTextField amount, JTextField fee, JTextField data, JTextField expire, JTextArea expiringData) {
 		putValue(NAME, "Send Transaction");
 		putValue(SHORT_DESCRIPTION, "Send Transaction Action");
 		this.frame = frame;
-		this.address = address;
-		this.amount = amount;
-		this.fee = fee;
-		this.data = data;
-		this.expire = expire;
-		this.expiringData = expiringData;
+		
+		jaddress = address;
+		jamount = amount;
+		jfee = fee;
+		jdata = data;
+		jexpire = expire;
+		jexpiringData = expiringData;
+	}
+	
+	private boolean validate() {
+		if(!StringUtil.isTmaAddressValid(recipient)) {
+			return false;
+		}
+		try {
+			Double.parseDouble(amount);
+			Long.parseLong(fee);
+			if(expiringData != null) {
+				Long.parseLong(expire);
+			}
+		} catch (Exception e) {
+			return false;
+		}
+		return true;
+	}
+	
+	private void load() {
+		recipient = StringUtil.trim(jaddress.getText());
+		amount = StringUtil.trim(jamount.getText());
+		fee = StringUtil.trim(jfee.getText());
+		data = StringUtil.trimToNull(jdata.getText());
+		expire = StringUtil.trim(jexpire.getText());
+		expiringData = StringUtil.trimToNull(jexpiringData.getText());
 	}
 
 	public void actionPerformed(ActionEvent e) {
+		load();
+		
+		if(!validate()) {
+			log("Please verify inputs");
+			return;
+		}
 		String tmaAddress = Network.getInstance().getTmaAddress();
-		String recipient = address.getText();
-		Coin total = Coin.ONE.multiply(Double.parseDouble(amount.getText())).add(new Coin(Integer.parseInt(fee.getText())));
+		Coin total = Coin.ONE.multiply(Double.parseDouble(amount)).add(new Coin(Long.parseLong(fee)));
 		Wallet wallet = Wallets.getInstance().getWallets().get(0);
-		TransactionData expiringData = new TransactionData(this.expiringData.getText(), Long.parseLong(expire.getText()));
+		TransactionData expiringData = this.expiringData == null? null: new TransactionData(this.expiringData, Long.parseLong(expire));
 		frame.getContentPane().removeAll();
 		
 		label = new JLabel("Please wait, processing.");
@@ -76,8 +117,8 @@ public class SendTransactionAction extends AbstractAction implements Caller {
 				request.start();
 				Set<TransactionOutput> inputs = Inputs.getInstance().getInputs(request.getCorrelationId()); 
 				logger.debug("number of inputs: {} for {}", inputs.size(), tmaAddress);
-				Transaction transaction = new Transaction(wallet.getPublicKey(), recipient, Coin.ONE.multiply(Double.parseDouble(amount.getText())), 
-						new Coin(Integer.parseInt(fee.getText())), inputs, wallet.getPrivateKey(), data.getText(), expiringData);
+				Transaction transaction = new Transaction(wallet.getPublicKey(), recipient, Coin.ONE.multiply(Double.parseDouble(amount)), 
+						new Coin(Integer.parseInt(fee)), inputs, wallet.getPrivateKey(), data, expiringData);
 				logger.debug("sent {}", transaction);
 				new SendTransactionRequest(Network.getInstance(), transaction).start();
 				
