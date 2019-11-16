@@ -15,6 +15,7 @@ import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 
 import org.apache.logging.log4j.LogManager;
@@ -50,14 +51,19 @@ public class SubmitPasswordAction extends AbstractAction implements Caller {
 			frame.getContentPane().add(label);
 			frame.getContentPane().repaint();
 			StartNetwork.getInstance().start(this);
+			
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 		}
 	}
 	
 	public void log(String message) {
-		label.setText(message);
-		addMenu();
+		if(label != null) {
+			label.setText(message);
+			addMenu();
+			return;
+		}
+		JOptionPane.showMessageDialog(frame, message);
 	}
 	
 	private void addMenu() {

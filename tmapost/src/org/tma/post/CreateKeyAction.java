@@ -16,6 +16,7 @@ import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 
 import org.apache.logging.log4j.LogManager;
@@ -65,12 +66,15 @@ public class CreateKeyAction extends AbstractAction implements Caller {
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 		}
-		addMenu();
 	}
 
 	public void log(String message) {
-		label.setText(message);
-		addMenu();
+		if(label != null) {
+			label.setText(message);
+			addMenu();
+			return;
+		}
+		JOptionPane.showMessageDialog(frame, message);
 	}
 
 	
