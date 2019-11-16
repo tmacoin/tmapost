@@ -7,6 +7,7 @@
  *******************************************************************************/
 package org.tma.post;
 
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
@@ -21,6 +22,7 @@ import javax.swing.JTextField;
 public class SendTransaction extends AbstractAction implements Caller {
 
 	private static final long serialVersionUID = 4036313657721664495L;
+	public static final Color VERY_LIGHT_RED = new Color(255,200,200);
 	
 	private JFrame frame;
 	
@@ -45,6 +47,7 @@ public class SendTransaction extends AbstractAction implements Caller {
 		
 		JTextField address = new JTextField(36);
 		address.setBounds(160, 11, 260, 20);
+		address.getDocument().addDocumentListener(new ValidatorTmaAddress(address));
 		frame.getContentPane().add(address);
 		
 		label = new JLabel("Amount in coins:");
@@ -53,6 +56,7 @@ public class SendTransaction extends AbstractAction implements Caller {
 		
 		JTextField amount = new JTextField(36);
 		amount.setBounds(160, 32, 200, 20);
+		amount.getDocument().addDocumentListener(new ValidatorDouble(amount));
 		frame.getContentPane().add(amount);
 		
 		label = new JLabel("Fee in satoshis:");
@@ -61,6 +65,7 @@ public class SendTransaction extends AbstractAction implements Caller {
 		
 		JTextField fee = new JTextField(36);
 		fee.setBounds(160, 53, 200, 20);
+		fee.getDocument().addDocumentListener(new ValidatorLong(fee));
 		frame.getContentPane().add(fee);
 		
 		label = new JLabel("Data:");
@@ -78,6 +83,7 @@ public class SendTransaction extends AbstractAction implements Caller {
 		
 		JTextField expire = new JTextField(36);
 		expire.setBounds(160, 95, 150, 20);
+		expire.getDocument().addDocumentListener(new ValidatorLong(expire));
 		frame.getContentPane().add(expire);
 		
 		label = new JLabel("Expiring Data:");

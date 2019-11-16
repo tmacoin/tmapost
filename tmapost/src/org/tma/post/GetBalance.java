@@ -43,6 +43,7 @@ public class GetBalance extends AbstractAction implements Caller {
 		
 		JTextField address = new JTextField(36);
 		address.setBounds(160, 71, 260, 20);
+		address.getDocument().addDocumentListener(new ValidatorTmaAddress(address));
 		frame.getContentPane().add(address);
 		
 		JButton btnSubmit = new JButton("Submit");
