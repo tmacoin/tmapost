@@ -41,10 +41,6 @@ public class ValidatorDouble implements DocumentListener {
 	
 	private void validate() {
 		String value = StringUtil.trim(tf.getText());
-		if("".equals(value)) {
-			tf.setBackground(Color.white);
-			return;
-		}
 		try {
 			Double.parseDouble(value);
 			tf.setBackground(Color.white);

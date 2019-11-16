@@ -41,10 +41,6 @@ public class ValidatorLong implements DocumentListener {
 	
 	private void validate() {
 		String value = StringUtil.trim(tf.getText());
-		if("".equals(value)) {
-			tf.setBackground(Color.white);
-			return;
-		}
 		try {
 			Long.parseLong(value);
 			tf.setBackground(Color.white);
