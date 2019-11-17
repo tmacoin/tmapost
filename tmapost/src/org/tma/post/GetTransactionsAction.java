@@ -54,7 +54,7 @@ public class GetTransactionsAction extends AbstractAction implements Caller {
 		frame.getContentPane().removeAll();
 		
 		JLabel label = new JLabel("Please wait, processing.");
-		label.setBounds(20, 104, 350, 14);
+		label.setBounds(20, 104, 500, 14);
 		frame.getContentPane().add(label);
 		frame.getContentPane().repaint();
 		
@@ -62,7 +62,12 @@ public class GetTransactionsAction extends AbstractAction implements Caller {
 			public void doRun() {
 				GetTransactionsRequest request = new GetTransactionsRequest(Network.getInstance(), address);
 				request.start();
-				Set<Transaction> set = Transactions.getInstance().getTransactions(request.getCorrelationId()); 
+				Set<Transaction> set = Transactions.getInstance().getTransactions(request.getCorrelationId());
+				
+				if(set == null) {
+					label.setText("Failed to retrieve transactions. Please try again");
+					return;
+				}
 				
 				logger.debug("found # of transactions: {} for {}", set.size(), address);
 				
