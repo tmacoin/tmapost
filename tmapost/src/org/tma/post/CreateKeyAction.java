@@ -103,6 +103,11 @@ public class CreateKeyAction extends AbstractAction implements Caller {
 		JMenuItem mntmSendTransaction = new JMenuItem("Send Transaction");
 		mntmSendTransaction.setAction(new SendTransaction(frame));
 		mnTools.add(mntmSendTransaction);
+
+		JMenuItem mntmGetTransactions = new JMenuItem("Get Transactions");
+		mntmGetTransactions.setAction(new GetTransactions(frame));
+		mnTools.add(mntmGetTransactions);
+		
 		menuBar.updateUI();
 	}
 
