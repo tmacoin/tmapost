@@ -97,6 +97,10 @@ public class SubmitPasswordAction extends AbstractAction implements Caller {
 		mntmGetTransactions.setAction(new GetTransactions(frame));
 		mnTools.add(mntmGetTransactions);
 		
+		JMenuItem mntmShowAddress = new JMenuItem("Show Address");
+		mntmShowAddress.setAction(new ShowAddress(frame));
+		mnTools.add(mntmShowAddress);
+		
 		menuBar.updateUI();
 	}
 }

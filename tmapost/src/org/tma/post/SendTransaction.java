@@ -48,6 +48,7 @@ public class SendTransaction extends AbstractAction implements Caller {
 		JTextField address = new JTextField(36);
 		address.setBounds(160, 11, 260, 20);
 		address.getDocument().addDocumentListener(new ValidatorTmaAddress(address));
+		JTextFieldRegularPopupMenu.addTo(address);
 		frame.getContentPane().add(address);
 		
 		label = new JLabel("Amount in coins:");
@@ -57,6 +58,7 @@ public class SendTransaction extends AbstractAction implements Caller {
 		JTextField amount = new JTextField(36);
 		amount.setBounds(160, 32, 200, 20);
 		amount.getDocument().addDocumentListener(new ValidatorDouble(amount));
+		JTextFieldRegularPopupMenu.addTo(amount);
 		frame.getContentPane().add(amount);
 		
 		label = new JLabel("Fee in satoshis:");
@@ -66,6 +68,7 @@ public class SendTransaction extends AbstractAction implements Caller {
 		JTextField fee = new JTextField(36);
 		fee.setBounds(160, 53, 200, 20);
 		fee.getDocument().addDocumentListener(new ValidatorLong(fee));
+		JTextFieldRegularPopupMenu.addTo(fee);
 		frame.getContentPane().add(fee);
 		
 		label = new JLabel("Data:");
@@ -75,6 +78,7 @@ public class SendTransaction extends AbstractAction implements Caller {
 		JTextField data = new JTextField(36);
 		data.setBounds(160, 74, 260, 20);
 		data.setToolTipText("Limited to 1024 chars");
+		JTextFieldRegularPopupMenu.addTo(data);
 		frame.getContentPane().add(data);
 		
 		label = new JLabel("Expire after # blocks:");
@@ -84,6 +88,7 @@ public class SendTransaction extends AbstractAction implements Caller {
 		JTextField expire = new JTextField(36);
 		expire.setBounds(160, 95, 150, 20);
 		expire.getDocument().addDocumentListener(new ValidatorLong(expire));
+		JTextFieldRegularPopupMenu.addTo(expire);
 		frame.getContentPane().add(expire);
 		
 		label = new JLabel("Expiring Data:");
@@ -92,6 +97,7 @@ public class SendTransaction extends AbstractAction implements Caller {
 		
 		JTextArea expiringData = new JTextArea();
 		expiringData.setToolTipText("Limited to 32672 chars");
+		JTextFieldRegularPopupMenu.addTo(expiringData);
 		JScrollPane scroll = new JScrollPane (expiringData);
 		scroll.setBounds(160, 116, 260, 130);
 		frame.getContentPane().add(scroll);

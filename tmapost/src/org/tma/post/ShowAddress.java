@@ -10,21 +10,23 @@ package org.tma.post;
 import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
-import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
-public class GetTransactions extends AbstractAction implements Caller {
+import org.tma.blockchain.Wallet;
+import org.tma.peer.Network;
+
+public class ShowAddress extends AbstractAction implements Caller {
 
 	private static final long serialVersionUID = 4036313657721664495L;
 	
 	private JFrame frame;
 	
-	public GetTransactions(JFrame frame) {
-		putValue(NAME, "Get Transactions");
-		putValue(SHORT_DESCRIPTION, "Get Transactions");
+	public ShowAddress(JFrame frame) {
+		putValue(NAME, "Show Address");
+		putValue(SHORT_DESCRIPTION, "Show Address");
 		this.frame = frame;
 	}
 	
@@ -36,26 +38,19 @@ public class GetTransactions extends AbstractAction implements Caller {
 	public void actionPerformed(ActionEvent actionEvent) {
 		
 		frame.getContentPane().removeAll();
+		Wallet wallet = Wallets.getInstance().getWallets().get(0);
 		
-		JLabel label = new JLabel("Recipient:");
-		label.setBounds(20, 74, 160, 14);
+		JLabel label = new JLabel("Your TMA Address on shard " + Network.getInstance().getBootstrapBlockchainId() + ":");
+		label.setBounds(20, 74, 250, 14);
 		frame.getContentPane().add(label);
 		
 		JTextField address = new JTextField(36);
-		address.setBounds(160, 71, 260, 20);
-		address.getDocument().addDocumentListener(new ValidatorTmaAddress(address));
+		address.setText(wallet.getTmaAddress());
+		address.setBounds(20, 104, 300, 20);
 		JTextFieldRegularPopupMenu.addTo(address);
 		frame.getContentPane().add(address);
-		
-		JButton btnSubmit = new JButton("Submit");
-		btnSubmit.setAction(new GetTransactionsAction(frame, address));
-		btnSubmit.setBounds(241, 102, 150, 23);
-		frame.getContentPane().add(btnSubmit);
-		
-		frame.getRootPane().setDefaultButton(btnSubmit);
+
 		frame.getContentPane().repaint();
-		
-		address.grabFocus();
 	}
 
 	
