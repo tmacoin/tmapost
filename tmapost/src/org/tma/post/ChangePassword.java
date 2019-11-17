@@ -34,7 +34,7 @@ public class ChangePassword extends AbstractAction {
 		frame.getContentPane().removeAll();
 		
 		JLabel lblEnterPassphrase = new JLabel("Enter Existing Passphrase:");
-		lblEnterPassphrase.setBounds(49, 74, 160, 14);
+		lblEnterPassphrase.setBounds(20, 74, 160, 14);
 		frame.getContentPane().add(lblEnterPassphrase);
 		
 		oldPasswordField = new JPasswordField();
@@ -42,7 +42,7 @@ public class ChangePassword extends AbstractAction {
 		frame.getContentPane().add(oldPasswordField);
 		
 		JLabel lblEnterNewPassphrase = new JLabel("Enter New Passphrase:");
-		lblEnterNewPassphrase.setBounds(49, 104, 160, 14);
+		lblEnterNewPassphrase.setBounds(20, 104, 160, 14);
 		frame.getContentPane().add(lblEnterNewPassphrase);
 		
 		newPasswordField = new JPasswordField();
@@ -50,7 +50,7 @@ public class ChangePassword extends AbstractAction {
 		frame.getContentPane().add(newPasswordField);
 		
 		JLabel lblconfirmPassphrase = new JLabel("Reenter New Passphrase:");
-		lblconfirmPassphrase.setBounds(49, 134, 160, 14);
+		lblconfirmPassphrase.setBounds(20, 134, 160, 14);
 		frame.getContentPane().add(lblconfirmPassphrase);
 		
 		confirmPasswordField = new JPasswordField();

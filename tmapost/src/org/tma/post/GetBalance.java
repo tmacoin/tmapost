@@ -37,12 +37,12 @@ public class GetBalance extends AbstractAction implements Caller {
 		
 		frame.getContentPane().removeAll();
 		
-		JLabel label = new JLabel("Enter TMA Address:");
+		JLabel label = new JLabel("TMA Address:");
 		label.setBounds(20, 74, 160, 14);
 		frame.getContentPane().add(label);
 		
 		JTextField address = new JTextField(36);
-		address.setBounds(160, 71, 260, 20);
+		address.setBounds(140, 71, 290, 20);
 		address.getDocument().addDocumentListener(new ValidatorTmaAddress(address));
 		JTextFieldRegularPopupMenu.addTo(address);
 		frame.getContentPane().add(address);
