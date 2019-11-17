@@ -12,9 +12,6 @@ import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 
@@ -61,46 +58,10 @@ public class SubmitPasswordAction extends AbstractAction implements Caller {
 	public void log(String message) {
 		if(label != null) {
 			label.setText(message);
-			addMenu();
+			MenuCreator.addMenu(frame);
 			return;
 		}
 		JOptionPane.showMessageDialog(frame, message);
 	}
-	
-	private void addMenu() {
-		JMenuBar menuBar = new JMenuBar();
-		frame.setJMenuBar(menuBar);
-		
-		JMenu mnFile = new JMenu("File");
-		menuBar.add(mnFile);
-		
-		JMenuItem mntmExit = new JMenuItem("Exit");
-		mntmExit.setAction(new ExitAction());
-		mnFile.add(mntmExit);
-		
-		JMenu mnTools = new JMenu("Tools");
-		menuBar.add(mnTools);
-		
-		JMenuItem mntmChangePassword = new JMenuItem("Change Password");
-		mntmChangePassword.setAction(new ChangePassword(frame));
-		mnTools.add(mntmChangePassword);
-		
-		JMenuItem mntmGetBalance = new JMenuItem("Get Balance");
-		mntmGetBalance.setAction(new GetBalance(frame));
-		mnTools.add(mntmGetBalance);
-		
-		JMenuItem mntmSendTransaction = new JMenuItem("Send Transaction");
-		mntmSendTransaction.setAction(new SendTransaction(frame));
-		mnTools.add(mntmSendTransaction);
-		
-		JMenuItem mntmGetTransactions = new JMenuItem("Get Transactions");
-		mntmGetTransactions.setAction(new GetTransactions(frame));
-		mnTools.add(mntmGetTransactions);
-		
-		JMenuItem mntmShowAddress = new JMenuItem("Show Address");
-		mntmShowAddress.setAction(new ShowAddress(frame));
-		mnTools.add(mntmShowAddress);
-		
-		menuBar.updateUI();
-	}
+
 }
