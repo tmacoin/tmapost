@@ -48,6 +48,11 @@ public class MenuCreator {
 		mntmShowAddress.setAction(new ShowAddress(frame));
 		mnTools.add(mntmShowAddress);
 		
+		JMenuItem mntmSendMessage = new JMenuItem("Show Address");
+		mntmSendMessage.setAction(new SendMessage(frame));
+		mnTools.add(mntmSendMessage);
+		
+		
 		menuBar.updateUI();
 	}
 
