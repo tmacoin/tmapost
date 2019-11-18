@@ -13,10 +13,13 @@ import javax.swing.AbstractAction;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 import org.tma.blockchain.Wallet;
 import org.tma.peer.Network;
+import org.tma.util.Base58;
 
 public class ShowAddress extends AbstractAction implements Caller {
 
@@ -41,15 +44,29 @@ public class ShowAddress extends AbstractAction implements Caller {
 		Wallet wallet = Wallets.getInstance().getWallets().get(0);
 		
 		JLabel label = new JLabel("Your TMA Address on shard " + Network.getInstance().getBootstrapBlockchainId() + ":");
-		label.setBounds(20, 74, 250, 14);
+		label.setBounds(20, 20, 250, 14);
 		frame.getContentPane().add(label);
 		
 		JTextField address = new JTextField(36);
 		address.setText(wallet.getTmaAddress());
-		address.setBounds(20, 104, 300, 20);
+		address.setBounds(20, 40, 300, 20);
 		JTextFieldRegularPopupMenu.addTo(address);
 		frame.getContentPane().add(address);
-
+		
+		label = new JLabel("Your Public Key:");
+		label.setBounds(20, 80, 250, 14);
+		frame.getContentPane().add(label);
+		
+		JTextArea publicKey = new JTextArea();
+		publicKey.setLineWrap(true);
+		publicKey.setToolTipText("Public Key");
+		publicKey.setText(Base58.encode(wallet.getPublicKey().getEncoded()));
+		JTextFieldRegularPopupMenu.addTo(publicKey);
+		JScrollPane scroll = new JScrollPane (publicKey);
+		scroll.setBounds(20, 100, 300, 70);
+		frame.getContentPane().add(scroll);
+		
+		frame.getContentPane().revalidate();
 		frame.getContentPane().repaint();
 	}
 
