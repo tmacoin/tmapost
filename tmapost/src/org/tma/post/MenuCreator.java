@@ -52,6 +52,9 @@ public class MenuCreator {
 		mntmSendMessage.setAction(new SendMessage(frame));
 		mnTools.add(mntmSendMessage);
 		
+		JMenuItem mntmShowMessages = new JMenuItem("Show Messages");
+		mntmShowMessages.setAction(new ShowMessages(frame));
+		mnTools.add(mntmShowMessages);
 		
 		menuBar.updateUI();
 	}
