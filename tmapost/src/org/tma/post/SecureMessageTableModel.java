@@ -32,6 +32,8 @@ public class SecureMessageTableModel extends AbstractTableModel {
 	
 	public SecureMessageTableModel(List<SecureMessage> list, PrivateKey privateKey) {
 		this.list = list;
+		this.privateKey = privateKey;
+		
 	}
 
 	public int getRowCount() {
@@ -51,7 +53,8 @@ public class SecureMessageTableModel extends AbstractTableModel {
                 break;
             case 1:
 				try {
-					value = new String(encryptor.decryptAsymm(Base58.decode(message.getText()), privateKey));
+					String str = StringUtil.trimToNull(message.getText());
+					value = str == null? "": new String(encryptor.decryptAsymm(Base58.decode(str), privateKey));
 				} catch (IOException | GeneralSecurityException e) {
 					logger.error(e.getMessage(), e);
 				}
