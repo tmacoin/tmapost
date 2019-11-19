@@ -8,6 +8,7 @@
 package org.tma.post;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
 import java.security.PrivateKey;
 import java.util.List;
@@ -54,7 +55,7 @@ public class SecureMessageTableModel extends AbstractTableModel {
             case 1:
 				try {
 					String str = StringUtil.trimToNull(message.getText());
-					value = str == null? "": new String(encryptor.decryptAsymm(Base58.decode(str), privateKey));
+					value = str == null? "": new String(encryptor.decryptAsymm(Base58.decode(str), privateKey), StandardCharsets.UTF_8);
 				} catch (IOException | GeneralSecurityException e) {
 					logger.error(e.getMessage(), e);
 				}
