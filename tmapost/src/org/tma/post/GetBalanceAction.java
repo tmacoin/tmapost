@@ -18,8 +18,8 @@ import javax.swing.JTextField;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.tma.peer.Network;
-import org.tma.peer.thin.Balance;
 import org.tma.peer.thin.GetBalanceRequest;
+import org.tma.peer.thin.ResponseHolder;
 import org.tma.util.StringUtil;
 import org.tma.util.ThreadExecutor;
 import org.tma.util.TmaRunnable;
@@ -58,7 +58,7 @@ public class GetBalanceAction extends AbstractAction implements Caller {
 			public void doRun() {
 				GetBalanceRequest request = new GetBalanceRequest(Network.getInstance(), address);
 				request.start();
-				String balance = Balance.getInstance().getBalance(request.getCorrelationId()); 
+				String balance = (String)ResponseHolder.getInstance().getObject(request.getCorrelationId()); 
 				
 				logger.debug("balance: {} for {}", balance, address);
 				

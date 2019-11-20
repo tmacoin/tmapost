@@ -23,7 +23,7 @@ import org.tma.blockchain.SecureMessage;
 import org.tma.blockchain.Wallet;
 import org.tma.peer.Network;
 import org.tma.peer.thin.GetMessagesRequest;
-import org.tma.peer.thin.SecureMessages;
+import org.tma.peer.thin.ResponseHolder;
 import org.tma.util.ThreadExecutor;
 import org.tma.util.TmaRunnable;
 
@@ -59,7 +59,8 @@ public class ShowMessages extends AbstractAction implements Caller {
 			public void doRun() {
 				GetMessagesRequest request = new GetMessagesRequest(Network.getInstance(), tmaAddress);
 				request.start();
-				List<SecureMessage> list = SecureMessages.getInstance().getSecureMessages(request.getCorrelationId());
+				@SuppressWarnings("unchecked")
+				List<SecureMessage> list = (List<SecureMessage>) ResponseHolder.getInstance().getObject(request.getCorrelationId());
 				
 				if(list == null) {
 					label.setText("Failed to retrieve transactions. Please try again");

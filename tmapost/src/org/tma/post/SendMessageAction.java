@@ -29,7 +29,7 @@ import org.tma.blockchain.Wallet;
 import org.tma.peer.Network;
 import org.tma.peer.SendTransactionRequest;
 import org.tma.peer.thin.GetInputsRequest;
-import org.tma.peer.thin.Inputs;
+import org.tma.peer.thin.ResponseHolder;
 import org.tma.persistance.Encryptor;
 import org.tma.util.Applications;
 import org.tma.util.Base58;
@@ -133,7 +133,8 @@ public class SendMessageAction extends AbstractAction implements Caller {
 			public void doRun() {
 				GetInputsRequest request = new GetInputsRequest(Network.getInstance(), tmaAddress, total);
 				request.start();
-				Set<TransactionOutput> inputs = Inputs.getInstance().getInputs(request.getCorrelationId()); 
+				@SuppressWarnings("unchecked")
+				Set<TransactionOutput> inputs = (Set<TransactionOutput>)ResponseHolder.getInstance().getObject(request.getCorrelationId()); 
 				logger.debug("number of inputs: {} for {}", inputs.size(), tmaAddress);
 				Transaction transaction = new Transaction(wallet.getPublicKey(), StringUtil.getStringFromKey(recipient), Coin.SATOSHI, 
 						new Coin(Integer.parseInt(fee)), inputs, wallet.getPrivateKey(), null, expiringData);

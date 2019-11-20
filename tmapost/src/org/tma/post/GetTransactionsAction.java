@@ -23,7 +23,7 @@ import org.apache.logging.log4j.Logger;
 import org.tma.blockchain.Transaction;
 import org.tma.peer.Network;
 import org.tma.peer.thin.GetTransactionsRequest;
-import org.tma.peer.thin.Transactions;
+import org.tma.peer.thin.ResponseHolder;
 import org.tma.util.StringUtil;
 import org.tma.util.ThreadExecutor;
 import org.tma.util.TmaRunnable;
@@ -62,7 +62,8 @@ public class GetTransactionsAction extends AbstractAction implements Caller {
 			public void doRun() {
 				GetTransactionsRequest request = new GetTransactionsRequest(Network.getInstance(), address);
 				request.start();
-				Set<Transaction> set = Transactions.getInstance().getTransactions(request.getCorrelationId());
+				@SuppressWarnings("unchecked")
+				Set<Transaction> set = (Set<Transaction>) ResponseHolder.getInstance().getObject(request.getCorrelationId());
 				
 				if(set == null) {
 					label.setText("Failed to retrieve transactions. Please try again");
