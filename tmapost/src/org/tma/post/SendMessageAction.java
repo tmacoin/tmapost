@@ -49,16 +49,20 @@ public class SendMessageAction extends AbstractAction implements Caller {
 	private JTextField jaddress;
 	private JTextField jfee;
 	private JTextField jexpire;
+	private JTextField jsubject;
 	private JTextArea jexpiringData;
+	private JLabel label;
+	
 	
 	
 	private PublicKey recipient;
 	private String fee; 
-	private String expire; 
+	private String expire;
+	private String subject;
 	private String expiringData;
-	private JLabel label;
+	
 
-	public SendMessageAction(JFrame frame, JTextField address, JTextField fee, JTextField expire, JTextArea expiringData) {
+	public SendMessageAction(JFrame frame, JTextField address, JTextField fee, JTextField expire, JTextField subject, JTextArea expiringData) {
 		putValue(NAME, "Send Message");
 		putValue(SHORT_DESCRIPTION, "Send Message Action");
 		this.frame = frame;
@@ -67,6 +71,7 @@ public class SendMessageAction extends AbstractAction implements Caller {
 		jfee = fee;
 		jexpire = expire;
 		jexpiringData = expiringData;
+		this.jsubject = subject;
 	}
 	
 	private boolean validate() {
@@ -75,7 +80,7 @@ public class SendMessageAction extends AbstractAction implements Caller {
 		}
 		try {
 			Long.parseLong(fee);
-			if(expiringData != null) {
+			if(subject != null) {
 				Long.parseLong(expire);
 			}
 		} catch (Exception e) {
@@ -92,6 +97,7 @@ public class SendMessageAction extends AbstractAction implements Caller {
 		}
 		fee = StringUtil.trim(jfee.getText());
 		expire = StringUtil.trim(jexpire.getText());
+		subject = StringUtil.trimToNull(jsubject.getText());
 		expiringData = StringUtil.trimToNull(jexpiringData.getText());
 	}
 
@@ -106,10 +112,11 @@ public class SendMessageAction extends AbstractAction implements Caller {
 		Coin total = Coin.SATOSHI.add(new Coin(Long.parseLong(fee)));
 		Wallet wallet = Wallets.getInstance().getWallets().get(0);
 		TransactionData data = null;
-		if(expiringData != null) {
+		if(subject != null) {
 			try {
-				expiringData = Base58.encode(encryptor.encryptAsymm(expiringData.getBytes(StandardCharsets.UTF_8), recipient));
-				data = new TransactionData(this.expiringData, Long.parseLong(expire));
+				String str = subject + "\n" + expiringData;
+				str = Base58.encode(encryptor.encryptAsymm(str.getBytes(StandardCharsets.UTF_8), recipient));
+				data = new TransactionData(str, Long.parseLong(expire));
 			} catch (Exception e) {
 				logger.error(e.getMessage(), e);
 			}

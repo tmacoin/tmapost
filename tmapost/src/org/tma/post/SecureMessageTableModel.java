@@ -42,12 +42,12 @@ public class SecureMessageTableModel extends AbstractTableModel {
 	}
 
 	public int getColumnCount() {
-		return 2;
+		return 3;
 	}
 
 	public Object getValueAt(int rowIndex, int columnIndex) {
 		SecureMessage message = list.toArray(new SecureMessage[0])[rowIndex];
-        Object value = null;
+        Object value = "";
         switch (columnIndex) {
             case 0:
                 value = StringUtil.getStringFromKey(message.getSender());
@@ -55,7 +55,25 @@ public class SecureMessageTableModel extends AbstractTableModel {
             case 1:
 				try {
 					String str = StringUtil.trimToNull(message.getText());
-					value = str == null? "": new String(encryptor.decryptAsymm(Base58.decode(str), privateKey), StandardCharsets.UTF_8);
+					if(str != null) {
+						str = new String(encryptor.decryptAsymm(Base58.decode(str), privateKey), StandardCharsets.UTF_8);
+						int index = str.indexOf("\n");
+						index = index == -1? str.length(): index;
+						value = str.substring(0, index);
+					}
+				} catch (IOException | GeneralSecurityException e) {
+					logger.error(e.getMessage(), e);
+				}
+                break;
+            case 2:
+				try {
+					String str = StringUtil.trimToNull(message.getText());
+					if(str != null) {
+						str = new String(encryptor.decryptAsymm(Base58.decode(str), privateKey), StandardCharsets.UTF_8);
+						int index = str.indexOf("\n");
+						index = index == -1? str.length(): index;
+						value = str.substring(index);
+					}
 				} catch (IOException | GeneralSecurityException e) {
 					logger.error(e.getMessage(), e);
 				}
@@ -71,7 +89,10 @@ public class SecureMessageTableModel extends AbstractTableModel {
             value = "Sender";
             break;
         case 1:
-            value = "Text";
+            value = "Subject";
+            break;
+        case 2:
+            value = "Body";
             break;
     }
     return value;

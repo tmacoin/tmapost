@@ -51,40 +51,49 @@ public class SendMessage extends AbstractAction implements Caller {
 		frame.getContentPane().add(address);
 		
 		label = new JLabel("Fee in satoshis:");
-		label.setBounds(20, 56, 160, 14);
+		label.setBounds(20, 44, 160, 14);
 		frame.getContentPane().add(label);
 		
 		JTextField fee = new JTextField(36);
-		fee.setBounds(160, 53, 200, 20);
+		fee.setBounds(160, 41, 200, 20);
 		fee.getDocument().addDocumentListener(new ValidatorLong(fee));
 		JTextFieldRegularPopupMenu.addTo(fee);
 		frame.getContentPane().add(fee);
 		
 		label = new JLabel("Expire after # blocks:");
-		label.setBounds(20, 98, 160, 14);
+		label.setBounds(20, 74, 160, 14);
 		frame.getContentPane().add(label);
 		
 		JTextField expire = new JTextField(36);
-		expire.setBounds(160, 95, 150, 20);
+		expire.setBounds(160, 71, 150, 20);
 		expire.getDocument().addDocumentListener(new ValidatorLong(expire));
 		JTextFieldRegularPopupMenu.addTo(expire);
 		frame.getContentPane().add(expire);
 		
-		label = new JLabel("Expiring Data:");
-		label.setBounds(20, 119, 160, 14);
+		label = new JLabel("Subject:");
+		label.setBounds(20, 104, 160, 14);
+		frame.getContentPane().add(label);
+		
+		JTextField subject = new JTextField(36);
+		subject.setBounds(160, 101, 260, 20);
+		JTextFieldRegularPopupMenu.addTo(subject);
+		frame.getContentPane().add(subject);
+		
+		label = new JLabel("Body:");
+		label.setBounds(20, 134, 160, 14);
 		frame.getContentPane().add(label);
 		
 		JTextArea expiringData = new JTextArea();
-		expiringData.setToolTipText("Limited to 32672 chars");
+		expiringData.setToolTipText("Limited to 32672 chars together with subject");
 		JTextFieldRegularPopupMenu.addTo(expiringData);
 		JScrollPane scroll = new JScrollPane (expiringData);
-		scroll.setBounds(160, 116, 260, 130);
+		scroll.setBounds(160, 131, 260, 130);
 		frame.getContentPane().add(scroll);
 		
 		
 		JButton btnSubmit = new JButton("Submit");
-		btnSubmit.setAction(new SendMessageAction(frame, address, fee, expire, expiringData));
-		btnSubmit.setBounds(269, 252, 150, 23);
+		btnSubmit.setAction(new SendMessageAction(frame, address, fee, expire, subject, expiringData));
+		btnSubmit.setBounds(269, 270, 150, 23);
 		frame.getContentPane().add(btnSubmit);
 		
 		frame.getRootPane().setDefaultButton(btnSubmit);
