@@ -9,7 +9,6 @@ package org.tma.post;
 
 import java.awt.event.ActionEvent;
 import java.nio.charset.StandardCharsets;
-import java.security.GeneralSecurityException;
 import java.security.PublicKey;
 import java.util.Set;
 
@@ -29,6 +28,7 @@ import org.tma.blockchain.Wallet;
 import org.tma.peer.Network;
 import org.tma.peer.SendTransactionRequest;
 import org.tma.peer.thin.GetInputsRequest;
+import org.tma.peer.thin.GetPublicKeyRequest;
 import org.tma.peer.thin.ResponseHolder;
 import org.tma.persistance.Encryptor;
 import org.tma.util.Applications;
@@ -75,7 +75,8 @@ public class SendMessageAction extends AbstractAction implements Caller {
 	}
 	
 	private boolean validate() {
-		if(recipient == null) {
+		String tmaAddress = StringUtil.trim(jaddress.getText());
+		if(!StringUtil.isTmaAddressValid(tmaAddress)) {
 			return false;
 		}
 		try {
@@ -90,11 +91,6 @@ public class SendMessageAction extends AbstractAction implements Caller {
 	}
 	
 	private void load() {
-		try {
-			recipient = StringUtil.loadPublicKey(jaddress.getText());
-		} catch (GeneralSecurityException e) {
-			logger.error(e.getMessage(), e);
-		}
 		fee = StringUtil.trim(jfee.getText());
 		expire = StringUtil.trim(jexpire.getText());
 		subject = StringUtil.trimToNull(jsubject.getText());
@@ -111,17 +107,7 @@ public class SendMessageAction extends AbstractAction implements Caller {
 		String tmaAddress = Network.getInstance().getTmaAddress();
 		Coin total = Coin.SATOSHI.add(new Coin(Long.parseLong(fee)));
 		Wallet wallet = Wallets.getInstance().getWallets().get(0);
-		TransactionData data = null;
-		if(subject != null) {
-			try {
-				String str = subject + "\n" + expiringData;
-				str = Base58.encode(encryptor.encryptAsymm(str.getBytes(StandardCharsets.UTF_8), recipient));
-				data = new TransactionData(str, Long.parseLong(expire));
-			} catch (Exception e) {
-				logger.error(e.getMessage(), e);
-			}
-		}
-		TransactionData expiringData = data;
+		
 		frame.getContentPane().removeAll();
 		
 		label = new JLabel("Please wait, processing.");
@@ -136,6 +122,24 @@ public class SendMessageAction extends AbstractAction implements Caller {
 				@SuppressWarnings("unchecked")
 				Set<TransactionOutput> inputs = (Set<TransactionOutput>)ResponseHolder.getInstance().getObject(request.getCorrelationId()); 
 				logger.debug("number of inputs: {} for {}", inputs.size(), tmaAddress);
+				
+				String recipientTmaAddress = jaddress.getText();
+				GetPublicKeyRequest getPublicKeyRequest = new GetPublicKeyRequest(Network.getInstance(), recipientTmaAddress);
+				getPublicKeyRequest.start();
+				recipient = (PublicKey) ResponseHolder.getInstance().getObject(getPublicKeyRequest.getCorrelationId());
+				
+				TransactionData data = null;
+				if(subject != null) {
+					try {
+						String str = subject + "\n" + expiringData;
+						str = Base58.encode(encryptor.encryptAsymm(str.getBytes(StandardCharsets.UTF_8), recipient));
+						data = new TransactionData(str, Long.parseLong(expire));
+					} catch (Exception e) {
+						logger.error(e.getMessage(), e);
+					}
+				}
+				TransactionData expiringData = data;
+				
 				Transaction transaction = new Transaction(wallet.getPublicKey(), StringUtil.getStringFromKey(recipient), Coin.SATOSHI, 
 						new Coin(Integer.parseInt(fee)), inputs, wallet.getPrivateKey(), null, expiringData);
 				transaction.setApp(Applications.MESSAGING);

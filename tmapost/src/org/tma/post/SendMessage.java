@@ -41,12 +41,13 @@ public class SendMessage extends AbstractAction implements Caller {
 		
 		frame.getContentPane().removeAll();
 		
-		JLabel label = new JLabel("Recipient Key:");
+		JLabel label = new JLabel("Recipient:");
 		label.setBounds(20, 14, 160, 14);
 		frame.getContentPane().add(label);
 		
 		JTextField address = new JTextField(36);
 		address.setBounds(160, 11, 260, 20);
+		address.getDocument().addDocumentListener(new ValidatorTmaAddress(address));
 		JTextFieldRegularPopupMenu.addTo(address);
 		frame.getContentPane().add(address);
 		
