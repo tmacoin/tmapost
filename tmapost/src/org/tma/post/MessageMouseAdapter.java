@@ -54,7 +54,7 @@ public class MessageMouseAdapter extends MouseAdapter {
 		frame.getContentPane().add(label);
 		
 		JTextField address = new JTextField(36);
-		address.setBounds(160, 11, 260, 20);
+		address.setBounds(120, 11, 300, 20);
 		address.setText(StringUtil.getStringFromKey(secureMessage.getSender()));
 		address.setBorder( null );
 		address.setOpaque( false );
@@ -66,7 +66,7 @@ public class MessageMouseAdapter extends MouseAdapter {
 		frame.getContentPane().add(label);
 		
 		JTextField subject = new JTextField(36);
-		subject.setBounds(160, 41, 260, 20);
+		subject.setBounds(120, 41, 300, 20);
 		subject.setBorder( null );
 		subject.setOpaque( false );
 		subject.setEditable( false );
@@ -78,7 +78,7 @@ public class MessageMouseAdapter extends MouseAdapter {
 		
 		JTextArea expiringData = new JTextArea();
 		JScrollPane scroll = new JScrollPane (expiringData);
-		scroll.setBounds(160, 71, 260, 130);
+		scroll.setBounds(120, 71, 300, 200);
 		scroll.setBorder( null );
 		expiringData.setOpaque( false );
 		expiringData.setEditable( false );
