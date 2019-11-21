@@ -80,6 +80,7 @@ public class ShowMessages extends AbstractAction implements Caller {
 				table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 				TableColumnAdjuster tca = new TableColumnAdjuster(table);
 				tca.adjustColumns();
+				table.addMouseListener(new MessageMouseAdapter(table, list, frame));
 				
 				JScrollPane scroll = new JScrollPane (table);
 				scroll.setBounds(20, 60, 1000, 200);
