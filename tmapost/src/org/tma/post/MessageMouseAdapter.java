@@ -77,6 +77,8 @@ public class MessageMouseAdapter extends MouseAdapter {
 		frame.getContentPane().add(label);
 		
 		JTextArea expiringData = new JTextArea();
+		expiringData.setLineWrap(true);
+		expiringData.setWrapStyleWord(true);
 		JScrollPane scroll = new JScrollPane (expiringData);
 		scroll.setBounds(120, 71, 300, 200);
 		scroll.setBorder( null );
