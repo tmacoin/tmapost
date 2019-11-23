@@ -10,6 +10,8 @@ package org.tma.post;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
@@ -18,8 +20,10 @@ import java.security.GeneralSecurityException;
 import java.util.Date;
 import java.util.List;
 
+import javax.swing.AbstractAction;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -27,6 +31,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.KeyStroke;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -63,6 +68,19 @@ public class MessageMouseAdapter extends MouseAdapter {
 		JButton btnSubmit = new JButton();
 		btnSubmit.setAction(new ShowMessages(frame));
 		btnSubmit.setText("Back");
+		
+		frame.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_BACK_SPACE, 0), "backButton");
+
+		frame.getRootPane().getActionMap().put("backButton", new AbstractAction() {
+			private static final long serialVersionUID = 4946947535624344910L;
+
+			public void actionPerformed(ActionEvent actionEvent) {
+				btnSubmit.doClick();
+				frame.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).clear();
+				frame.getRootPane().getActionMap().clear();
+			}
+		});
+		
 		p.add(btnSubmit);
 		form.add(p, BorderLayout.NORTH);
 		
