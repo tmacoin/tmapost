@@ -17,8 +17,6 @@ import org.tma.util.StringUtil;
 
 public class ValidatorTmaAddress implements DocumentListener {
 	
-	public static final Color VERY_LIGHT_RED = new Color(255,200,200);
-	
 	private JTextField tf;
 	
 	public ValidatorTmaAddress(JTextField tf) {
@@ -48,7 +46,7 @@ public class ValidatorTmaAddress implements DocumentListener {
 			tf.setBackground(Color.white);
 			return;
 		}
-		tf.setBackground(VERY_LIGHT_RED);
+		tf.setBackground(Constants.VERY_LIGHT_RED);
 	}
 
 }

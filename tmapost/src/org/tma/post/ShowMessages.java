@@ -81,7 +81,7 @@ public class ShowMessages extends AbstractAction implements Caller {
 				JPanel form = new JPanel();
 				form.setLayout(new BoxLayout(form, BoxLayout.Y_AXIS));
 				
-				JLabel label = new JLabel("Transactions for " + tmaAddress);
+				JLabel label = new JLabel("Messages for " + tmaAddress);
 				form.add(label);
 				
 				form.add(Box.createRigidArea(new Dimension(0, 20)));

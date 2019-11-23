@@ -7,6 +7,7 @@
  *******************************************************************************/
 package org.tma.post;
 
+import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.util.Set;
 
@@ -14,6 +15,7 @@ import javax.swing.AbstractAction;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
@@ -53,7 +55,6 @@ public class SendTransactionAction extends AbstractAction implements Caller {
 	private String data; 
 	private String expire; 
 	private String expiringData;
-	private JLabel label;
 
 	public SendTransactionAction(JFrame frame, JTextField address, JTextField amount, JTextField fee, JTextField data, JTextField expire, JTextArea expiringData) {
 		putValue(NAME, "Send Transaction");
@@ -104,11 +105,14 @@ public class SendTransactionAction extends AbstractAction implements Caller {
 		Coin total = Coin.ONE.multiply(Double.parseDouble(amount)).add(new Coin(Long.parseLong(fee)));
 		Wallet wallet = Wallets.getInstance().getWallets().get(0);
 		TransactionData expiringData = this.expiringData == null? null: new TransactionData(this.expiringData, Long.parseLong(expire));
+
+
 		frame.getContentPane().removeAll();
-		
-		label = new JLabel("Please wait, processing.");
-		label.setBounds(100, 124, 250, 14);
-		frame.getContentPane().add(label);
+		JPanel form = new JPanel(new BorderLayout());
+		JLabel label = new JLabel("Please wait, processing.");
+		form.add(label);
+		frame.getContentPane().add(form, BorderLayout.NORTH);
+		frame.revalidate();
 		frame.getContentPane().repaint();
 		
 		ThreadExecutor.getInstance().execute(new TmaRunnable("SendTransactionAction") {

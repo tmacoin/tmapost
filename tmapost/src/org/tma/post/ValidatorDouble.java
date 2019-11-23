@@ -17,8 +17,6 @@ import org.tma.util.StringUtil;
 
 public class ValidatorDouble implements DocumentListener {
 	
-	public static final Color VERY_LIGHT_RED = new Color(255,200,200);
-	
 	private JTextField tf;
 	
 	public ValidatorDouble(JTextField tf) {
@@ -45,7 +43,7 @@ public class ValidatorDouble implements DocumentListener {
 			Double.parseDouble(value);
 			tf.setBackground(Color.white);
 		} catch (Exception e) {
-			tf.setBackground(VERY_LIGHT_RED);
+			tf.setBackground(Constants.VERY_LIGHT_RED);
 		}
 	}
 

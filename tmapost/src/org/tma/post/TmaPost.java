@@ -112,10 +112,7 @@ public class TmaPost {
 		fieldPanel.add(p);
 
 		frame.getContentPane().add(form, BorderLayout.NORTH);
-		
 		frame.getRootPane().setDefaultButton(btnSubmit);
-		
-		//frame.pack();
 	}
 	
 	private void enterPassphrase() {

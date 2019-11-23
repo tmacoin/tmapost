@@ -7,7 +7,9 @@
  *******************************************************************************/
 package org.tma.post;
 
-import java.awt.Color;
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
@@ -15,6 +17,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -22,7 +25,6 @@ import javax.swing.JTextField;
 public class SendMessage extends AbstractAction implements Caller {
 
 	private static final long serialVersionUID = 4036313657721664495L;
-	public static final Color VERY_LIGHT_RED = new Color(255,200,200);
 	
 	private JFrame frame;
 	
@@ -41,62 +43,71 @@ public class SendMessage extends AbstractAction implements Caller {
 		
 		frame.getContentPane().removeAll();
 		
-		JLabel label = new JLabel("Recipient:");
-		label.setBounds(20, 14, 160, 14);
-		frame.getContentPane().add(label);
+		JPanel form = new JPanel(new BorderLayout());
 		
+		JPanel labelPanel = new JPanel(new GridLayout(6, 1));
+		JPanel fieldPanel = new JPanel(new GridLayout(6, 1));
+		form.add(labelPanel, BorderLayout.WEST);
+		form.add(fieldPanel, BorderLayout.CENTER);
+		
+		JLabel label = new JLabel("Recipient:", JLabel.RIGHT);
+		labelPanel.add(label);
+		
+		label = new JLabel("Fee in satoshis:", JLabel.RIGHT);
+		labelPanel.add(label);
+		
+		label = new JLabel("Expire after # blocks:", JLabel.RIGHT);
+		labelPanel.add(label);
+		
+		label = new JLabel("Subject:", JLabel.RIGHT);
+		labelPanel.add(label);
+		
+		label = new JLabel("Body:", JLabel.RIGHT);
+		labelPanel.add(label);
+		
+		JPanel p = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		JTextField address = new JTextField(36);
-		address.setBounds(160, 11, 260, 20);
 		address.getDocument().addDocumentListener(new ValidatorTmaAddress(address));
 		JTextFieldRegularPopupMenu.addTo(address);
-		frame.getContentPane().add(address);
+		p.add(address);
+		fieldPanel.add(p);
 		
-		label = new JLabel("Fee in satoshis:");
-		label.setBounds(20, 44, 160, 14);
-		frame.getContentPane().add(label);
-		
+		p = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		JTextField fee = new JTextField(36);
-		fee.setBounds(160, 41, 200, 20);
 		fee.getDocument().addDocumentListener(new ValidatorLong(fee));
 		JTextFieldRegularPopupMenu.addTo(fee);
-		frame.getContentPane().add(fee);
+		p.add(fee);
+		fieldPanel.add(p);
 		
-		label = new JLabel("Expire after # blocks:");
-		label.setBounds(20, 74, 160, 14);
-		frame.getContentPane().add(label);
-		
+		p = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		JTextField expire = new JTextField(36);
-		expire.setBounds(160, 71, 150, 20);
 		expire.getDocument().addDocumentListener(new ValidatorLong(expire));
 		JTextFieldRegularPopupMenu.addTo(expire);
-		frame.getContentPane().add(expire);
+		p.add(expire);
+		fieldPanel.add(p);
 		
-		label = new JLabel("Subject:");
-		label.setBounds(20, 104, 160, 14);
-		frame.getContentPane().add(label);
-		
+		p = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		JTextField subject = new JTextField(36);
 		subject.setBounds(160, 101, 260, 20);
 		JTextFieldRegularPopupMenu.addTo(subject);
-		frame.getContentPane().add(subject);
+		p.add(subject);
+		fieldPanel.add(p);
 		
-		label = new JLabel("Body:");
-		label.setBounds(20, 134, 160, 14);
-		frame.getContentPane().add(label);
-		
-		JTextArea expiringData = new JTextArea();
+		p = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		JTextArea expiringData = new JTextArea(36, 20);
 		expiringData.setToolTipText("Limited to 32672 chars together with subject");
 		JTextFieldRegularPopupMenu.addTo(expiringData);
 		JScrollPane scroll = new JScrollPane (expiringData);
-		scroll.setBounds(160, 131, 260, 130);
-		frame.getContentPane().add(scroll);
+		p.add(scroll);
+		fieldPanel.add(p);
 		
-		
+		p = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		JButton btnSubmit = new JButton("Submit");
 		btnSubmit.setAction(new SendMessageAction(frame, address, fee, expire, subject, expiringData));
-		btnSubmit.setBounds(269, 270, 150, 23);
-		frame.getContentPane().add(btnSubmit);
-		
+		p.add(btnSubmit);
+		fieldPanel.add(p);
+
+		frame.getContentPane().add(form, BorderLayout.NORTH);
 		frame.getRootPane().setDefaultButton(btnSubmit);
 		frame.getContentPane().revalidate();
 		frame.getContentPane().repaint();

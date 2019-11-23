@@ -7,6 +7,7 @@
  *******************************************************************************/
 package org.tma.post;
 
+import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.nio.charset.StandardCharsets;
 import java.security.PublicKey;
@@ -16,6 +17,7 @@ import javax.swing.AbstractAction;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
@@ -51,10 +53,7 @@ public class SendMessageAction extends AbstractAction implements Caller {
 	private JTextField jexpire;
 	private JTextField jsubject;
 	private JTextArea jexpiringData;
-	private JLabel label;
-	
-	
-	
+
 	private PublicKey recipient;
 	private String fee; 
 	private String expire;
@@ -109,10 +108,11 @@ public class SendMessageAction extends AbstractAction implements Caller {
 		Wallet wallet = Wallets.getInstance().getWallets().get(0);
 		
 		frame.getContentPane().removeAll();
-		
-		label = new JLabel("Please wait, processing.");
-		label.setBounds(100, 124, 250, 14);
-		frame.getContentPane().add(label);
+		JPanel form = new JPanel(new BorderLayout());
+		JLabel label = new JLabel("Please wait, processing.");
+		form.add(label);
+		frame.getContentPane().add(form, BorderLayout.NORTH);
+		frame.revalidate();
 		frame.getContentPane().repaint();
 		
 		ThreadExecutor.getInstance().execute(new TmaRunnable("SendTransactionAction") {
@@ -146,7 +146,7 @@ public class SendMessageAction extends AbstractAction implements Caller {
 				logger.debug("sent {}", transaction);
 				new SendTransactionRequest(Network.getInstance(), transaction).start();
 				
-				label.setText("Transaction was sent");
+				label.setText("Message was sent");
 			}
 		});
 		

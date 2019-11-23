@@ -7,7 +7,6 @@
  *******************************************************************************/
 package org.tma.post;
 
-import java.awt.Color;
 import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
@@ -22,7 +21,6 @@ import javax.swing.JTextField;
 public class SendTransaction extends AbstractAction implements Caller {
 
 	private static final long serialVersionUID = 4036313657721664495L;
-	public static final Color VERY_LIGHT_RED = new Color(255,200,200);
 	
 	private JFrame frame;
 	
