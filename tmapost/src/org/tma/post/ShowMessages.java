@@ -7,13 +7,18 @@
  *******************************************************************************/
 package org.tma.post;
 
+import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.util.List;
 
 import javax.swing.AbstractAction;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
@@ -48,9 +53,11 @@ public class ShowMessages extends AbstractAction implements Caller {
 	public void actionPerformed(ActionEvent actionEvent) {
 		
 		frame.getContentPane().removeAll();
+		JPanel form = new JPanel(new BorderLayout());
 		JLabel label = new JLabel("Please wait, processing.");
-		label.setBounds(20, 104, 500, 14);
-		frame.getContentPane().add(label);
+		form.add(label);
+		frame.getContentPane().add(form, BorderLayout.NORTH);
+		frame.revalidate();
 		frame.getContentPane().repaint();
 		
 		Wallet wallet = Wallets.getInstance().getWallets().get(0);
@@ -70,9 +77,14 @@ public class ShowMessages extends AbstractAction implements Caller {
 				logger.debug("found # of messages: {} for {}", list.size(), tmaAddress);
 				
 				frame.getContentPane().removeAll();
-				JLabel label = new JLabel("Messages for " + tmaAddress);
-				label.setBounds(20, 20, 400, 14);
-				frame.getContentPane().add(label);
+				
+				JPanel form = new JPanel();
+				form.setLayout(new BoxLayout(form, BoxLayout.Y_AXIS));
+				
+				JLabel label = new JLabel("Transactions for " + tmaAddress);
+				form.add(label);
+				
+				form.add(Box.createRigidArea(new Dimension(0, 20)));
 				
 				SecureMessageTableModel model = new SecureMessageTableModel(list, wallet.getPrivateKey());
 				JTable table = new JTable(model);
@@ -81,12 +93,14 @@ public class ShowMessages extends AbstractAction implements Caller {
 				TableColumnAdjuster tca = new TableColumnAdjuster(table);
 				tca.adjustColumns();
 				table.addMouseListener(new MessageMouseAdapter(table, list, frame));
-				
+
 				JScrollPane scroll = new JScrollPane (table);
-				scroll.setBounds(20, 60, 1000, 200);
-				frame.getContentPane().add(scroll);
+				scroll.setBorder(null);
+				form.add(scroll);
 				
-				frame.setSize(1100, 400);
+				frame.getContentPane().add(form);
+				frame.pack();
+				frame.revalidate();
 				frame.getContentPane().repaint();
 			}
 		});

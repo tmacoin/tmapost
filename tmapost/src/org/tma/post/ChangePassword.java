@@ -7,11 +7,15 @@
  *******************************************************************************/
 package org.tma.post;
 
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 
 public class ChangePassword extends AbstractAction {
@@ -33,38 +37,48 @@ public class ChangePassword extends AbstractAction {
 		
 		frame.getContentPane().removeAll();
 		
-		JLabel lblEnterPassphrase = new JLabel("Enter Existing Passphrase:");
-		lblEnterPassphrase.setBounds(20, 74, 160, 14);
-		frame.getContentPane().add(lblEnterPassphrase);
+		JPanel form = new JPanel(new BorderLayout());
 		
-		oldPasswordField = new JPasswordField();
-		oldPasswordField.setBounds(209, 71, 138, 20);
-		frame.getContentPane().add(oldPasswordField);
+		JPanel labelPanel = new JPanel(new GridLayout(4, 1));
+		JPanel fieldPanel = new JPanel(new GridLayout(4, 1));
+		form.add(labelPanel, BorderLayout.WEST);
+		form.add(fieldPanel, BorderLayout.CENTER);
 		
-		JLabel lblEnterNewPassphrase = new JLabel("Enter New Passphrase:");
-		lblEnterNewPassphrase.setBounds(20, 104, 160, 14);
-		frame.getContentPane().add(lblEnterNewPassphrase);
+		JLabel label = new JLabel("Enter Old Passphrase:", JLabel.RIGHT);
+		labelPanel.add(label);
 		
-		newPasswordField = new JPasswordField();
-		newPasswordField.setBounds(209, 101, 138, 20);
-		frame.getContentPane().add(newPasswordField);
+		label = new JLabel("Enter New Passphrase:", JLabel.RIGHT);
+		labelPanel.add(label);
 		
-		JLabel lblconfirmPassphrase = new JLabel("Reenter New Passphrase:");
-		lblconfirmPassphrase.setBounds(20, 134, 160, 14);
-		frame.getContentPane().add(lblconfirmPassphrase);
+		label = new JLabel("Reenter New Passphrase:");
+		labelPanel.add(label);
 		
-		confirmPasswordField = new JPasswordField();
-		confirmPasswordField.setBounds(209, 131, 138, 20);
-		frame.getContentPane().add(confirmPasswordField);
+		JPanel p = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		oldPasswordField = new JPasswordField(20);
+		p.add(oldPasswordField);
+		fieldPanel.add(p);
 		
+		p = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		newPasswordField = new JPasswordField(20);
+		p.add(newPasswordField);
+		fieldPanel.add(p);
+		
+		p = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		confirmPasswordField = new JPasswordField(20);
+		p.add(confirmPasswordField);
+		fieldPanel.add(p);
+		
+		p = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		JButton btnSubmit = new JButton("Submit");
 		btnSubmit.setAction(new ChangePasswordAction(frame, oldPasswordField, newPasswordField, confirmPasswordField));
-		btnSubmit.setBounds(256, 162, 91, 23);
-		frame.getContentPane().add(btnSubmit);
-		
+		p.add(btnSubmit);
+		fieldPanel.add(p);
+
+		frame.getContentPane().add(form, BorderLayout.NORTH);
 		frame.getRootPane().setDefaultButton(btnSubmit);
+		frame.pack();
+		frame.revalidate();
 		frame.getContentPane().repaint();
-		
 	}
 
 }

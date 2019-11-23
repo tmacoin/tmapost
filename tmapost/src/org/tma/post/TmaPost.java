@@ -7,7 +7,10 @@
  *******************************************************************************/
 package org.tma.post;
 
+import java.awt.BorderLayout;
 import java.awt.EventQueue;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -17,6 +20,7 @@ import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 
 import org.apache.logging.log4j.LogManager;
@@ -60,9 +64,9 @@ public class TmaPost {
 	 */
 	private void initialize() {
 		frame = new JFrame();
-		frame.setBounds(100, 100, 450, 300);
+		frame.setLocationRelativeTo(null);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.getContentPane().setLayout(null);
+		//frame.getContentPane().setLayout(null);
 		frame.setTitle("TMA Post");
 
 		File file = new File(KEYS);
@@ -77,45 +81,71 @@ public class TmaPost {
 	}
 	
 	private void createNewPassphrase() {
-		JLabel lblEnterPassphrase = new JLabel("Enter Passphrase:");
-		lblEnterPassphrase.setBounds(49, 104, 160, 14);
-		frame.getContentPane().add(lblEnterPassphrase);
 		
-		passwordField = new JPasswordField();
-		passwordField.setBounds(209, 101, 138, 20);
-		frame.getContentPane().add(passwordField);
+		JPanel form = new JPanel(new BorderLayout());
 		
-		JLabel lblconfirmPassphrase = new JLabel("Reenter New Passphrase:");
-		lblconfirmPassphrase.setBounds(49, 134, 160, 14);
-		frame.getContentPane().add(lblconfirmPassphrase);
+		JPanel labelPanel = new JPanel(new GridLayout(3, 1));
+		JPanel fieldPanel = new JPanel(new GridLayout(3, 1));
+		form.add(labelPanel, BorderLayout.WEST);
+		form.add(fieldPanel, BorderLayout.CENTER);
 		
-		confirmPasswordField = new JPasswordField();
-		confirmPasswordField.setBounds(209, 131, 138, 20);
-		frame.getContentPane().add(confirmPasswordField);
+		JLabel label = new JLabel("Enter Passphrase:", JLabel.RIGHT);
+		labelPanel.add(label);
 		
+		label = new JLabel("Reenter New Passphrase:");
+		labelPanel.add(label);
+		
+		JPanel p = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		passwordField = new JPasswordField(20);
+		p.add(passwordField);
+		fieldPanel.add(p);
+		
+		p = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		confirmPasswordField = new JPasswordField(20);
+		p.add(confirmPasswordField);
+		fieldPanel.add(p);
+		
+		p = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		JButton btnSubmit = new JButton("Submit");
 		btnSubmit.setAction(new CreateKeyAction(frame, passwordField, confirmPasswordField));
-		btnSubmit.setBounds(256, 162, 91, 23);
-		frame.getContentPane().add(btnSubmit);
+		p.add(btnSubmit);
+		fieldPanel.add(p);
+
+		frame.getContentPane().add(form, BorderLayout.NORTH);
 		
 		frame.getRootPane().setDefaultButton(btnSubmit);
+		
+		frame.pack();
 	}
 	
 	private void enterPassphrase() {
-		JLabel lblEnterPassphrase = new JLabel("Enter Passphrase:");
-		lblEnterPassphrase.setBounds(79, 124, 120, 14);
-		frame.getContentPane().add(lblEnterPassphrase);
 		
-		passwordField = new JPasswordField();
-		passwordField.setBounds(209, 121, 138, 20);
-		frame.getContentPane().add(passwordField);
+		JPanel form = new JPanel(new BorderLayout());
 		
+		JPanel labelPanel = new JPanel(new GridLayout(2, 1));
+		JPanel fieldPanel = new JPanel(new GridLayout(2, 1));
+		form.add(labelPanel, BorderLayout.WEST);
+		form.add(fieldPanel, BorderLayout.CENTER);
+		
+		JLabel label = new JLabel("Enter Passphrase:", JLabel.RIGHT);
+		labelPanel.add(label);
+		
+		JPanel p = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		passwordField = new JPasswordField(20);
+		p.add(passwordField);
+		fieldPanel.add(p);
+		
+		p = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		JButton btnSubmit = new JButton("Submit");
 		btnSubmit.setAction(new SubmitPasswordAction(frame, passwordField));
-		btnSubmit.setBounds(256, 152, 91, 23);
-		frame.getContentPane().add(btnSubmit);
+		p.add(btnSubmit);
+		fieldPanel.add(p);
+
+		frame.getContentPane().add(form, BorderLayout.NORTH);
 		
 		frame.getRootPane().setDefaultButton(btnSubmit);
+		
+		frame.pack();
 	}
 	
 	private void setIcon() {

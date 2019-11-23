@@ -7,6 +7,9 @@
  *******************************************************************************/
 package org.tma.post;
 
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
@@ -16,6 +19,7 @@ import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
@@ -49,41 +53,47 @@ public class MessageMouseAdapter extends MouseAdapter {
 	private void doit(SecureMessage secureMessage) {
 		frame.getContentPane().removeAll();
 		
-		JLabel label = new JLabel("Recipient:");
-		label.setBounds(20, 14, 160, 14);
-		frame.getContentPane().add(label);
+		JPanel form = new JPanel(new BorderLayout());
 		
+		JPanel labelPanel = new JPanel(new GridLayout(3, 1));
+		JPanel fieldPanel = new JPanel(new GridLayout(3, 1));
+		form.add(labelPanel, BorderLayout.WEST);
+		form.add(fieldPanel, BorderLayout.CENTER);
+		
+		JLabel label = new JLabel("Recipient:", JLabel.RIGHT);
+		labelPanel.add(label);
+		
+		JPanel p = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		JTextField address = new JTextField(36);
-		address.setBounds(120, 11, 300, 20);
 		address.setText(StringUtil.getStringFromKey(secureMessage.getSender()));
 		address.setBorder( null );
 		address.setOpaque( false );
 		address.setEditable( false );
-		frame.getContentPane().add(address);
+		p.add(address);
+		fieldPanel.add(p);
 		
-		label = new JLabel("Subject:");
-		label.setBounds(20, 44, 160, 14);
-		frame.getContentPane().add(label);
-		
+		label = new JLabel("Subject:", JLabel.RIGHT);
+		labelPanel.add(label);
+
+		p = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		JTextField subject = new JTextField(36);
-		subject.setBounds(120, 41, 300, 20);
 		subject.setBorder( null );
 		subject.setOpaque( false );
 		subject.setEditable( false );
-		frame.getContentPane().add(subject);
-		
-		label = new JLabel("Body:");
-		label.setBounds(20, 74, 160, 14);
-		frame.getContentPane().add(label);
-		
+		p.add(subject);
+		fieldPanel.add(p);
+
+		label = new JLabel("Body:", JLabel.RIGHT);
+		labelPanel.add(label);
+
 		JTextArea expiringData = new JTextArea();
 		expiringData.setLineWrap(true);
 		expiringData.setWrapStyleWord(true);
-		JScrollPane scroll = new JScrollPane (expiringData);
-		scroll.setBounds(120, 71, 300, 200);
-		scroll.setBorder( null );
 		expiringData.setOpaque( false );
 		expiringData.setEditable( false );
+		
+		JScrollPane scroll = new JScrollPane (expiringData);
+		scroll.setBorder(null);
 		frame.getContentPane().add(scroll);
 		
 		try {
@@ -99,8 +109,8 @@ public class MessageMouseAdapter extends MouseAdapter {
 		} catch (IOException | GeneralSecurityException e) {
 			logger.error(e.getMessage(), e);
 		}
-		
-		frame.setSize(450, 370);
+
+		frame.getContentPane().add(form, BorderLayout.NORTH);
 		frame.getContentPane().revalidate();
 		frame.getContentPane().repaint();
 	}

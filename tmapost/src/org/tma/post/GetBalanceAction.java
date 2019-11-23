@@ -7,12 +7,15 @@
  *******************************************************************************/
 package org.tma.post;
 
+import java.awt.BorderLayout;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import org.apache.logging.log4j.LogManager;
@@ -48,10 +51,11 @@ public class GetBalanceAction extends AbstractAction implements Caller {
 		}
 		
 		frame.getContentPane().removeAll();
-		
+		JPanel form = new JPanel(new BorderLayout());
 		JLabel label = new JLabel("Please wait, processing.");
-		label.setBounds(20, 104, 350, 14);
-		frame.getContentPane().add(label);
+		form.add(label);
+		frame.getContentPane().add(form, BorderLayout.NORTH);
+		frame.revalidate();
 		frame.getContentPane().repaint();
 		
 		ThreadExecutor.getInstance().execute(new TmaRunnable("GetBalanceAction") {
@@ -63,14 +67,19 @@ public class GetBalanceAction extends AbstractAction implements Caller {
 				logger.debug("balance: {} for {}", balance, address);
 				
 				frame.getContentPane().removeAll();
-				JLabel label = new JLabel("Balance for " + address);
-				label.setBounds(20, 104, 350, 14);
-				frame.getContentPane().add(label);
+				JPanel form = new JPanel(new BorderLayout());
 				
-				JLabel balanceLabel = new JLabel(balance);
-				balanceLabel.setBounds(20, 144, 350, 14);
-				frame.getContentPane().add(balanceLabel);
+				JPanel labelPanel = new JPanel(new GridLayout(2, 1));
+				form.add(labelPanel, BorderLayout.WEST);
+				
+				JLabel label = new JLabel("Balance for " + address + " is");
+				labelPanel.add(label);
+				label = new JLabel(balance + " coins");
+				labelPanel.add(label);
+				frame.getContentPane().add(form, BorderLayout.NORTH);
+				frame.revalidate();
 				frame.getContentPane().repaint();
+				
 			}
 		});
 		

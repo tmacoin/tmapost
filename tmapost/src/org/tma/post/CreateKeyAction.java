@@ -7,6 +7,7 @@
  *******************************************************************************/
 package org.tma.post;
 
+import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.security.Security;
 
@@ -14,6 +15,7 @@ import javax.swing.AbstractAction;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 
 import org.apache.logging.log4j.LogManager;
@@ -54,11 +56,15 @@ public class CreateKeyAction extends AbstractAction implements Caller {
 		try {
 			PasswordUtil passwordUtil = new PasswordUtil(this);
 			passwordUtil.generateKey(passphrase, confirmPassword);
+			
 			frame.getContentPane().removeAll();
+			JPanel form = new JPanel(new BorderLayout());
 			label = new JLabel("New key generated, starting network");
-			label.setBounds(100, 124, 250, 14);
-			frame.getContentPane().add(label);
+			form.add(label);
+			frame.getContentPane().add(form, BorderLayout.NORTH);
+			frame.revalidate();
 			frame.getContentPane().repaint();
+
 			StartNetwork.getInstance().start(this);
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);

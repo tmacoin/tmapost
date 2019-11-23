@@ -7,13 +7,18 @@
  *******************************************************************************/
 package org.tma.post;
 
+import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.util.Set;
 
 import javax.swing.AbstractAction;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
@@ -52,10 +57,11 @@ public class GetTransactionsAction extends AbstractAction implements Caller {
 		}
 		
 		frame.getContentPane().removeAll();
-		
+		JPanel form = new JPanel(new BorderLayout());
 		JLabel label = new JLabel("Please wait, processing.");
-		label.setBounds(20, 104, 500, 14);
-		frame.getContentPane().add(label);
+		form.add(label);
+		frame.getContentPane().add(form, BorderLayout.NORTH);
+		frame.revalidate();
 		frame.getContentPane().repaint();
 		
 		ThreadExecutor.getInstance().execute(new TmaRunnable("GetTransactionsAction") {
@@ -73,9 +79,14 @@ public class GetTransactionsAction extends AbstractAction implements Caller {
 				logger.debug("found # of transactions: {} for {}", set.size(), address);
 				
 				frame.getContentPane().removeAll();
+				
+				JPanel form = new JPanel();
+				form.setLayout(new BoxLayout(form, BoxLayout.Y_AXIS));
+				
 				JLabel label = new JLabel("Transactions for " + address);
-				label.setBounds(20, 20, 400, 14);
-				frame.getContentPane().add(label);
+				form.add(label);
+				
+				form.add(Box.createRigidArea(new Dimension(0, 20)));
 				
 				TransactionTableModel model = new TransactionTableModel(set);
 				JTable table = new JTable(model);
@@ -83,13 +94,14 @@ public class GetTransactionsAction extends AbstractAction implements Caller {
 				table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 				TableColumnAdjuster tca = new TableColumnAdjuster(table);
 				tca.adjustColumns();
-				//tca.setDynamicAdjustment(true);
 				
 				JScrollPane scroll = new JScrollPane (table);
-				scroll.setBounds(20, 60, 1000, 200);
-				frame.getContentPane().add(scroll);
+				scroll.setBorder(null);
+				form.add(scroll);
 				
-				frame.setSize(1100, 400);
+				frame.getContentPane().add(form);
+				frame.pack();
+				frame.revalidate();
 				frame.getContentPane().repaint();
 			}
 		});

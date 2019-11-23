@@ -7,12 +7,14 @@
  *******************************************************************************/
 package org.tma.post;
 
+import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 
 import org.apache.logging.log4j.LogManager;
@@ -44,9 +46,11 @@ public class SubmitPasswordAction extends AbstractAction implements Caller {
 				return;
 			}
 			frame.getContentPane().removeAll();
+			JPanel form = new JPanel(new BorderLayout());
 			label = new JLabel("Passphrase accepted, starting network");
-			label.setBounds(100, 124, 250, 14);
-			frame.getContentPane().add(label);
+			form.add(label);
+			frame.getContentPane().add(form, BorderLayout.NORTH);
+			frame.revalidate();
 			frame.getContentPane().repaint();
 			StartNetwork.getInstance().start(this);
 			

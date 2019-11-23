@@ -7,6 +7,9 @@
  *******************************************************************************/
 package org.tma.post;
 
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
@@ -14,6 +17,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 public class GetTransactions extends AbstractAction implements Caller {
@@ -37,24 +41,34 @@ public class GetTransactions extends AbstractAction implements Caller {
 		
 		frame.getContentPane().removeAll();
 		
-		JLabel label = new JLabel("Recipient:");
-		label.setBounds(20, 74, 160, 14);
-		frame.getContentPane().add(label);
+		JPanel form = new JPanel(new BorderLayout());
 		
-		JTextField address = new JTextField(36);
-		address.setBounds(140, 71, 290, 20);
+		JPanel labelPanel = new JPanel(new GridLayout(2, 1));
+		JPanel fieldPanel = new JPanel(new GridLayout(2, 1));
+		form.add(labelPanel, BorderLayout.WEST);
+		form.add(fieldPanel, BorderLayout.CENTER);
+		
+		JLabel label = new JLabel("Recipient:", JLabel.RIGHT);
+		labelPanel.add(label);
+		
+		JPanel p = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		JTextField address = new JTextField(30);
 		address.getDocument().addDocumentListener(new ValidatorTmaAddress(address));
 		JTextFieldRegularPopupMenu.addTo(address);
-		frame.getContentPane().add(address);
+		p.add(address);
+		fieldPanel.add(p);
 		
+		p = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		JButton btnSubmit = new JButton("Submit");
 		btnSubmit.setAction(new GetTransactionsAction(frame, address));
-		btnSubmit.setBounds(241, 102, 150, 23);
-		frame.getContentPane().add(btnSubmit);
-		
+		p.add(btnSubmit);
+		fieldPanel.add(p);
+
+		frame.getContentPane().add(form, BorderLayout.NORTH);
 		frame.getRootPane().setDefaultButton(btnSubmit);
+		frame.pack();
+		frame.revalidate();
 		frame.getContentPane().repaint();
-		
 		address.grabFocus();
 	}
 

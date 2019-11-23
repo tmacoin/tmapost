@@ -7,12 +7,14 @@
  *******************************************************************************/
 package org.tma.post;
 
+import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 
 import org.apache.logging.log4j.LogManager;
@@ -55,9 +57,11 @@ public class ChangePasswordAction extends AbstractAction implements Caller {
 			}
 			passwordUtil.saveKeys(newPassword);
 			frame.getContentPane().removeAll();
+			JPanel form = new JPanel(new BorderLayout());
 			JLabel label = new JLabel("Passphrase Changed");
-			label.setBounds(160, 124, 160, 14);
-			frame.getContentPane().add(label);
+			form.add(label);
+			frame.getContentPane().add(form, BorderLayout.NORTH);
+			frame.revalidate();
 			frame.getContentPane().repaint();
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);

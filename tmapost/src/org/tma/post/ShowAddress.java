@@ -7,19 +7,20 @@
  *******************************************************************************/
 package org.tma.post;
 
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
+import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import org.tma.blockchain.Wallet;
 import org.tma.peer.Network;
-import org.tma.util.Base58;
 
 public class ShowAddress extends AbstractAction implements Caller {
 
@@ -40,32 +41,29 @@ public class ShowAddress extends AbstractAction implements Caller {
 
 	public void actionPerformed(ActionEvent actionEvent) {
 		
-		frame.getContentPane().removeAll();
 		Wallet wallet = Wallets.getInstance().getWallets().get(0);
 		
-		JLabel label = new JLabel("Your TMA Address on shard " + Network.getInstance().getBootstrapBlockchainId() + ":");
-		label.setBounds(20, 20, 250, 14);
-		frame.getContentPane().add(label);
+		frame.getContentPane().removeAll();
 		
-		JTextField address = new JTextField(36);
+		JPanel form = new JPanel(new BorderLayout());
+		
+		JPanel labelPanel = new JPanel(new GridLayout(2, 1));
+		JPanel fieldPanel = new JPanel(new GridLayout(2, 1));
+		form.add(labelPanel, BorderLayout.WEST);
+		form.add(fieldPanel, BorderLayout.CENTER);
+		
+		JLabel label = new JLabel("Your TMA Address on shard " + Network.getInstance().getBootstrapBlockchainId() + ":", JLabel.RIGHT);
+		labelPanel.add(label);
+		
+		JPanel p = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		JTextField address = new JTextField(30);
 		address.setText(wallet.getTmaAddress());
-		address.setBounds(20, 40, 300, 20);
 		JTextFieldRegularPopupMenu.addTo(address);
-		frame.getContentPane().add(address);
+		p.add(address);
+		fieldPanel.add(p);
 		
-		label = new JLabel("Your Public Key:");
-		label.setBounds(20, 80, 250, 14);
-		frame.getContentPane().add(label);
-		
-		JTextArea publicKey = new JTextArea();
-		publicKey.setLineWrap(true);
-		publicKey.setToolTipText("Public Key");
-		publicKey.setText(Base58.encode(wallet.getPublicKey().getEncoded()));
-		JTextFieldRegularPopupMenu.addTo(publicKey);
-		JScrollPane scroll = new JScrollPane (publicKey);
-		scroll.setBounds(20, 100, 300, 70);
-		frame.getContentPane().add(scroll);
-		
+		frame.getContentPane().add(form, BorderLayout.NORTH);
+		frame.pack();
 		frame.getContentPane().revalidate();
 		frame.getContentPane().repaint();
 	}
