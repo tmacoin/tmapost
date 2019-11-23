@@ -92,6 +92,7 @@ public class MessageMouseAdapter extends MouseAdapter {
 		expiringData.setOpaque( false );
 		expiringData.setEditable( false );
 		
+		
 		JScrollPane scroll = new JScrollPane (expiringData);
 		scroll.setBorder(null);
 		frame.getContentPane().add(scroll);
@@ -113,6 +114,7 @@ public class MessageMouseAdapter extends MouseAdapter {
 		frame.getContentPane().add(form, BorderLayout.NORTH);
 		frame.getContentPane().revalidate();
 		frame.getContentPane().repaint();
+		expiringData.setCaretPosition(0);
 	}
 
 	public MessageMouseAdapter(JTable table, List<SecureMessage> list, JFrame frame) {

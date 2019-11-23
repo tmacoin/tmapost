@@ -63,7 +63,7 @@ public class ShowAddress extends AbstractAction implements Caller {
 		fieldPanel.add(p);
 		
 		frame.getContentPane().add(form, BorderLayout.NORTH);
-		frame.pack();
+		//frame.pack();
 		frame.getContentPane().revalidate();
 		frame.getContentPane().repaint();
 	}

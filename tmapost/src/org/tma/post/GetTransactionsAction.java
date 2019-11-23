@@ -100,7 +100,7 @@ public class GetTransactionsAction extends AbstractAction implements Caller {
 				form.add(scroll);
 				
 				frame.getContentPane().add(form);
-				frame.pack();
+				//frame.pack();
 				frame.revalidate();
 				frame.getContentPane().repaint();
 			}

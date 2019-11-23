@@ -109,7 +109,6 @@ public class SendTransaction extends AbstractAction implements Caller {
 		frame.getContentPane().add(btnSubmit);
 		
 		frame.getRootPane().setDefaultButton(btnSubmit);
-		frame.setSize(450, 370);
 		frame.getContentPane().revalidate();
 		frame.getContentPane().repaint();
 		

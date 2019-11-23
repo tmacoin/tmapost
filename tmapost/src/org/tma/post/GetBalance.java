@@ -66,7 +66,7 @@ public class GetBalance extends AbstractAction implements Caller {
 
 		frame.getContentPane().add(form, BorderLayout.NORTH);
 		frame.getRootPane().setDefaultButton(btnSubmit);
-		frame.pack();
+		//frame.pack();
 		frame.revalidate();
 		frame.getContentPane().repaint();
 		address.grabFocus();

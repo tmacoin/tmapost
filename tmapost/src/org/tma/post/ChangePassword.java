@@ -76,7 +76,7 @@ public class ChangePassword extends AbstractAction {
 
 		frame.getContentPane().add(form, BorderLayout.NORTH);
 		frame.getRootPane().setDefaultButton(btnSubmit);
-		frame.pack();
+		//frame.pack();
 		frame.revalidate();
 		frame.getContentPane().repaint();
 	}

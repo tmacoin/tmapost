@@ -115,7 +115,7 @@ public class TmaPost {
 		
 		frame.getRootPane().setDefaultButton(btnSubmit);
 		
-		frame.pack();
+		//frame.pack();
 	}
 	
 	private void enterPassphrase() {
@@ -145,7 +145,7 @@ public class TmaPost {
 		
 		frame.getRootPane().setDefaultButton(btnSubmit);
 		
-		frame.pack();
+		frame.setSize(640, 480);
 	}
 	
 	private void setIcon() {
