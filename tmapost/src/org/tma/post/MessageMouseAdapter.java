@@ -15,6 +15,7 @@ import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
+import java.util.Date;
 import java.util.List;
 
 import javax.swing.BoxLayout;
@@ -57,14 +58,14 @@ public class MessageMouseAdapter extends MouseAdapter {
 		JPanel form = new JPanel(new BorderLayout());
 		frame.getContentPane().add(form, BorderLayout.NORTH);
 		
-		JPanel labelPanel = new JPanel(new GridLayout(3, 1));
-		JPanel fieldPanel = new JPanel(new GridLayout(3, 1));
+		JPanel labelPanel = new JPanel(new GridLayout(7, 1));
+		JPanel fieldPanel = new JPanel(new GridLayout(7, 1));
 		form.add(labelPanel, BorderLayout.WEST);
 		form.add(fieldPanel, BorderLayout.CENTER);
 		
-		JLabel label = new JLabel("Recipient:", JLabel.RIGHT);
+		JLabel label = new JLabel("Sender:", JLabel.RIGHT);
 		labelPanel.add(label);
-		
+
 		JPanel p = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		JTextField address = new JTextField(36);
 		address.setText(StringUtil.getStringFromKey(secureMessage.getSender()));
@@ -73,6 +74,57 @@ public class MessageMouseAdapter extends MouseAdapter {
 		address.setEditable( false );
 		p.add(address);
 		fieldPanel.add(p);
+		
+		label = new JLabel("Recipient:", JLabel.RIGHT);
+		labelPanel.add(label);
+		
+		p = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		JTextField recipient = new JTextField(36);
+		recipient.setText(secureMessage.getRecipient());
+		recipient.setBorder( null );
+		recipient.setOpaque( false );
+		recipient.setEditable( false );
+		p.add(recipient);
+		fieldPanel.add(p);
+		
+		
+		label = new JLabel("Value:", JLabel.RIGHT);
+		labelPanel.add(label);
+
+		p = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		JTextField amount = new JTextField(36);
+		amount.setText(secureMessage.getValue().toNumberOfCoins());
+		amount.setBorder( null );
+		amount.setOpaque( false );
+		amount.setEditable( false );
+		p.add(amount);
+		fieldPanel.add(p);
+		
+		label = new JLabel("Fee:", JLabel.RIGHT);
+		labelPanel.add(label);
+				
+		p = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		JTextField fee = new JTextField(36);
+		fee.setText(secureMessage.getFee().toNumberOfCoins());
+		fee.setBorder( null );
+		fee.setOpaque( false );
+		fee.setEditable( false );
+		p.add(fee);
+		fieldPanel.add(p);
+		
+
+		label = new JLabel("Date:", JLabel.RIGHT);
+		labelPanel.add(label);
+		
+		p = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		JTextField date = new JTextField(36);
+		date.setText(new Date(secureMessage.getTimeStamp()).toString());
+		date.setBorder( null );
+		date.setOpaque( false );
+		date.setEditable( false );
+		p.add(date);
+		fieldPanel.add(p);
+		
 		
 		label = new JLabel("Subject:", JLabel.RIGHT);
 		labelPanel.add(label);
@@ -106,7 +158,7 @@ public class MessageMouseAdapter extends MouseAdapter {
 		try {
 			String str = StringUtil.trimToNull(secureMessage.getText());
 			Wallet wallet = Wallets.getInstance().getWallets().get(0);
-			if(str != null) {
+			if(str != null && secureMessage.getRecipient().equals(wallet.getTmaAddress())) {
 				str = new String(encryptor.decryptAsymm(Base58.decode(str), wallet.getPrivateKey()), StandardCharsets.UTF_8);
 				int index = str.indexOf("\n");
 				index = index == -1? str.length(): index;

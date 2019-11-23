@@ -88,7 +88,7 @@ public class ShowMessages extends AbstractAction implements Caller {
 				
 				form.add(Box.createRigidArea(new Dimension(0, 20)));
 				
-				SecureMessageTableModel model = new SecureMessageTableModel(list, wallet.getPrivateKey());
+				SecureMessageTableModel model = new SecureMessageTableModel(list);
 				JTable table = new JTable(model);
 
 				table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
