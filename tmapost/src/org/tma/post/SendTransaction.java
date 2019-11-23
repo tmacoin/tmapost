@@ -7,13 +7,20 @@
  *******************************************************************************/
 package org.tma.post;
 
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -34,85 +41,96 @@ public class SendTransaction extends AbstractAction implements Caller {
 	public void log(String message) {
 		JOptionPane.showMessageDialog(frame, message);
 	}
-
+	
 	public void actionPerformed(ActionEvent actionEvent) {
 		
 		frame.getContentPane().removeAll();
 		
-		JLabel label = new JLabel("Recipient TMA Address:");
-		label.setBounds(20, 14, 160, 14);
-		frame.getContentPane().add(label);
+		JPanel form = new JPanel(new BorderLayout());
+		frame.getContentPane().add(form, BorderLayout.NORTH);
 		
+		JPanel labelPanel = new JPanel(new GridLayout(6, 1));
+		JPanel fieldPanel = new JPanel(new GridLayout(6, 1));
+		form.add(labelPanel, BorderLayout.WEST);
+		form.add(fieldPanel, BorderLayout.CENTER);
+		
+		JLabel label = new JLabel("Recipient TMA Address:", JLabel.RIGHT);
+		labelPanel.add(label);
+		
+		label = new JLabel("Amount in coins:", JLabel.RIGHT);
+		labelPanel.add(label);
+		
+		label = new JLabel("Fee in satoshis:", JLabel.RIGHT);
+		labelPanel.add(label);
+		
+		label = new JLabel("Data:", JLabel.RIGHT);
+		labelPanel.add(label);
+		
+		label = new JLabel("Expire after # blocks:", JLabel.RIGHT);
+		labelPanel.add(label);
+		
+		label = new JLabel("Expiring Data:", JLabel.RIGHT);
+		labelPanel.add(label);
+		
+		JPanel p = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		JTextField address = new JTextField(36);
-		address.setBounds(160, 11, 260, 20);
 		address.getDocument().addDocumentListener(new ValidatorTmaAddress(address));
 		JTextFieldRegularPopupMenu.addTo(address);
-		frame.getContentPane().add(address);
+		p.add(address);
+		fieldPanel.add(p);
 		
-		label = new JLabel("Amount in coins:");
-		label.setBounds(20, 35, 160, 14);
-		frame.getContentPane().add(label);
-		
+		p = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		JTextField amount = new JTextField(36);
-		amount.setBounds(160, 32, 200, 20);
 		amount.getDocument().addDocumentListener(new ValidatorDouble(amount));
 		JTextFieldRegularPopupMenu.addTo(amount);
-		frame.getContentPane().add(amount);
+		p.add(amount);
+		fieldPanel.add(p);
 		
-		label = new JLabel("Fee in satoshis:");
-		label.setBounds(20, 56, 160, 14);
-		frame.getContentPane().add(label);
-		
+		p = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		JTextField fee = new JTextField(36);
-		fee.setBounds(160, 53, 200, 20);
 		fee.getDocument().addDocumentListener(new ValidatorLong(fee));
 		JTextFieldRegularPopupMenu.addTo(fee);
-		frame.getContentPane().add(fee);
+		p.add(fee);
+		fieldPanel.add(p);
 		
-		label = new JLabel("Data:");
-		label.setBounds(20, 77, 160, 14);
-		frame.getContentPane().add(label);
-		
+		p = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		JTextField data = new JTextField(36);
-		data.setBounds(160, 74, 260, 20);
 		data.setToolTipText("Limited to 1024 chars");
 		JTextFieldRegularPopupMenu.addTo(data);
-		frame.getContentPane().add(data);
-		
-		label = new JLabel("Expire after # blocks:");
-		label.setBounds(20, 98, 160, 14);
-		frame.getContentPane().add(label);
-		
+		p.add(data);
+		fieldPanel.add(p);
+
+		p = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		JTextField expire = new JTextField(36);
-		expire.setBounds(160, 95, 150, 20);
 		expire.getDocument().addDocumentListener(new ValidatorLong(expire));
 		JTextFieldRegularPopupMenu.addTo(expire);
-		frame.getContentPane().add(expire);
+		p.add(expire);
+		fieldPanel.add(p);
 		
-		label = new JLabel("Expiring Data:");
-		label.setBounds(20, 119, 160, 14);
-		frame.getContentPane().add(label);
+		p = new JPanel();
+		p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
 		
 		JTextArea expiringData = new JTextArea();
 		expiringData.setToolTipText("Limited to 32672 chars");
 		JTextFieldRegularPopupMenu.addTo(expiringData);
 		JScrollPane scroll = new JScrollPane (expiringData);
-		scroll.setBounds(160, 116, 260, 130);
-		frame.getContentPane().add(scroll);
+		p.add(scroll);
 		
-		
+		p.add(Box.createRigidArea(new Dimension(0, 10)));
+
 		JButton btnSubmit = new JButton("Submit");
 		btnSubmit.setAction(new SendTransactionAction(frame, address, amount, fee, data, expire, expiringData));
-		btnSubmit.setBounds(269, 252, 150, 23);
-		frame.getContentPane().add(btnSubmit);
+		p.add(btnSubmit);
 		
+		p.add(Box.createRigidArea(new Dimension(0, 10)));
+		
+		frame.getContentPane().add(p);
+
 		frame.getRootPane().setDefaultButton(btnSubmit);
 		frame.getContentPane().revalidate();
 		frame.getContentPane().repaint();
 		
 		address.grabFocus();
 	}
-
-	
 
 }
