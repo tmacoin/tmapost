@@ -10,6 +10,7 @@ package org.tma.post;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
+import java.security.PublicKey;
 import java.util.List;
 
 import javax.swing.AbstractAction;
@@ -61,10 +62,10 @@ public class ShowMessages extends AbstractAction implements Caller {
 		frame.getContentPane().repaint();
 		
 		Wallet wallet = Wallets.getInstance().getWallets().get(0);
-		String tmaAddress = wallet.getTmaAddress();
+		PublicKey publicKey = wallet.getPublicKey();
 		ThreadExecutor.getInstance().execute(new TmaRunnable("ShowMessages") {
 			public void doRun() {
-				GetMessagesRequest request = new GetMessagesRequest(Network.getInstance(), tmaAddress);
+				GetMessagesRequest request = new GetMessagesRequest(Network.getInstance(), publicKey);
 				request.start();
 				@SuppressWarnings("unchecked")
 				List<SecureMessage> list = (List<SecureMessage>) ResponseHolder.getInstance().getObject(request.getCorrelationId());
@@ -74,6 +75,7 @@ public class ShowMessages extends AbstractAction implements Caller {
 					return;
 				}
 				
+				String tmaAddress = wallet.getTmaAddress();
 				logger.debug("found # of messages: {} for {}", list.size(), tmaAddress);
 				
 				frame.getContentPane().removeAll();
