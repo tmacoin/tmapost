@@ -82,6 +82,12 @@ public class MessageMouseAdapter extends MouseAdapter {
 		});
 		
 		p.add(btnSubmit);
+		
+		JButton btnReply = new JButton();
+		btnReply.setAction(new SendMessage(frame, StringUtil.getStringFromKey(secureMessage.getSender())));
+		btnReply.setText("Reply");
+		p.add(btnReply);
+		
 		form.add(p, BorderLayout.NORTH);
 		
 		JPanel labelPanel = new JPanel(new GridLayout(8, 1));

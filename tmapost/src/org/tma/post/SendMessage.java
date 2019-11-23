@@ -30,11 +30,20 @@ public class SendMessage extends AbstractAction implements Caller {
 	private static final long serialVersionUID = 4036313657721664495L;
 	
 	private JFrame frame;
+	private String recipient;
 	
 	public SendMessage(JFrame frame) {
 		putValue(NAME, "Send Message");
 		putValue(SHORT_DESCRIPTION, "Send Message");
 		this.frame = frame;
+	}
+	
+	public SendMessage(JFrame frame, String recipient) {
+		putValue(NAME, "Send Message");
+		putValue(SHORT_DESCRIPTION, "Send Message");
+		this.frame = frame;
+		this.recipient = recipient;
+		
 	}
 	
 	
@@ -73,6 +82,9 @@ public class SendMessage extends AbstractAction implements Caller {
 		JTextField address = new JTextField(36);
 		address.getDocument().addDocumentListener(new ValidatorTmaAddress(address));
 		JTextFieldRegularPopupMenu.addTo(address);
+		if(recipient != null) {
+			address.setText(recipient);
+		}
 		p.add(address);
 		fieldPanel.add(p);
 		
