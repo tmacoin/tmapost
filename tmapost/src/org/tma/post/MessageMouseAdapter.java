@@ -19,6 +19,7 @@ import java.util.Date;
 import java.util.List;
 
 import javax.swing.BoxLayout;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -58,15 +59,22 @@ public class MessageMouseAdapter extends MouseAdapter {
 		JPanel form = new JPanel(new BorderLayout());
 		frame.getContentPane().add(form, BorderLayout.NORTH);
 		
-		JPanel labelPanel = new JPanel(new GridLayout(7, 1));
-		JPanel fieldPanel = new JPanel(new GridLayout(7, 1));
+		JPanel p = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		JButton btnSubmit = new JButton();
+		btnSubmit.setAction(new ShowMessages(frame));
+		btnSubmit.setText("Back");
+		p.add(btnSubmit);
+		form.add(p, BorderLayout.NORTH);
+		
+		JPanel labelPanel = new JPanel(new GridLayout(8, 1));
+		JPanel fieldPanel = new JPanel(new GridLayout(8, 1));
 		form.add(labelPanel, BorderLayout.WEST);
 		form.add(fieldPanel, BorderLayout.CENTER);
 		
 		JLabel label = new JLabel("Sender:", JLabel.RIGHT);
 		labelPanel.add(label);
 
-		JPanel p = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		p = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		JTextField address = new JTextField(36);
 		address.setText(StringUtil.getStringFromKey(secureMessage.getSender()));
 		address.setBorder( null );
@@ -161,9 +169,12 @@ public class MessageMouseAdapter extends MouseAdapter {
 			if(str != null && secureMessage.getRecipient().equals(wallet.getTmaAddress())) {
 				str = new String(encryptor.decryptAsymm(Base58.decode(str), wallet.getPrivateKey()), StandardCharsets.UTF_8);
 				int index = str.indexOf("\n");
-				index = index == -1? str.length(): index;
-				subject.setText(str.substring(0, index));
-				expiringData.setText(str.substring(index + 1));
+				if(index == -1) {
+					subject.setText(str);
+				} else {
+					subject.setText(str.substring(0, index));
+					expiringData.setText(str.substring(index + 1));
+				}
 			}
 		} catch (IOException | GeneralSecurityException e) {
 			logger.error(e.getMessage(), e);
