@@ -8,11 +8,14 @@
 package org.tma.post;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -44,9 +47,10 @@ public class SendMessage extends AbstractAction implements Caller {
 		frame.getContentPane().removeAll();
 		
 		JPanel form = new JPanel(new BorderLayout());
+		frame.getContentPane().add(form, BorderLayout.NORTH);
 		
-		JPanel labelPanel = new JPanel(new GridLayout(6, 1));
-		JPanel fieldPanel = new JPanel(new GridLayout(6, 1));
+		JPanel labelPanel = new JPanel(new GridLayout(5, 1));
+		JPanel fieldPanel = new JPanel(new GridLayout(5, 1));
 		form.add(labelPanel, BorderLayout.WEST);
 		form.add(fieldPanel, BorderLayout.CENTER);
 		
@@ -93,21 +97,27 @@ public class SendMessage extends AbstractAction implements Caller {
 		p.add(subject);
 		fieldPanel.add(p);
 		
-		p = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		JTextArea expiringData = new JTextArea(36, 20);
+		
+		
+		p = new JPanel();
+		p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
+		
+		JTextArea expiringData = new JTextArea();
 		expiringData.setToolTipText("Limited to 32672 chars together with subject");
 		JTextFieldRegularPopupMenu.addTo(expiringData);
 		JScrollPane scroll = new JScrollPane (expiringData);
 		p.add(scroll);
-		fieldPanel.add(p);
 		
-		p = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		p.add(Box.createRigidArea(new Dimension(0, 10)));
+
 		JButton btnSubmit = new JButton("Submit");
 		btnSubmit.setAction(new SendMessageAction(frame, address, fee, expire, subject, expiringData));
 		p.add(btnSubmit);
-		fieldPanel.add(p);
+		
+		p.add(Box.createRigidArea(new Dimension(0, 10)));
+		
+		frame.getContentPane().add(p);
 
-		frame.getContentPane().add(form, BorderLayout.NORTH);
 		frame.getRootPane().setDefaultButton(btnSubmit);
 		frame.getContentPane().revalidate();
 		frame.getContentPane().repaint();

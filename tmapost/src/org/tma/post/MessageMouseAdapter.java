@@ -17,6 +17,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
 import java.util.List;
 
+import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -54,6 +55,7 @@ public class MessageMouseAdapter extends MouseAdapter {
 		frame.getContentPane().removeAll();
 		
 		JPanel form = new JPanel(new BorderLayout());
+		frame.getContentPane().add(form, BorderLayout.NORTH);
 		
 		JPanel labelPanel = new JPanel(new GridLayout(3, 1));
 		JPanel fieldPanel = new JPanel(new GridLayout(3, 1));
@@ -85,6 +87,10 @@ public class MessageMouseAdapter extends MouseAdapter {
 
 		label = new JLabel("Body:", JLabel.RIGHT);
 		labelPanel.add(label);
+		
+		p = new JPanel();
+		p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
+		frame.getContentPane().add(p);
 
 		JTextArea expiringData = new JTextArea();
 		expiringData.setLineWrap(true);
@@ -95,7 +101,7 @@ public class MessageMouseAdapter extends MouseAdapter {
 		
 		JScrollPane scroll = new JScrollPane (expiringData);
 		scroll.setBorder(null);
-		frame.getContentPane().add(scroll);
+		p.add(scroll);
 		
 		try {
 			String str = StringUtil.trimToNull(secureMessage.getText());
@@ -111,7 +117,7 @@ public class MessageMouseAdapter extends MouseAdapter {
 			logger.error(e.getMessage(), e);
 		}
 
-		frame.getContentPane().add(form, BorderLayout.NORTH);
+		
 		frame.getContentPane().revalidate();
 		frame.getContentPane().repaint();
 		expiringData.setCaretPosition(0);
