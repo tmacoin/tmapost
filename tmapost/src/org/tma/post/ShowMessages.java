@@ -7,7 +7,6 @@
  *******************************************************************************/
 package org.tma.post;
 
-import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.security.PublicKey;
@@ -53,13 +52,7 @@ public class ShowMessages extends AbstractAction implements Caller {
 
 	public void actionPerformed(ActionEvent actionEvent) {
 		
-		frame.getContentPane().removeAll();
-		JPanel form = new JPanel(new BorderLayout());
-		JLabel label = new JLabel("Please wait, processing.");
-		form.add(label);
-		frame.getContentPane().add(form, BorderLayout.NORTH);
-		frame.revalidate();
-		frame.getContentPane().repaint();
+		JLabel label = SwingUtil.showWait(frame);
 		
 		Wallet wallet = Wallets.getInstance().getWallets().get(0);
 		PublicKey publicKey = wallet.getPublicKey();

@@ -7,7 +7,6 @@
  *******************************************************************************/
 package org.tma.post;
 
-import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.util.Set;
@@ -56,13 +55,7 @@ public class GetTransactionsAction extends AbstractAction implements Caller {
 			return;
 		}
 		
-		frame.getContentPane().removeAll();
-		JPanel form = new JPanel(new BorderLayout());
-		JLabel label = new JLabel("Please wait, processing.");
-		form.add(label);
-		frame.getContentPane().add(form, BorderLayout.NORTH);
-		frame.revalidate();
-		frame.getContentPane().repaint();
+		JLabel label = SwingUtil.showWait(frame);
 		
 		ThreadExecutor.getInstance().execute(new TmaRunnable("GetTransactionsAction") {
 			public void doRun() {

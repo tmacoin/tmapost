@@ -50,13 +50,7 @@ public class GetBalanceAction extends AbstractAction implements Caller {
 			return;
 		}
 		
-		frame.getContentPane().removeAll();
-		JPanel form = new JPanel(new BorderLayout());
-		JLabel label = new JLabel("Please wait, processing.");
-		form.add(label);
-		frame.getContentPane().add(form, BorderLayout.NORTH);
-		frame.revalidate();
-		frame.getContentPane().repaint();
+		SwingUtil.showWait(frame);
 		
 		ThreadExecutor.getInstance().execute(new TmaRunnable("GetBalanceAction") {
 			public void doRun() {

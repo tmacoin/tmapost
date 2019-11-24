@@ -7,7 +7,6 @@
  *******************************************************************************/
 package org.tma.post;
 
-import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.util.Set;
 
@@ -15,7 +14,6 @@ import javax.swing.AbstractAction;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
@@ -107,13 +105,7 @@ public class SendTransactionAction extends AbstractAction implements Caller {
 		TransactionData expiringData = this.expiringData == null? null: new TransactionData(this.expiringData, Long.parseLong(expire));
 
 
-		frame.getContentPane().removeAll();
-		JPanel form = new JPanel(new BorderLayout());
-		JLabel label = new JLabel("Please wait, processing.");
-		form.add(label);
-		frame.getContentPane().add(form, BorderLayout.NORTH);
-		frame.revalidate();
-		frame.getContentPane().repaint();
+		JLabel label = SwingUtil.showWait(frame);
 		
 		ThreadExecutor.getInstance().execute(new TmaRunnable("SendTransactionAction") {
 			public void doRun() {
