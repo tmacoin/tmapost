@@ -115,7 +115,7 @@ public class SendMessage extends AbstractAction implements Caller {
 		p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
 		
 		JTextArea expiringData = new JTextArea();
-		expiringData.setToolTipText("Limited to 32672 chars together with subject");
+		expiringData.setToolTipText("Encrypted message is limited to 32672 chars together with subject");
 		JTextFieldRegularPopupMenu.addTo(expiringData);
 		JScrollPane scroll = new JScrollPane (expiringData);
 		p.add(scroll);

@@ -132,8 +132,14 @@ public class SendMessageAction extends AbstractAction implements Caller {
 				if(subject != null) {
 					try {
 						String str = subject + "\n" + expiringData;
-						str = Base58.encode(encryptor.encryptAsymm(str.getBytes(StandardCharsets.UTF_8), recipient));
+						byte[] encrypted = encryptor.encryptAsymm(str.getBytes(StandardCharsets.UTF_8), recipient);
+						str = Base58.encode(encrypted);
 						data = new TransactionData(str, Long.parseLong(expire));
+						if(!str.equals(data.getData())) {
+							logger.debug("Encrypted string length is {}", str.length());
+							label.setText("Message is too long, cannot send.");
+							return;
+						}
 					} catch (Exception e) {
 						logger.error(e.getMessage(), e);
 					}
