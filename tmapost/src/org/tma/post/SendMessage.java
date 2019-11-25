@@ -71,7 +71,7 @@ public class SendMessage extends AbstractAction implements Caller {
 		label = new JLabel("Fee in satoshis:", JLabel.RIGHT);
 		labelPanel.add(label);
 		
-		label = new JLabel("Expire after # blocks:", JLabel.RIGHT);
+		label = new JLabel("Expire after:", JLabel.RIGHT);
 		labelPanel.add(label);
 		
 		label = new JLabel("Subject:", JLabel.RIGHT);
@@ -92,6 +92,7 @@ public class SendMessage extends AbstractAction implements Caller {
 		
 		p = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		JTextField fee = new JTextField(36);
+		fee.setText("1");
 		fee.getDocument().addDocumentListener(new ValidatorLong(fee));
 		JTextFieldRegularPopupMenu.addTo(fee);
 		p.add(fee);
