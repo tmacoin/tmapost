@@ -40,7 +40,7 @@ public class SecureMessageTableModel extends AbstractTableModel {
 	}
 
 	public int getColumnCount() {
-		return 6;
+		return 7;
 	}
 
 	public Object getValueAt(int rowIndex, int columnIndex) {
@@ -79,6 +79,9 @@ public class SecureMessageTableModel extends AbstractTableModel {
     		case 5:
     			value = new Date(message.getTimeStamp()).toString();
     			break;
+    		case 6:
+    			value = new Date(message.getTimeStamp() + message.getExpire() * 60000).toString();
+    			break;
         }
         return value;
 	}
@@ -103,6 +106,9 @@ public class SecureMessageTableModel extends AbstractTableModel {
 			break;
 		case 5:
 			value = "Date";
+			break;
+		case 6:
+			value = "Expire";
 			break;
 			
 		}

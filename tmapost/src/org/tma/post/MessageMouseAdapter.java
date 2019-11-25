@@ -163,6 +163,18 @@ public class MessageMouseAdapter extends MouseAdapter {
 		p.add(date);
 		fieldPanel.add(p);
 		
+		label = new JLabel("Expire:", JLabel.RIGHT);
+		labelPanel.add(label);
+		
+		p = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		JTextField expire = new JTextField(36);
+		expire.setText(new Date(secureMessage.getTimeStamp() + secureMessage.getExpire() * 60000).toString());
+		expire.setBorder( null );
+		expire.setOpaque( false );
+		expire.setEditable( false );
+		p.add(expire);
+		fieldPanel.add(p);
+		
 		
 		label = new JLabel("Subject:", JLabel.RIGHT);
 		labelPanel.add(label);
