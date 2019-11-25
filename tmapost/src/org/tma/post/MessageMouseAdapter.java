@@ -82,9 +82,15 @@ public class MessageMouseAdapter extends MouseAdapter {
 		});
 		
 		p.add(btnSubmit);
+		Wallet wallet = Wallets.getInstance().getWallets().get(0);
 		
 		JButton btnReply = new JButton();
-		btnReply.setAction(new SendMessage(frame, StringUtil.getStringFromKey(secureMessage.getSender())));
+		String replyTo = StringUtil.getStringFromKey(secureMessage.getSender());
+		if(wallet.getTmaAddress().equals(replyTo)) {
+			replyTo = secureMessage.getRecipient();
+		}
+		SendMessage sendMessage = new SendMessage(frame, replyTo);
+		btnReply.setAction(sendMessage);
 		btnReply.setText("Reply");
 		p.add(btnReply);
 		
@@ -189,7 +195,7 @@ public class MessageMouseAdapter extends MouseAdapter {
 		
 		try {
 			String str = StringUtil.trimToNull(secureMessage.getText());
-			Wallet wallet = Wallets.getInstance().getWallets().get(0);
+			
 			if(str != null && secureMessage.getRecipient().equals(wallet.getTmaAddress())) {
 				str = new String(encryptor.decryptAsymm(Base58.decode(str), wallet.getPrivateKey()), StandardCharsets.UTF_8);
 				int index = str.indexOf("\n");
@@ -199,6 +205,7 @@ public class MessageMouseAdapter extends MouseAdapter {
 					subject.setText(str.substring(0, index));
 					expiringData.setText(str.substring(index + 1));
 				}
+				sendMessage.setSubject("RE " + subject.getText());
 			}
 		} catch (IOException | GeneralSecurityException e) {
 			logger.error(e.getMessage(), e);

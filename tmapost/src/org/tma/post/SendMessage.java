@@ -31,6 +31,7 @@ public class SendMessage extends AbstractAction implements Caller {
 	
 	private JFrame frame;
 	private String recipient;
+	private String subject;
 	
 	public SendMessage(JFrame frame) {
 		putValue(NAME, "Send Message");
@@ -105,6 +106,7 @@ public class SendMessage extends AbstractAction implements Caller {
 		p = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		JTextField subject = new JTextField(36);
 		subject.setBounds(160, 101, 260, 20);
+		subject.setText(this.subject);
 		JTextFieldRegularPopupMenu.addTo(subject);
 		p.add(subject);
 		fieldPanel.add(p);
@@ -135,6 +137,10 @@ public class SendMessage extends AbstractAction implements Caller {
 		frame.getContentPane().repaint();
 		
 		address.grabFocus();
+	}
+
+	public void setSubject(String subject) {
+		this.subject = subject;
 	}
 
 	
