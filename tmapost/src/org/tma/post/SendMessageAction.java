@@ -13,6 +13,7 @@ import java.security.PublicKey;
 import java.util.Set;
 
 import javax.swing.AbstractAction;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -48,7 +49,7 @@ public class SendMessageAction extends AbstractAction implements Caller {
 	
 	private JTextField jaddress;
 	private JTextField jfee;
-	private JTextField jexpire;
+	private JComboBox<KeyValue> jexpire;
 	private JTextField jsubject;
 	private JTextArea jexpiringData;
 
@@ -59,7 +60,7 @@ public class SendMessageAction extends AbstractAction implements Caller {
 	private String expiringData;
 	
 
-	public SendMessageAction(JFrame frame, JTextField address, JTextField fee, JTextField expire, JTextField subject, JTextArea expiringData) {
+	public SendMessageAction(JFrame frame, JTextField address, JTextField fee, JComboBox<KeyValue> expire, JTextField subject, JTextArea expiringData) {
 		putValue(NAME, "Send Message");
 		putValue(SHORT_DESCRIPTION, "Send Message Action");
 		this.frame = frame;
@@ -89,7 +90,7 @@ public class SendMessageAction extends AbstractAction implements Caller {
 	
 	private void load() {
 		fee = StringUtil.trim(jfee.getText());
-		expire = StringUtil.trim(jexpire.getText());
+		expire = StringUtil.trim(((KeyValue) jexpire.getSelectedItem()).getValue());
 		subject = StringUtil.trimToNull(jsubject.getText());
 		expiringData = StringUtil.trimToNull(jexpiringData.getText());
 	}

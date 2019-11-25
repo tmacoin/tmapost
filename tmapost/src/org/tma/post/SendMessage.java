@@ -17,6 +17,7 @@ import javax.swing.AbstractAction;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -97,9 +98,13 @@ public class SendMessage extends AbstractAction implements Caller {
 		fieldPanel.add(p);
 		
 		p = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		JTextField expire = new JTextField(36);
-		expire.getDocument().addDocumentListener(new ValidatorLong(expire));
-		JTextFieldRegularPopupMenu.addTo(expire);
+		JComboBox<KeyValue> expire = new JComboBox<KeyValue>();
+		expire.addItem(new KeyValue("10 minutes", "10"));
+		expire.addItem(new KeyValue("1 hour", "60"));
+		expire.addItem(new KeyValue("24 hours", ""));
+		expire.addItem(new KeyValue("1 week", "10080"));
+		expire.addItem(new KeyValue("1 month", "43200"));
+		expire.addItem(new KeyValue("1 year", "525600"));
 		p.add(expire);
 		fieldPanel.add(p);
 		
@@ -110,9 +115,7 @@ public class SendMessage extends AbstractAction implements Caller {
 		JTextFieldRegularPopupMenu.addTo(subject);
 		p.add(subject);
 		fieldPanel.add(p);
-		
-		
-		
+
 		p = new JPanel();
 		p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
 		
