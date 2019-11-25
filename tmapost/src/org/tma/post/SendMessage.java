@@ -101,7 +101,7 @@ public class SendMessage extends AbstractAction implements Caller {
 		JComboBox<KeyValue> expire = new JComboBox<KeyValue>();
 		expire.addItem(new KeyValue("10 minutes", "10"));
 		expire.addItem(new KeyValue("1 hour", "60"));
-		expire.addItem(new KeyValue("24 hours", ""));
+		expire.addItem(new KeyValue("24 hours", "1440"));
 		expire.addItem(new KeyValue("1 week", "10080"));
 		expire.addItem(new KeyValue("1 month", "43200"));
 		expire.addItem(new KeyValue("1 year", "525600"));
