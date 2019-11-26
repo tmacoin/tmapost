@@ -7,27 +7,37 @@
  *******************************************************************************/
 package org.tma.post;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.tma.blockchain.Wallet;
 
 public class Wallets {
 	
 	private static final Wallets instance = new Wallets();
+	public static final String TMA = "tma";
 	
-	private List<Wallet> wallets;
+	private Map<String, Wallet> wallets = new HashMap<String, Wallet>();
 	
 	private Wallets() {
-		wallets = new ArrayList<Wallet>();
+
 	}
 	
 	public static Wallets getInstance() {
 		return instance;
 	}
 
-	public List<Wallet> getWallets() {
-		return wallets;
+	public Wallet getWallet(String key) {
+		return wallets.get(key);
+	}
+	
+	public void putWallet(String key, Wallet wallet) {
+		wallets.put(key, wallet);
+	}
+	
+	public Collection<String> getKeys() {
+		return wallets.keySet();
 	}
 
 }

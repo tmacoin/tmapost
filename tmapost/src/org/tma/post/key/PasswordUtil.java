@@ -19,7 +19,6 @@ import java.io.OutputStreamWriter;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.Security;
-import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -39,7 +38,7 @@ public class PasswordUtil {
 		Security.addProvider(new BouncyCastleProvider());
 	}
 	
-	private static final List<Wallet> wallets = Wallets.getInstance().getWallets();
+	private static final Wallets wallets = Wallets.getInstance();
 	private static final Encryptor encryptor = new Encryptor();
 	private static final Logger logger = LogManager.getLogger();
 	
@@ -57,19 +56,20 @@ public class PasswordUtil {
 			String line;
 			while ((line = in.readLine()) != null) {
 				String[] strs = line.split(",");
-				if(strs.length != 2) {
+				if(strs.length != 3) {
 					continue;
 				}
 				Wallet wallet = new Wallet();
-				PublicKey publicKey = StringUtil.loadPublicKey(strs[0]);
-				PrivateKey privateKey = StringUtil.loadPrivateKey(encryptor.decrypt(passphrase, Base58.decode(strs[1])));
+				String key = strs[0];
+				PublicKey publicKey = StringUtil.loadPublicKey(strs[1]);
+				PrivateKey privateKey = StringUtil.loadPrivateKey(encryptor.decrypt(passphrase, Base58.decode(strs[2])));
 				if(privateKey == null) {
 					caller.log("Passphrase entered was not correct. Try again.");
 					return false;
 				}
 				wallet.setPrivateKey(privateKey);
 				wallet.setPublicKey(publicKey);
-				wallets.add(wallet);
+				wallets.putWallet(key, wallet);
 			}
 		}
 		return true;
@@ -82,20 +82,21 @@ public class PasswordUtil {
 				OutputStream os = new FileOutputStream(Constants.KEYS);
 				BufferedWriter out = new BufferedWriter(new OutputStreamWriter(os));
 			) {
-				for (Wallet wallet : wallets) {
+				for (String key : wallets.getKeys()) {
+					Wallet wallet = wallets.getWallet(key);
 					String publicKey = Base58.encode(wallet.getPublicKey().getEncoded());
 					String privateKey = Base58.encode(encryptor.encrypt(passphrase, wallet.getPrivateKey().getEncoded()));
-					out.write(publicKey + "," + privateKey);
+					out.write(key + "," + publicKey + "," + privateKey);
 					out.newLine();
 				}
 				out.flush();
 			}
 	}
 	
-	public void generateKey(String passphrase, String confirmPassword) {
+	public void generateKey(String key, String passphrase, String confirmPassword) {
 		Wallet wallet = new Wallet();
 		wallet.generateKeyPair();
-		wallets.add(wallet);
+		wallets.putWallet(key, wallet);
 		try {
 			saveKeys(passphrase);
 		} catch (Exception e) {

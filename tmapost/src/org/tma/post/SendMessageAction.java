@@ -104,7 +104,7 @@ public class SendMessageAction extends AbstractAction implements Caller {
 		}
 		String tmaAddress = Network.getInstance().getTmaAddress();
 		Coin total = Coin.SATOSHI.add(new Coin(Long.parseLong(fee)));
-		Wallet wallet = Wallets.getInstance().getWallets().get(0);
+		Wallet wallet = Wallets.getInstance().getWallet(Wallets.TMA);
 		
 		JLabel label = SwingUtil.showWait(frame);
 		

@@ -82,7 +82,7 @@ public class MessageMouseAdapter extends MouseAdapter {
 		});
 		
 		p.add(btnSubmit);
-		Wallet wallet = Wallets.getInstance().getWallets().get(0);
+		Wallet wallet = Wallets.getInstance().getWallet(Wallets.TMA);
 		
 		JButton btnReply = new JButton();
 		String replyTo = StringUtil.getStringFromKey(secureMessage.getSender());

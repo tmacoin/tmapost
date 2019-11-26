@@ -41,7 +41,7 @@ public class ShowAddress extends AbstractAction implements Caller {
 
 	public void actionPerformed(ActionEvent actionEvent) {
 		
-		Wallet wallet = Wallets.getInstance().getWallets().get(0);
+		Wallet wallet = Wallets.getInstance().getWallet(Wallets.TMA);
 		
 		frame.getContentPane().removeAll();
 		

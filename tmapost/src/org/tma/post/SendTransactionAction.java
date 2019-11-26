@@ -101,7 +101,7 @@ public class SendTransactionAction extends AbstractAction implements Caller {
 		}
 		String tmaAddress = Network.getInstance().getTmaAddress();
 		Coin total = Coin.ONE.multiply(Double.parseDouble(amount)).add(new Coin(Long.parseLong(fee)));
-		Wallet wallet = Wallets.getInstance().getWallets().get(0);
+		Wallet wallet = Wallets.getInstance().getWallet(Wallets.TMA);
 		TransactionData expiringData = this.expiringData == null? null: new TransactionData(this.expiringData, Long.parseLong(expire));
 
 

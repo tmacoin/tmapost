@@ -51,7 +51,7 @@ public class SecureMessageTableModel extends AbstractTableModel {
                 value = StringUtil.getStringFromKey(message.getSender());
                 break;
             case 1:
-            	Wallet wallet = Wallets.getInstance().getWallets().get(0);
+            	Wallet wallet = Wallets.getInstance().getWallet(Wallets.TMA);
             	if(!message.getRecipient().equals(wallet.getTmaAddress())) {
             		break;
             	}
