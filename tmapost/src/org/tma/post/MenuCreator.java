@@ -40,10 +40,6 @@ public class MenuCreator {
 		mntmSendTransaction.setAction(new SendTransaction(frame));
 		mnTools.add(mntmSendTransaction);
 
-		JMenuItem mntmGetTransactions = new JMenuItem("Get Transactions");
-		mntmGetTransactions.setAction(new GetTransactions(frame));
-		mnTools.add(mntmGetTransactions);
-
 		JMenuItem mntmShowAddress = new JMenuItem("Show Address");
 		mntmShowAddress.setAction(new ShowAddress(frame));
 		mnTools.add(mntmShowAddress);
