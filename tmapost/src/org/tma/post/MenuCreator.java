@@ -44,13 +44,23 @@ public class MenuCreator {
 		mntmShowAddress.setAction(new ShowAddress(frame));
 		mnTools.add(mntmShowAddress);
 		
-		JMenuItem mntmSendMessage = new JMenuItem("Show Address");
+		JMenu mnMessaging = new JMenu("Messaging");
+		menuBar.add(mnMessaging);
+		
+		JMenuItem mntmSendMessage = new JMenuItem("Send Message");
 		mntmSendMessage.setAction(new SendMessage(frame));
-		mnTools.add(mntmSendMessage);
+		mnMessaging.add(mntmSendMessage);
 		
 		JMenuItem mntmShowMessages = new JMenuItem("Show Messages");
 		mntmShowMessages.setAction(new ShowMessages(frame));
-		mnTools.add(mntmShowMessages);
+		mnMessaging.add(mntmShowMessages);
+		
+		JMenu mnTwitter = new JMenu("Twitter");
+		menuBar.add(mnTwitter);
+		
+		JMenuItem mntmCreateTwitter = new JMenuItem("Create Twitter");
+		mntmCreateTwitter.setAction(new CreateTwitter(frame));
+		mnTwitter.add(mntmCreateTwitter);
 		
 		menuBar.updateUI();
 	}
