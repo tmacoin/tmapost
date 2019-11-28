@@ -5,7 +5,7 @@
  *
  * Authors addresses: 8LpN97eRQ2CQ95DaZoMiNLmuSM7NKKVKrUda, 6XUtJgWAzbqCH2XkU3eJhMm1eDcsQ8vDg8Uo
  *******************************************************************************/
-package org.tma.post;
+package org.tma.post.tweet;
 
 import java.awt.event.ActionEvent;
 import java.util.HashSet;
@@ -27,6 +27,9 @@ import org.tma.peer.Network;
 import org.tma.peer.SendTransactionRequest;
 import org.tma.peer.thin.GetInputsRequest;
 import org.tma.peer.thin.ResponseHolder;
+import org.tma.post.Caller;
+import org.tma.post.SwingUtil;
+import org.tma.post.Wallets;
 import org.tma.post.key.PasswordUtil;
 import org.tma.util.Applications;
 import org.tma.util.Coin;

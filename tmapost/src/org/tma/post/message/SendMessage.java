@@ -5,7 +5,7 @@
  *
  * Authors addresses: 8LpN97eRQ2CQ95DaZoMiNLmuSM7NKKVKrUda, 6XUtJgWAzbqCH2XkU3eJhMm1eDcsQ8vDg8Uo
  *******************************************************************************/
-package org.tma.post;
+package org.tma.post.message;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -25,6 +25,12 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+
+import org.tma.post.Caller;
+import org.tma.post.JTextFieldRegularPopupMenu;
+import org.tma.post.KeyValue;
+import org.tma.post.ValidatorLong;
+import org.tma.post.ValidatorTmaAddress;
 
 public class SendMessage extends AbstractAction implements Caller {
 

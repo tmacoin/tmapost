@@ -5,7 +5,7 @@
  *
  * Authors addresses: 8LpN97eRQ2CQ95DaZoMiNLmuSM7NKKVKrUda, 6XUtJgWAzbqCH2XkU3eJhMm1eDcsQ8vDg8Uo
  *******************************************************************************/
-package org.tma.post;
+package org.tma.post.message;
 
 import java.awt.event.ActionEvent;
 import java.nio.charset.StandardCharsets;
@@ -32,6 +32,10 @@ import org.tma.peer.thin.GetInputsRequest;
 import org.tma.peer.thin.GetPublicKeyRequest;
 import org.tma.peer.thin.ResponseHolder;
 import org.tma.persistance.Encryptor;
+import org.tma.post.Caller;
+import org.tma.post.KeyValue;
+import org.tma.post.SwingUtil;
+import org.tma.post.Wallets;
 import org.tma.util.Applications;
 import org.tma.util.Base58;
 import org.tma.util.Coin;

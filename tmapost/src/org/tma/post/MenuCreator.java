@@ -12,6 +12,10 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 
+import org.tma.post.message.SendMessage;
+import org.tma.post.message.ShowMessages;
+import org.tma.post.tweet.CreateTwitter;
+
 public class MenuCreator {
 	
 	public static void addMenu(JFrame frame) {

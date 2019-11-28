@@ -5,7 +5,7 @@
  *
  * Authors addresses: 8LpN97eRQ2CQ95DaZoMiNLmuSM7NKKVKrUda, 6XUtJgWAzbqCH2XkU3eJhMm1eDcsQ8vDg8Uo
  *******************************************************************************/
-package org.tma.post;
+package org.tma.post.message;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -20,6 +20,7 @@ import org.apache.logging.log4j.Logger;
 import org.tma.blockchain.SecureMessage;
 import org.tma.blockchain.Wallet;
 import org.tma.persistance.Encryptor;
+import org.tma.post.Wallets;
 import org.tma.util.Base58;
 import org.tma.util.StringUtil;
 
