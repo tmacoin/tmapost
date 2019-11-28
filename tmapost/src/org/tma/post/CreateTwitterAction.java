@@ -8,7 +8,6 @@
 package org.tma.post;
 
 import java.awt.event.ActionEvent;
-import java.security.NoSuchAlgorithmException;
 
 import javax.swing.AbstractAction;
 import javax.swing.JFrame;
