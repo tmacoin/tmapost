@@ -8,12 +8,19 @@
 package org.tma.post;
 
 import java.awt.BorderLayout;
+import java.security.NoSuchAlgorithmException;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.tma.util.StringUtil;
+
 public class SwingUtil {
+	
+	private static final Logger logger = LogManager.getLogger();
 	
 	public static JLabel showWait(JFrame frame) {
 		frame.getContentPane().removeAll();
@@ -24,6 +31,24 @@ public class SwingUtil {
 		frame.revalidate();
 		frame.getContentPane().repaint();
 		return label;
+	}
+	
+	public static int getShard(String input, int power) {
+		if(power == 0) {
+			return 0;
+		}
+		byte[] bytes = null;
+		try {
+			bytes = StringUtil.getBytesSha256(input);
+		} catch (NoSuchAlgorithmException e) {
+			logger.error(e.getMessage(), e);
+		}
+		String str = "";
+		for(byte b: bytes) {
+			str = str + Integer.toBinaryString((b & 0xFF) + 0x100).substring(1);
+		}
+		str = str.substring(0, power);
+		return Integer.valueOf(str, 2);
 	}
 
 }

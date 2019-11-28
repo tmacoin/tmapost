@@ -74,7 +74,7 @@ public class CreateTwitterAction extends AbstractAction implements Caller {
 		}
 
 		Wallet wallet = new Wallet();
-		int shardId = getShard(account.getText(), POWER);
+		int shardId = SwingUtil.getShard(account.getText(), POWER);
 		logger.debug("shardId: {}", shardId);
 		while (true) {
 			wallet.generateKeyPair();
@@ -86,24 +86,6 @@ public class CreateTwitterAction extends AbstractAction implements Caller {
 		wallets.putWallet(Wallets.TWITTER + "-" + account.getText(), wallet);
 		passwordUtil.saveKeys(passphrase);
 		return true;
-	}
-	
-	public static int getShard(String input, int power) {
-		if(power == 0) {
-			return 0;
-		}
-		byte[] bytes = null;
-		try {
-			bytes = StringUtil.getBytesSha256(input);
-		} catch (NoSuchAlgorithmException e) {
-			logger.error(e.getMessage(), e);
-		}
-		String str = "";
-		for(byte b: bytes) {
-			str = str + Integer.toBinaryString((b & 0xFF) + 0x100).substring(1);
-		}
-		str = str.substring(0, power);
-		return Integer.valueOf(str, 2);
 	}
 	
 	public void log(String message) {
