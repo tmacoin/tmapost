@@ -19,6 +19,8 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 public class CreateTwitter extends AbstractAction implements Caller {
@@ -44,7 +46,23 @@ public class CreateTwitter extends AbstractAction implements Caller {
 		for(String key: wallets.getKeys()) {
 			if(key.startsWith(Wallets.TWITTER + "-")) {
 				String accountName = key.split("-")[1];
-				log("Twitter account was already created. Account name is " + accountName);
+				
+				JPanel form = new JPanel(new BorderLayout());
+				
+				JTextArea message = new JTextArea();
+				message.setText("Twitter account was already created. Account name is " + accountName + " with tma address " + wallets.getWallet(key).getTmaAddress());
+				message.setLineWrap(true);
+				message.setWrapStyleWord(true);
+				message.setOpaque( false );
+				message.setEditable( false );
+
+				JScrollPane scroll = new JScrollPane (message);
+				scroll.setBorder(null);
+				form.add(scroll);
+
+				form.add(message);
+				frame.getContentPane().add(form, BorderLayout.NORTH);
+
 				frame.getContentPane().revalidate();
 				frame.getContentPane().repaint();
 				return;
