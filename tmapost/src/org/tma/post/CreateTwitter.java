@@ -63,8 +63,8 @@ public class CreateTwitter extends AbstractAction implements Caller {
 		JPanel form = new JPanel(new BorderLayout());
 		frame.getContentPane().add(form, BorderLayout.NORTH);
 		
-		JPanel labelPanel = new JPanel(new GridLayout(2, 1));
-		JPanel fieldPanel = new JPanel(new GridLayout(2, 1));
+		JPanel labelPanel = new JPanel(new GridLayout(3, 1));
+		JPanel fieldPanel = new JPanel(new GridLayout(3, 1));
 		form.add(labelPanel, BorderLayout.WEST);
 		form.add(fieldPanel, BorderLayout.CENTER);
 		
@@ -77,6 +77,15 @@ public class CreateTwitter extends AbstractAction implements Caller {
 		p.add(account);
 		fieldPanel.add(p);
 		
+		label = new JLabel("Description:", JLabel.RIGHT);
+		labelPanel.add(label);
+		
+		p = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		JTextField description = new JTextField(36);
+		JTextFieldRegularPopupMenu.addTo(description);
+		p.add(description);
+		fieldPanel.add(p);
+		
 		label = new JLabel("Enter Passphrase:", JLabel.RIGHT);
 		labelPanel.add(label);
 		
@@ -87,7 +96,7 @@ public class CreateTwitter extends AbstractAction implements Caller {
 		
 		p = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		JButton btnSubmit = new JButton("Submit");
-		btnSubmit.setAction(new CreateTwitterAction(frame, account, passwordField));
+		btnSubmit.setAction(new CreateTwitterAction(frame, account, description, passwordField));
 		p.add(btnSubmit);
 		fieldPanel.add(p);
 		

@@ -8,6 +8,8 @@
 package org.tma.post;
 
 import java.awt.event.ActionEvent;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.swing.AbstractAction;
 import javax.swing.JFrame;
@@ -18,8 +20,16 @@ import javax.swing.JTextField;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.tma.blockchain.Transaction;
+import org.tma.blockchain.TransactionOutput;
 import org.tma.blockchain.Wallet;
+import org.tma.peer.Network;
+import org.tma.peer.SendTransactionRequest;
+import org.tma.peer.thin.GetInputsRequest;
+import org.tma.peer.thin.ResponseHolder;
 import org.tma.post.key.PasswordUtil;
+import org.tma.util.Applications;
+import org.tma.util.Coin;
 import org.tma.util.StringUtil;
 import org.tma.util.ThreadExecutor;
 import org.tma.util.TmaRunnable;
@@ -33,13 +43,16 @@ public class CreateTwitterAction extends AbstractAction implements Caller {
 	private JFrame frame;
 	private JTextField account;
 	private JPasswordField passwordField;
+	private JTextField description;
 	
-	public CreateTwitterAction(JFrame frame, JTextField account, JPasswordField passwordField) {
+	public CreateTwitterAction(JFrame frame, JTextField account, JTextField description, JPasswordField passwordField) {
 		putValue(NAME, "Create Twitter Account");
 		putValue(SHORT_DESCRIPTION, "Create Twitter Account");
 		this.frame = frame;
 		this.account = account;
 		this.passwordField = passwordField;
+		this.description = description;
+		
 	}
 
 	public void actionPerformed(ActionEvent e) {
@@ -81,12 +94,33 @@ public class CreateTwitterAction extends AbstractAction implements Caller {
 				break;
 			}
 		}
+		shardId = StringUtil.getShard(wallet.getTmaAddress(), Network.getInstance().getBootstrapShardingPower());
+		logger.debug("shardId: {}", shardId);
 		Wallets wallets = Wallets.getInstance();
 		wallets.putWallet(Wallets.TWITTER + "-" + account.getText(), wallet);
 		passwordUtil.saveKeys(passphrase);
+		sendCreateTwitterTransaction(wallet.getTmaAddress());
 		return true;
 	}
 	
+	private void sendCreateTwitterTransaction(String twitterTmaAddress) {
+		String tmaAddress = Network.getInstance().getTmaAddress();
+		Wallet wallet = Wallets.getInstance().getWallet(Wallets.TMA);
+		GetInputsRequest request = new GetInputsRequest(Network.getInstance(), tmaAddress, Coin.SATOSHI);
+		request.start();
+		@SuppressWarnings("unchecked")
+		Set<TransactionOutput> inputs = (Set<TransactionOutput>)ResponseHolder.getInstance().getObject(request.getCorrelationId()); 
+		Transaction transaction = new Transaction(wallet.getPublicKey(), twitterTmaAddress, Coin.SATOSHI, Coin.SATOSHI, 
+				inputs, wallet.getPrivateKey(), description.getText(), null);
+		transaction.setApp(Applications.TWITTER);
+		Set<String> keywords = new HashSet<String>();
+		keywords.add("create");
+		keywords.add(account.getText());
+		transaction.setKeywords(keywords);
+		new SendTransactionRequest(Network.getInstance(), transaction).start();
+		logger.debug("sent {}", transaction);
+	}
+
 	public void log(String message) {
 		JOptionPane.showMessageDialog(frame, message);
 	}
