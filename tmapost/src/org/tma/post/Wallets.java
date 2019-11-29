@@ -33,6 +33,17 @@ public class Wallets {
 		return wallets.get(key);
 	}
 	
+	public Wallet getWalletStartsWith(String startsWith) {
+		Wallet wallet = null;
+		for (String key : wallets.keySet()) {
+			if (key.startsWith(startsWith)) {
+				wallet = getWallet(key);
+				break;
+			}
+		}
+		return wallet;
+	}
+	
 	public void putWallet(String key, Wallet wallet) {
 		wallets.put(key, wallet);
 	}

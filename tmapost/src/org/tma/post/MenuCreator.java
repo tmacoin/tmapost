@@ -15,6 +15,7 @@ import javax.swing.JMenuItem;
 import org.tma.post.message.SendMessage;
 import org.tma.post.message.ShowMessages;
 import org.tma.post.tweet.CreateTwitter;
+import org.tma.post.tweet.ShowMyTweets;
 
 public class MenuCreator {
 	
@@ -65,6 +66,10 @@ public class MenuCreator {
 		JMenuItem mntmCreateTwitter = new JMenuItem("Create Twitter");
 		mntmCreateTwitter.setAction(new CreateTwitter(frame));
 		mnTwitter.add(mntmCreateTwitter);
+		
+		JMenuItem mntmShowMyTweets = new JMenuItem("My Tweets");
+		mntmShowMyTweets.setAction(new ShowMyTweets(frame));
+		mnTwitter.add(mntmShowMyTweets);
 		
 		menuBar.updateUI();
 	}

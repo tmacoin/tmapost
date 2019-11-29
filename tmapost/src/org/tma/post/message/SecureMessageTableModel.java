@@ -17,8 +17,8 @@ import javax.swing.table.AbstractTableModel;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.tma.blockchain.SecureMessage;
 import org.tma.blockchain.Wallet;
+import org.tma.peer.thin.SecureMessage;
 import org.tma.persistance.Encryptor;
 import org.tma.post.Wallets;
 import org.tma.util.Base58;
