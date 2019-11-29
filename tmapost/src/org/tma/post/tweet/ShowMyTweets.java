@@ -10,6 +10,8 @@ package org.tma.post.tweet;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -28,6 +30,7 @@ import javax.swing.JTextArea;
 import org.tma.blockchain.Wallet;
 import org.tma.peer.Network;
 import org.tma.peer.thin.GetMyTweetsRequest;
+import org.tma.peer.thin.GetRepliesRequest;
 import org.tma.peer.thin.ResponseHolder;
 import org.tma.peer.thin.Tweet;
 import org.tma.post.Caller;
@@ -80,7 +83,7 @@ public class ShowMyTweets extends AbstractAction implements Caller {
 
 		JLabel label = SwingUtil.showWait(frame);
 
-		ThreadExecutor.getInstance().execute(new TmaRunnable("ShowMessages") {
+		ThreadExecutor.getInstance().execute(new TmaRunnable("ShowMyTweets") {
 			public void doRun() {
 				GetMyTweetsRequest request = new GetMyTweetsRequest(Network.getInstance(), twitterWallet.getTmaAddress());
 				request.start();
@@ -104,16 +107,16 @@ public class ShowMyTweets extends AbstractAction implements Caller {
 				}
 				if(title != null) {
 					list.remove(title);
-					addTweet(p, title.getText());
+					print(p, title.getText());
 				}
 				
-				addTweet(p, "Retrieved number of tweets " + list.size());
+				print(p, "Retrieved number of tweets " + list.size());
 				
 				Comparator<Tweet> compareByTimestamp = (Tweet o1, Tweet o2) -> Long.valueOf(o2.getTimeStamp()).compareTo( o1.getTimeStamp() );
 				Collections.sort(list, compareByTimestamp);
 				
 				for(Tweet tweet: list) {
-					addTweet(p, new Date(tweet.getTimeStamp()).toString() + "<BR/>" + tweet.getText());
+					addTweet(p, tweet);
 				}
 				
 				frame.getContentPane().add(p);
@@ -125,12 +128,61 @@ public class ShowMyTweets extends AbstractAction implements Caller {
 		});
 
 	}
-
-	private void addTweet(JPanel p, String str) {
+	
+	private void print(JPanel p, String str) {
 		JLabel label = new JLabel();
 		label.setText("<html>" + str + "</html>");
 		p.add(label);
 		p.add(Box.createRigidArea(new Dimension(0, 10)));
+	}
+
+	private void addTweet(JPanel p, Tweet tweet) {
+		String text = new Date(tweet.getTimeStamp()).toString() + "<BR/>" + tweet.getText();
+		JLabel label = new JLabel();
+		label.setText("<html>" + text + "</html>");
+		p.add(label);
+		p.add(Box.createRigidArea(new Dimension(0, 10)));
+		label.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+                displayTweet(tweet);
+            }
+
+        });
+	}
+
+	private void displayTweet(Tweet tweet) {
+		JLabel label = SwingUtil.showWait(frame);
+
+		ThreadExecutor.getInstance().execute(new TmaRunnable("ShowTweet") {
+			public void doRun() {
+				Wallets wallets = Wallets.getInstance();
+				Wallet twitterWallet = wallets.getWalletStartsWith(Wallets.TWITTER + "-");
+				GetRepliesRequest request = new GetRepliesRequest(Network.getInstance(), tweet.getTransactionId(), twitterWallet.getTmaAddress());
+				request.start();
+				@SuppressWarnings("unchecked")
+				List<Tweet> list = (List<Tweet>) ResponseHolder.getInstance().getObject(request.getCorrelationId());
+				
+				if(list == null) {
+					label.setText("Failed to retrieve transactions. Please try again");
+					return;
+				}
+				
+				frame.getContentPane().removeAll();
+				JPanel panel = new JPanel();
+				panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+
+				addTweet(panel, tweet);
+				
+				for(Tweet tweet: list) {
+					addTweet(panel, tweet);
+				}
+				
+				frame.getContentPane().add(panel);
+
+				frame.getContentPane().revalidate();
+				frame.getContentPane().repaint();
+			}
+		});
 	}
 
 }
