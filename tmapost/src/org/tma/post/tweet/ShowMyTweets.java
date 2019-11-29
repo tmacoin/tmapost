@@ -92,9 +92,20 @@ public class ShowMyTweets extends AbstractAction implements Caller {
 				frame.getContentPane().removeAll();
 				JPanel p = new JPanel();
 				p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
+
+				Tweet title = null;
+				for(Tweet tweet: list) {
+					if(tweet.getKeywords() != null && !tweet.getKeywords().isEmpty() && tweet.getKeywords().contains("create")) {
+						title = tweet;
+					}
+				}
+				if(title != null) {
+					list.remove(title);
+					addTweet(p, title.getText());
+				}
 				
 				addTweet(p, "Retrieved number of tweets " + list.size());
-
+				
 				for(Tweet tweet: list) {
 					addTweet(p, tweet.getText());
 				}
