@@ -8,7 +8,10 @@
 package org.tma.post.tweet;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -20,6 +23,7 @@ import java.util.List;
 import javax.swing.AbstractAction;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -34,6 +38,7 @@ import org.tma.peer.thin.GetRepliesRequest;
 import org.tma.peer.thin.ResponseHolder;
 import org.tma.peer.thin.Tweet;
 import org.tma.post.Caller;
+import org.tma.post.JTextFieldRegularPopupMenu;
 import org.tma.post.SwingUtil;
 import org.tma.post.Wallets;
 import org.tma.util.ThreadExecutor;
@@ -106,9 +111,10 @@ public class ShowMyTweets extends AbstractAction implements Caller {
 					}
 				}
 				if(title != null) {
-					list.remove(title);
 					print(p, title.getText());
 				}
+				
+				list.removeIf(t -> t.getKeywords() != null && !t.getKeywords().isEmpty());
 				
 				print(p, "Retrieved number of tweets " + list.size());
 				
@@ -134,6 +140,7 @@ public class ShowMyTweets extends AbstractAction implements Caller {
 		label.setText("<html>" + str + "</html>");
 		p.add(label);
 		p.add(Box.createRigidArea(new Dimension(0, 10)));
+		label.setAlignmentX( Component.LEFT_ALIGNMENT );
 	}
 
 	private void addTweet(JPanel p, Tweet tweet) {
@@ -148,6 +155,7 @@ public class ShowMyTweets extends AbstractAction implements Caller {
             }
 
         });
+		label.setAlignmentX( Component.LEFT_ALIGNMENT );
 	}
 
 	private void displayTweet(Tweet tweet) {
@@ -170,7 +178,7 @@ public class ShowMyTweets extends AbstractAction implements Caller {
 				frame.getContentPane().removeAll();
 				JPanel panel = new JPanel();
 				panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-
+				
 				addTweet(panel, tweet);
 				
 				for(Tweet tweet: list) {
@@ -178,11 +186,48 @@ public class ShowMyTweets extends AbstractAction implements Caller {
 				}
 				
 				frame.getContentPane().add(panel);
+				
+				JPanel p = new JPanel();
+				JScrollPane scroll = new JScrollPane (p);
+				scroll.setBorder(null);
+				panel.add(scroll);
+				createForm(p, tweet);
 
 				frame.getContentPane().revalidate();
 				frame.getContentPane().repaint();
 			}
 		});
+	}
+	
+	private void createForm(JPanel panel, Tweet tweet) {
+		JPanel form = new JPanel(new BorderLayout());
+		panel.add(form, BorderLayout.NORTH);
+
+		
+		JPanel labelPanel = new JPanel(new GridLayout(2, 1));
+		JPanel fieldPanel = new JPanel(new GridLayout(2, 1));
+		form.add(labelPanel, BorderLayout.WEST);
+		form.add(fieldPanel, BorderLayout.CENTER);
+		
+		
+		JLabel label = new JLabel("Enter reply:", JLabel.RIGHT);
+		labelPanel.add(label);
+		
+		JPanel p = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		JTextArea area = new JTextArea(3, 45);
+		JTextFieldRegularPopupMenu.addTo(area);
+		JScrollPane scroll = new JScrollPane (area);
+		p.add(scroll);
+		fieldPanel.add(p);
+		
+		
+		p = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		JButton btnSubmit = new JButton("Submit");
+		btnSubmit.setAction(new SendReplyAction(frame, area, tweet));
+		p.add(btnSubmit);
+		fieldPanel.add(p);
+
+		frame.getRootPane().setDefaultButton(btnSubmit);
 	}
 
 }

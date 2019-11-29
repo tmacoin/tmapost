@@ -75,8 +75,6 @@ public class SendTweet extends AbstractAction implements Caller {
 		btnSubmit.setAction(new SendTweetAction(frame, tweet));
 		p.add(btnSubmit);
 		fieldPanel.add(p);
-		
-		frame.getContentPane().add(p);
 
 		frame.getRootPane().setDefaultButton(btnSubmit);
 	}
