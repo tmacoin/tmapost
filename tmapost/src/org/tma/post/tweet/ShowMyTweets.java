@@ -10,6 +10,9 @@ package org.tma.post.tweet;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 import javax.swing.AbstractAction;
@@ -106,8 +109,11 @@ public class ShowMyTweets extends AbstractAction implements Caller {
 				
 				addTweet(p, "Retrieved number of tweets " + list.size());
 				
+				Comparator<Tweet> compareByTimestamp = (Tweet o1, Tweet o2) -> Long.valueOf(o2.getTimeStamp()).compareTo( o1.getTimeStamp() );
+				Collections.sort(list, compareByTimestamp);
+				
 				for(Tweet tweet: list) {
-					addTweet(p, tweet.getText());
+					addTweet(p, new Date(tweet.getTimeStamp()).toString() + "<BR/>" + tweet.getText());
 				}
 				
 				frame.getContentPane().add(p);
