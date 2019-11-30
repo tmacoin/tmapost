@@ -13,6 +13,7 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Collections;
@@ -24,12 +25,14 @@ import javax.swing.AbstractAction;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.KeyStroke;
 
 import org.tma.blockchain.Wallet;
 import org.tma.peer.Network;
@@ -157,6 +160,33 @@ public class ShowMyTweets extends AbstractAction implements Caller {
         });
 		label.setAlignmentX( Component.LEFT_ALIGNMENT );
 	}
+	
+	private JPanel showBackButton() {
+		JPanel p = new JPanel();
+		p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
+		JButton btnSubmit = new JButton();
+		btnSubmit.setAction(new ShowMyTweets(frame));
+		btnSubmit.setText("Back");
+		
+		frame.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_BACK_SPACE, 0), "backButton");
+
+		frame.getRootPane().getActionMap().put("backButton", new AbstractAction() {
+			private static final long serialVersionUID = 4946947535624344910L;
+
+			public void actionPerformed(ActionEvent actionEvent) {
+				btnSubmit.doClick();
+				frame.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).clear();
+				frame.getRootPane().getActionMap().clear();
+			}
+		});
+		
+		p.add(Box.createRigidArea(new Dimension(0, 10)));
+		
+		p.add(btnSubmit);
+		
+		p.add(Box.createRigidArea(new Dimension(0, 10)));
+		return p;
+	}
 
 	private void displayTweet(Tweet tweet) {
 		JLabel label = SwingUtil.showWait(frame);
@@ -179,15 +209,18 @@ public class ShowMyTweets extends AbstractAction implements Caller {
 				JPanel panel = new JPanel();
 				panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 				
-				addTweet(panel, tweet);
+				JPanel p = showBackButton();
+				panel.add(p);
+				
+				addTweet(p, tweet);
 				
 				for(Tweet tweet: list) {
-					addTweet(panel, tweet);
+					addTweet(p, tweet);
 				}
 				
 				frame.getContentPane().add(panel);
 				
-				JPanel p = new JPanel();
+				p = new JPanel();
 				JScrollPane scroll = new JScrollPane (p);
 				scroll.setBorder(null);
 				panel.add(scroll);

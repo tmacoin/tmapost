@@ -58,13 +58,8 @@ public class MessageMouseAdapter extends MouseAdapter {
             doit(list.get(row));
         }
     }
-
-	private void doit(SecureMessage secureMessage) {
-		frame.getContentPane().removeAll();
-		
-		JPanel form = new JPanel(new BorderLayout());
-		frame.getContentPane().add(form, BorderLayout.NORTH);
-		
+	
+	private JPanel showBackButton() {
 		JPanel p = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		JButton btnSubmit = new JButton();
 		btnSubmit.setAction(new ShowMessages(frame));
@@ -83,6 +78,17 @@ public class MessageMouseAdapter extends MouseAdapter {
 		});
 		
 		p.add(btnSubmit);
+		return p;
+	}
+
+	private void doit(SecureMessage secureMessage) {
+		frame.getContentPane().removeAll();
+		
+		JPanel form = new JPanel(new BorderLayout());
+		frame.getContentPane().add(form, BorderLayout.NORTH);
+		
+		JPanel p = showBackButton();
+		
 		Wallet wallet = Wallets.getInstance().getWallet(Wallets.TMA);
 		
 		JButton btnReply = new JButton();
