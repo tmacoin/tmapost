@@ -89,7 +89,7 @@ public class CreateTwitterAction extends AbstractAction implements Caller {
 		}
 
 		Wallet wallet = new Wallet();
-		int shardId = SwingUtil.getShard(account.getText(), POWER);
+		int shardId = StringUtil.getShardForNonTmaAddress(account.getText(), POWER);
 		logger.debug("shardId: {}", shardId);
 		while (true) {
 			wallet.generateKeyPair();

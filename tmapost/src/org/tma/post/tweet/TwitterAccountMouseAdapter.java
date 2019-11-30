@@ -28,85 +28,43 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.KeyStroke;
 
-import org.tma.blockchain.Wallet;
 import org.tma.peer.Network;
 import org.tma.peer.thin.GetMyTweetsRequest;
 import org.tma.peer.thin.GetRepliesRequest;
 import org.tma.peer.thin.ResponseHolder;
 import org.tma.peer.thin.Tweet;
-import org.tma.post.Caller;
+import org.tma.peer.thin.TwitterAccount;
 import org.tma.post.JTextFieldRegularPopupMenu;
 import org.tma.post.SwingUtil;
-import org.tma.post.Wallets;
 import org.tma.util.ThreadExecutor;
 import org.tma.util.TmaRunnable;
 
-public class ShowMyTweets extends AbstractAction implements Caller {
-
-	private static final long serialVersionUID = 4036313657721664495L;
-
+public class TwitterAccountMouseAdapter extends MouseAdapter {
+	
+	private JTable table;
+	private List<TwitterAccount> list;
 	private JFrame frame;
-	private String tmaAddress;
+	
+	public void mouseClicked(MouseEvent evt) {
+        int row = table.rowAtPoint(evt.getPoint());
+        int col = table.columnAtPoint(evt.getPoint());
+        if (row >= 0 && col >= 0) {
+            doit(list.get(row));
+        }
+    }
 
-	public ShowMyTweets(JFrame frame) {
-		putValue(NAME, "Show my tweets");
-		putValue(SHORT_DESCRIPTION, "Show my tweets");
-		this.frame = frame;
-		Wallets wallets = Wallets.getInstance();
-		Wallet twitterWallet = wallets.getWalletStartsWith(Wallets.TWITTER + "-");
-		if (twitterWallet != null) {
-			tmaAddress = twitterWallet.getTmaAddress();
-		}
-	}
-
-	public ShowMyTweets(JFrame frame, String tmaAddress) {
-		putValue(NAME, "Show tweets");
-		putValue(SHORT_DESCRIPTION, "Show tweets");
-		this.frame = frame;
-		this.tmaAddress = tmaAddress;
-	}
-
-	public void log(String message) {
-		JOptionPane.showMessageDialog(frame, message);
-	}
-
-	public void actionPerformed(ActionEvent actionEvent) {
-		frame.getContentPane().removeAll();
-		Wallets wallets = Wallets.getInstance();
-		Wallet twitterWallet = wallets.getWalletStartsWith(Wallets.TWITTER + "-");
-
-		if (twitterWallet == null) {
-			JPanel form = new JPanel(new BorderLayout());
-
-			JTextArea message = new JTextArea();
-			message.setText("You have not created you twitter account yet");
-			message.setLineWrap(true);
-			message.setWrapStyleWord(true);
-			message.setOpaque(false);
-			message.setEditable(false);
-
-			JScrollPane scroll = new JScrollPane(message);
-			scroll.setBorder(null);
-			form.add(scroll);
-
-			form.add(message);
-			frame.getContentPane().add(form, BorderLayout.CENTER);
-			frame.getContentPane().revalidate();
-			frame.getContentPane().repaint();
-			return;
-		}
-
+	private void doit(TwitterAccount twitterAccount) {
 		JLabel label = SwingUtil.showWait(frame);
 
 		ThreadExecutor.getInstance().execute(new TmaRunnable("Show MyTweets") {
 			public void doRun() {
-				GetMyTweetsRequest request = new GetMyTweetsRequest(Network.getInstance(), tmaAddress);
+				GetMyTweetsRequest request = new GetMyTweetsRequest(Network.getInstance(), twitterAccount.getTmaAddress());
 				request.start();
 				@SuppressWarnings("unchecked")
 				List<Tweet> list = (List<Tweet>) ResponseHolder.getInstance().getObject(request.getCorrelationId());
@@ -148,7 +106,6 @@ public class ShowMyTweets extends AbstractAction implements Caller {
 
 			}
 		});
-
 	}
 	
 	private void print(JPanel p, String str) {
@@ -158,7 +115,7 @@ public class ShowMyTweets extends AbstractAction implements Caller {
 		p.add(Box.createRigidArea(new Dimension(0, 10)));
 		label.setAlignmentX( Component.LEFT_ALIGNMENT );
 	}
-
+	
 	private void addTweet(JPanel p, Tweet tweet) {
 		String text = new Date(tweet.getTimeStamp()).toString() + "<BR/>" + tweet.getText();
 		JLabel label = new JLabel();
@@ -174,33 +131,6 @@ public class ShowMyTweets extends AbstractAction implements Caller {
 		label.setAlignmentX( Component.LEFT_ALIGNMENT );
 	}
 	
-	private JPanel showBackButton(Tweet tweet) {
-		JPanel p = new JPanel();
-		p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
-		JButton btnSubmit = new JButton();
-		btnSubmit.setAction(new ShowMyTweets(frame, tweet.getRecipient()));
-		btnSubmit.setText("Back");
-		
-		frame.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_BACK_SPACE, 0), "backButton");
-
-		frame.getRootPane().getActionMap().put("backButton", new AbstractAction() {
-			private static final long serialVersionUID = 4946947535624344910L;
-
-			public void actionPerformed(ActionEvent actionEvent) {
-				btnSubmit.doClick();
-				frame.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).clear();
-				frame.getRootPane().getActionMap().clear();
-			}
-		});
-		
-		p.add(Box.createRigidArea(new Dimension(0, 10)));
-		
-		p.add(btnSubmit);
-		
-		p.add(Box.createRigidArea(new Dimension(0, 10)));
-		return p;
-	}
-
 	private void displayTweet(Tweet tweet) {
 		JLabel label = SwingUtil.showWait(frame);
 
@@ -243,6 +173,33 @@ public class ShowMyTweets extends AbstractAction implements Caller {
 		});
 	}
 	
+	private JPanel showBackButton(Tweet tweet) {
+		JPanel p = new JPanel();
+		p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
+		JButton btnSubmit = new JButton();
+		btnSubmit.setAction(new ShowMyTweets(frame, tweet.getRecipient()));
+		btnSubmit.setText("Back");
+		
+		frame.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_BACK_SPACE, 0), "backButton");
+
+		frame.getRootPane().getActionMap().put("backButton", new AbstractAction() {
+			private static final long serialVersionUID = 4946947535624344910L;
+
+			public void actionPerformed(ActionEvent actionEvent) {
+				btnSubmit.doClick();
+				frame.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).clear();
+				frame.getRootPane().getActionMap().clear();
+			}
+		});
+		
+		p.add(Box.createRigidArea(new Dimension(0, 10)));
+		
+		p.add(btnSubmit);
+		
+		p.add(Box.createRigidArea(new Dimension(0, 10)));
+		return p;
+	}
+	
 	private void createForm(JPanel panel, Tweet tweet) {
 		JPanel form = new JPanel(new BorderLayout());
 		panel.add(form, BorderLayout.NORTH);
@@ -272,6 +229,12 @@ public class ShowMyTweets extends AbstractAction implements Caller {
 		fieldPanel.add(p);
 
 		frame.getRootPane().setDefaultButton(btnSubmit);
+	}
+
+	public TwitterAccountMouseAdapter(JTable table, List<TwitterAccount> list, JFrame frame) {
+		this.table = table;
+		this.list = list;
+		this.frame = frame;
 	}
 
 }
