@@ -67,7 +67,7 @@ public class SearchTwitterAction extends AbstractAction implements Caller {
 				JPanel form = new JPanel();
 				form.setLayout(new BoxLayout(form, BoxLayout.Y_AXIS));
 				
-				JLabel label = new JLabel("Twitter account with name " + account.getText());
+				JLabel label = new JLabel("Twitter account(s) with name " + account.getText());
 				form.add(label);
 				
 				form.add(Box.createRigidArea(new Dimension(0, 20)));
