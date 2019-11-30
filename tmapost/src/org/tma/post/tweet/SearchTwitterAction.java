@@ -29,6 +29,7 @@ import org.tma.peer.thin.TwitterAccount;
 import org.tma.post.Caller;
 import org.tma.post.SwingUtil;
 import org.tma.post.TableColumnAdjuster;
+import org.tma.util.StringUtil;
 import org.tma.util.ThreadExecutor;
 import org.tma.util.TmaRunnable;
 
@@ -52,7 +53,8 @@ public class SearchTwitterAction extends AbstractAction implements Caller {
 		
 		ThreadExecutor.getInstance().execute(new TmaRunnable("SearchTwitterAction") {
 			public void doRun() {
-				SearchTwitterRequest request = new SearchTwitterRequest(Network.getInstance(), account.getText());
+				String accountName = StringUtil.trim(account.getText());
+				SearchTwitterRequest request = new SearchTwitterRequest(Network.getInstance(), accountName);
 				request.start();
 				@SuppressWarnings("unchecked")
 				List<TwitterAccount> list = (List<TwitterAccount>) ResponseHolder.getInstance().getObject(request.getCorrelationId());
@@ -67,7 +69,7 @@ public class SearchTwitterAction extends AbstractAction implements Caller {
 				JPanel form = new JPanel();
 				form.setLayout(new BoxLayout(form, BoxLayout.Y_AXIS));
 				
-				JLabel label = new JLabel("Twitter account(s) with name " + account.getText());
+				JLabel label = new JLabel("Twitter account(s) with name " + accountName);
 				form.add(label);
 				
 				form.add(Box.createRigidArea(new Dimension(0, 20)));

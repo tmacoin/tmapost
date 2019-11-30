@@ -125,6 +125,12 @@ public class SendMessageAction extends AbstractAction implements Caller {
 				getPublicKeyRequest.start();
 				recipient = (PublicKey) ResponseHolder.getInstance().getObject(getPublicKeyRequest.getCorrelationId());
 				
+				if(recipient == null) {
+					logger.debug("Recipient public key is not found for tma address {}", recipientTmaAddress);
+					label.setText("Recipient public key is not found for tma address " + recipientTmaAddress);
+					return;
+				}
+				
 				TransactionData data = null;
 				if(subject != null) {
 					try {
@@ -139,6 +145,8 @@ public class SendMessageAction extends AbstractAction implements Caller {
 						}
 					} catch (Exception e) {
 						logger.error(e.getMessage(), e);
+						label.setText(e.getMessage());
+						return;
 					}
 				}
 				TransactionData expiringData = data;
