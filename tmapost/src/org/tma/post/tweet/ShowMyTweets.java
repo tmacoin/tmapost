@@ -160,7 +160,7 @@ public class ShowMyTweets extends AbstractAction implements Caller {
 	}
 
 	private void addTweet(JPanel p, Tweet tweet) {
-		String text = new Date(tweet.getTimeStamp()).toString() + "<BR/>" + tweet.getText();
+		String text = tweet.getSenderAddress() + " · " + new Date(tweet.getTimeStamp()).toString() + "<BR/>" + tweet.getText();
 		JLabel label = new JLabel();
 		label.setText("<html>" + text + "</html>");
 		p.add(label);
