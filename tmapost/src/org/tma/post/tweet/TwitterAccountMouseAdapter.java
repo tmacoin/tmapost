@@ -155,27 +155,20 @@ public class TwitterAccountMouseAdapter extends MouseAdapter {
 				}
 				
 				frame.getContentPane().removeAll();
-				JPanel panel = new JPanel();
-				panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 				
-				JPanel p = showBackButton(tweet);
-				panel.add(p);
+				JPanel panel = showBackButton(tweet);
 				
-				addTweet(p, tweet);
+				addTweet(panel, tweet);
 				
 				for(Tweet tweet: list) {
-					addTweet(p, tweet);
+					addTweet(panel, tweet);
 				}
-				
-				
-				
-				p = new JPanel(new FlowLayout(FlowLayout.LEFT));
-				JScrollPane scroll = new JScrollPane (p);
-				scroll.setBorder(null);
-				panel.add(scroll);
+
+				JPanel p = new JPanel(new FlowLayout(FlowLayout.LEFT));
+				panel.add(p);
 				createForm(p, tweet);
 				
-				JScrollPane jScrollPane = new JScrollPane (panel);
+				JScrollPane jScrollPane = new JScrollPane (panel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 				frame.getContentPane().add(jScrollPane);
 				frame.getContentPane().revalidate();
 				frame.getContentPane().repaint();

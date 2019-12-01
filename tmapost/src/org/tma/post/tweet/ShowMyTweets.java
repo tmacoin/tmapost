@@ -30,6 +30,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
 import javax.swing.JTextArea;
 import javax.swing.KeyStroke;
 
@@ -116,8 +117,9 @@ public class ShowMyTweets extends AbstractAction implements Caller {
 				}
 				
 				frame.getContentPane().removeAll();
-				JPanel p = new JPanel();
-				p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
+				JPanel panel = new JPanel();
+				panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+				panel.setMaximumSize( panel.getPreferredSize() );
 
 				Tweet title = null;
 				for(Tweet tweet: list) {
@@ -126,21 +128,21 @@ public class ShowMyTweets extends AbstractAction implements Caller {
 					}
 				}
 				if(title != null) {
-					print(p, title.getText());
+					print(panel, title.getText());
 				}
 				
 				list.removeIf(t -> t.getKeywords() != null && !t.getKeywords().isEmpty());
 				
-				print(p, "Retrieved number of tweets " + list.size());
+				print(panel, "Retrieved number of tweets " + list.size());
 				
 				Comparator<Tweet> compareByTimestamp = (Tweet o1, Tweet o2) -> Long.valueOf(o2.getTimeStamp()).compareTo( o1.getTimeStamp() );
 				Collections.sort(list, compareByTimestamp);
 				
 				for(Tweet tweet: list) {
-					addTweet(p, tweet);
+					addTweet(panel, tweet);
 				}
 				
-				JScrollPane jScrollPane = new JScrollPane (p, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+				JScrollPane jScrollPane = new JScrollPane (panel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 				frame.getContentPane().add(jScrollPane);
 				frame.getContentPane().revalidate();
 				frame.getContentPane().repaint();
@@ -172,7 +174,7 @@ public class ShowMyTweets extends AbstractAction implements Caller {
 		JPanel p = new JPanel();
 		p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
 		p.add(area);
-		p.add(Box.createRigidArea(new Dimension(0, 10)));
+		p.add(new JSeparator());
 		area.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
                 displayTweet(tweet);
@@ -236,12 +238,10 @@ public class ShowMyTweets extends AbstractAction implements Caller {
 				}
 
 				JPanel p = new JPanel(new FlowLayout(FlowLayout.LEFT));
-				JScrollPane scroll = new JScrollPane (p);
-				scroll.setBorder(null);
-				panel.add(scroll);
+				panel.add(p);
 				createForm(p, tweet);
 				
-				JScrollPane jScrollPane = new JScrollPane (panel);
+				JScrollPane jScrollPane = new JScrollPane (panel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 				frame.getContentPane().add(jScrollPane);
 				frame.getContentPane().revalidate();
 				frame.getContentPane().repaint();
