@@ -8,7 +8,6 @@
 package org.tma.post.tweet;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
@@ -99,8 +98,8 @@ public class TwitterAccountMouseAdapter extends MouseAdapter {
 					addTweet(p, tweet);
 				}
 				
-				frame.getContentPane().add(p);
-
+				JScrollPane jScrollPane = new JScrollPane (p, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+				frame.getContentPane().add(jScrollPane);
 				frame.getContentPane().revalidate();
 				frame.getContentPane().repaint();
 
@@ -108,27 +107,36 @@ public class TwitterAccountMouseAdapter extends MouseAdapter {
 		});
 	}
 	
-	private void print(JPanel p, String str) {
-		JLabel label = new JLabel();
-		label.setText("<html>" + str + "</html>");
-		p.add(label);
-		p.add(Box.createRigidArea(new Dimension(0, 10)));
-		label.setAlignmentX( Component.LEFT_ALIGNMENT );
+	private void print(JPanel panel, String str) {
+		JTextArea area = new JTextArea();
+		area.setLineWrap(true);
+		area.setWrapStyleWord(true);
+		area.setOpaque( false );
+		area.setEditable( false );
+		area.setText(str);
+		panel.add(area);
+		panel.add(Box.createRigidArea(new Dimension(0, 10)));
 	}
-	
-	private void addTweet(JPanel p, Tweet tweet) {
-		String text = tweet.getSenderAddress() + " · " + new Date(tweet.getTimeStamp()).toString() + "<BR/>" + tweet.getText();
-		JLabel label = new JLabel();
-		label.setText("<html>" + text + "</html>");
-		p.add(label);
+
+	private void addTweet(JPanel panel, Tweet tweet) {
+		String text = tweet.getSenderAddress() + " · " + new Date(tweet.getTimeStamp()).toString() + "\n" + tweet.getText();
+		JTextArea area = new JTextArea();
+		area.setLineWrap(true);
+		area.setWrapStyleWord(true);
+		area.setOpaque( false );
+		area.setEditable( false );
+		area.setText(text);
+		JPanel p = new JPanel();
+		p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
+		p.add(area);
 		p.add(Box.createRigidArea(new Dimension(0, 10)));
-		label.addMouseListener(new MouseAdapter() {
+		area.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
                 displayTweet(tweet);
             }
 
         });
-		label.setAlignmentX( Component.LEFT_ALIGNMENT );
+		panel.add(p);
 	}
 	
 	private void displayTweet(Tweet tweet) {
@@ -159,14 +167,16 @@ public class TwitterAccountMouseAdapter extends MouseAdapter {
 					addTweet(p, tweet);
 				}
 				
-				frame.getContentPane().add(panel);
 				
-				p = new JPanel();
+				
+				p = new JPanel(new FlowLayout(FlowLayout.LEFT));
 				JScrollPane scroll = new JScrollPane (p);
 				scroll.setBorder(null);
 				panel.add(scroll);
 				createForm(p, tweet);
-
+				
+				JScrollPane jScrollPane = new JScrollPane (panel);
+				frame.getContentPane().add(jScrollPane);
 				frame.getContentPane().revalidate();
 				frame.getContentPane().repaint();
 			}
@@ -194,8 +204,9 @@ public class TwitterAccountMouseAdapter extends MouseAdapter {
 		
 		p.add(Box.createRigidArea(new Dimension(0, 10)));
 		
-		p.add(btnSubmit);
-		
+		JPanel flow = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		flow.add(btnSubmit);
+		p.add(flow);
 		p.add(Box.createRigidArea(new Dimension(0, 10)));
 		return p;
 	}
