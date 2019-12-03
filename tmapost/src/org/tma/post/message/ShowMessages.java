@@ -68,7 +68,7 @@ public class ShowMessages extends AbstractAction implements Caller {
 				List<SecureMessage> list = (List<SecureMessage>) ResponseHolder.getInstance().getObject(request.getCorrelationId());
 				
 				if(list == null) {
-					label.setText("Failed to retrieve transactions. Please try again");
+					label.setText("Failed to retrieve messages. Please try again");
 					return;
 				}
 				
