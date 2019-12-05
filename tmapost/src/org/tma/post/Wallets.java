@@ -44,6 +44,17 @@ public class Wallets {
 		return wallet;
 	}
 	
+	public String getKeyStartsWith(String startsWith) {
+		String result = null;
+		for (String key : wallets.keySet()) {
+			if (key.startsWith(startsWith)) {
+				result = key;
+				break;
+			}
+		}
+		return result;
+	}
+	
 	public void putWallet(String key, Wallet wallet) {
 		wallets.put(key, wallet);
 	}

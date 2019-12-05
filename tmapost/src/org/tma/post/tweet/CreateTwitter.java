@@ -30,6 +30,7 @@ import org.tma.post.Wallets;
 public class CreateTwitter extends AbstractAction implements Caller {
 
 	private static final long serialVersionUID = 4036313657721664495L;
+	private static final Wallets wallets = Wallets.getInstance();
 	
 	private JFrame frame;
 	private JTextField account;
@@ -46,32 +47,31 @@ public class CreateTwitter extends AbstractAction implements Caller {
 
 	public void actionPerformed(ActionEvent actionEvent) {
 		frame.getContentPane().removeAll();
-		Wallets wallets = Wallets.getInstance();
-		for(String key: wallets.getKeys()) {
-			if(key.startsWith(Wallets.TWITTER + "-")) {
-				String accountName = key.split("-")[1];
-				
-				JPanel form = new JPanel(new BorderLayout());
-				
-				JTextArea message = new JTextArea();
-				message.setText("Twitter account was already created. Account name is " + accountName + " with tma address " + wallets.getWallet(key).getTmaAddress());
-				message.setLineWrap(true);
-				message.setWrapStyleWord(true);
-				message.setOpaque( false );
-				message.setEditable( false );
+		String key = wallets.getKeyStartsWith(Wallets.TWITTER + "-");
+		if (key != null) {
+			String accountName = key.split("-", 2)[1];
 
-				JScrollPane scroll = new JScrollPane (message);
-				scroll.setBorder(null);
-				form.add(scroll);
+			JPanel form = new JPanel(new BorderLayout());
 
-				form.add(message);
-				frame.getContentPane().add(form, BorderLayout.NORTH);
+			JTextArea message = new JTextArea();
+			message.setText("Twitter account was already created. Account name is " + accountName + " with tma address " + wallets.getWallet(key).getTmaAddress());
+			message.setLineWrap(true);
+			message.setWrapStyleWord(true);
+			message.setOpaque(false);
+			message.setEditable(false);
 
-				frame.getContentPane().revalidate();
-				frame.getContentPane().repaint();
-				return;
-			}
+			JScrollPane scroll = new JScrollPane(message);
+			scroll.setBorder(null);
+			form.add(scroll);
+
+			form.add(message);
+			frame.getContentPane().add(form, BorderLayout.NORTH);
+
+			frame.getContentPane().revalidate();
+			frame.getContentPane().repaint();
+			return;
 		}
+
 
 		createForm();
 		
