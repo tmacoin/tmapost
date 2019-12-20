@@ -5,25 +5,11 @@
  *
  * Authors addresses: 8LpN97eRQ2CQ95DaZoMiNLmuSM7NKKVKrUda, 6XUtJgWAzbqCH2XkU3eJhMm1eDcsQ8vDg8Uo
  *******************************************************************************/
-package org.tma.post;
+package org.tma.post.util;
 
-import java.awt.BorderLayout;
+import java.awt.Color;
 
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-
-public class SwingUtil {
-	
-	public static JLabel showWait(JFrame frame) {
-		frame.getContentPane().removeAll();
-		JPanel form = new JPanel(new BorderLayout());
-		JLabel label = new JLabel("Please wait, processing.");
-		form.add(label);
-		frame.getContentPane().add(form, BorderLayout.NORTH);
-		frame.revalidate();
-		frame.getContentPane().repaint();
-		return label;
-	}
-
+public interface Constants {
+	public static final String KEYS = "config/keys.csv";
+	public static final Color VERY_LIGHT_RED = new Color(255,200,200);
 }

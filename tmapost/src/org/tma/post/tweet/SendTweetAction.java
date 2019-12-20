@@ -8,6 +8,8 @@
 package org.tma.post.tweet;
 
 import java.awt.event.ActionEvent;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import javax.swing.AbstractAction;
@@ -18,16 +20,18 @@ import javax.swing.JTextArea;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.tma.blockchain.Keywords;
 import org.tma.blockchain.Transaction;
 import org.tma.blockchain.TransactionOutput;
 import org.tma.blockchain.Wallet;
+import org.tma.peer.BootstrapRequest;
 import org.tma.peer.Network;
 import org.tma.peer.SendTransactionRequest;
 import org.tma.peer.thin.GetInputsRequest;
 import org.tma.peer.thin.ResponseHolder;
 import org.tma.post.Caller;
-import org.tma.post.SwingUtil;
 import org.tma.post.Wallets;
+import org.tma.post.util.SwingUtil;
 import org.tma.util.Applications;
 import org.tma.util.Coin;
 import org.tma.util.ThreadExecutor;
@@ -57,6 +61,10 @@ public class SendTweetAction extends AbstractAction implements Caller {
 			public void doRun() {
 				Wallets wallets = Wallets.getInstance();
 				Wallet twitterWallet = wallets.getWalletStartsWith(Wallets.TWITTER + "-");
+				if(twitterWallet == null) {
+					jlabel.setText("Please create your twitter account first.");
+					return;
+				}
 				sendTweetTransaction(twitterWallet.getTmaAddress());
 				jlabel.setText("Tweet was sent");
 			}
@@ -65,16 +73,35 @@ public class SendTweetAction extends AbstractAction implements Caller {
 
 	
 	private void sendTweetTransaction(String twitterTmaAddress) {
-		String tmaAddress = Network.getInstance().getTmaAddress();
-		Wallet wallet = Wallets.getInstance().getWallet(Wallets.TMA);
-		GetInputsRequest request = new GetInputsRequest(Network.getInstance(), tmaAddress, Coin.SATOSHI);
+		Network network = Network.getInstance();
+		if(!network.isPeerSetComplete()) {
+			new BootstrapRequest(network).start();
+		}
+		String tmaAddress = network.getTmaAddress();
+		Wallets wallets = Wallets.getInstance();
+		Wallet wallet = wallets.getWallet(Wallets.TMA);
+		Coin amount = Coin.SATOSHI.multiply(2);
+		List<Coin> totals = new ArrayList<Coin>();
+		totals.add(amount);
+		GetInputsRequest request = new GetInputsRequest(network, tmaAddress, totals);
 		request.start();
 		@SuppressWarnings("unchecked")
-		Set<TransactionOutput> inputs = (Set<TransactionOutput>)ResponseHolder.getInstance().getObject(request.getCorrelationId()); 
+		List<Set<TransactionOutput>> inputList = (List<Set<TransactionOutput>>)ResponseHolder.getInstance().getObject(request.getCorrelationId());
+		int i = 0;
+		Set<TransactionOutput> inputs = inputList.get(i++);
+		
+		String key = wallets.getKeyStartsWith(Wallets.TWITTER + "-");
+		Keywords keywords = null;
+		if (key != null) {
+			String accountName = key.split("-", 2)[1];
+			keywords = new Keywords();
+			keywords.getMap().put("from", accountName);
+		}
+		
 		Transaction transaction = new Transaction(wallet.getPublicKey(), twitterTmaAddress, Coin.SATOSHI, Coin.SATOSHI, 
-				inputs, wallet.getPrivateKey(), tweet.getText(), null);
+				inputs, wallet.getPrivateKey(), tweet.getText(), null, keywords);
 		transaction.setApp(Applications.TWITTER);
-		new SendTransactionRequest(Network.getInstance(), transaction).start();
+		new SendTransactionRequest(network, transaction).start();
 		logger.debug("sent {}", transaction);
 	}
 

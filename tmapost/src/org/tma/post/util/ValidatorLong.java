@@ -5,11 +5,46 @@
  *
  * Authors addresses: 8LpN97eRQ2CQ95DaZoMiNLmuSM7NKKVKrUda, 6XUtJgWAzbqCH2XkU3eJhMm1eDcsQ8vDg8Uo
  *******************************************************************************/
-package org.tma.post;
+package org.tma.post.util;
 
 import java.awt.Color;
 
-public interface Constants {
-	public static final String KEYS = "config/keys.csv";
-	public static final Color VERY_LIGHT_RED = new Color(255,200,200);
+import javax.swing.JTextField;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+
+import org.tma.util.StringUtil;
+
+public class ValidatorLong implements DocumentListener {
+	
+	private JTextField tf;
+	
+	public ValidatorLong(JTextField tf) {
+		this.tf = tf;
+	}
+
+	public void insertUpdate(DocumentEvent e) {
+		validate();
+	}
+
+	public void removeUpdate(DocumentEvent e) {
+		validate();
+		
+	}
+
+	public void changedUpdate(DocumentEvent e) {
+		validate();
+		
+	}
+	
+	private void validate() {
+		String value = StringUtil.trim(tf.getText());
+		try {
+			Long.parseLong(value);
+			tf.setBackground(Color.white);
+		} catch (Exception e) {
+			tf.setBackground(Constants.VERY_LIGHT_RED);
+		}
+	}
+
 }

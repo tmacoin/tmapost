@@ -5,11 +5,10 @@
  *
  * Authors addresses: 8LpN97eRQ2CQ95DaZoMiNLmuSM7NKKVKrUda, 6XUtJgWAzbqCH2XkU3eJhMm1eDcsQ8vDg8Uo
  *******************************************************************************/
-package org.tma.post.tweet;
+package org.tma.post.rating;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
@@ -23,16 +22,17 @@ import javax.swing.JTextField;
 import org.tma.post.Caller;
 import org.tma.post.util.JTextFieldRegularPopupMenu;
 
-public class SearchTwitter extends AbstractAction implements Caller {
+import net.miginfocom.swing.MigLayout;
+
+public class FindRatee extends AbstractAction implements Caller {
 
 	private static final long serialVersionUID = 4036313657721664495L;
 	
 	private JFrame frame;
-	private JTextField account;
 	
-	public SearchTwitter(JFrame frame) {
-		putValue(NAME, "Search Twitter");
-		putValue(SHORT_DESCRIPTION, "Search Twitter");
+	public FindRatee(JFrame frame) {
+		putValue(NAME, "Find Ratee");
+		putValue(SHORT_DESCRIPTION, "Find Ratee");
 		this.frame = frame;
 	}
 	
@@ -42,38 +42,38 @@ public class SearchTwitter extends AbstractAction implements Caller {
 
 	public void actionPerformed(ActionEvent actionEvent) {
 		frame.getContentPane().removeAll();
-
 		createForm();
 		
 		frame.getContentPane().revalidate();
 		frame.getContentPane().repaint();
-		
-		account.grabFocus();
 	}
 	
 	private void createForm() {
-		JPanel form = new JPanel(new BorderLayout());
+		JPanel form = new JPanel(new MigLayout(
+		        "wrap 2",
+		        "[right][fill]"
+		        ));
 		frame.getContentPane().add(form, BorderLayout.NORTH);
 		
-		JPanel labelPanel = new JPanel(new GridLayout(2, 1));
-		JPanel fieldPanel = new JPanel(new GridLayout(2, 1));
-		form.add(labelPanel, BorderLayout.WEST);
-		form.add(fieldPanel, BorderLayout.CENTER);
+		form.add(new JLabel("Ratee:"));
 		
-		JLabel label = new JLabel("Account name:", JLabel.RIGHT);
-		labelPanel.add(label);
+		JTextField account = new JTextField(45);
+		JTextFieldRegularPopupMenu.addTo(account);
+		form.add(account);
+
+		form.add(new JLabel("Keywords:"));
+		
+		JTextField keywords = new JTextField(45);
+		JTextFieldRegularPopupMenu.addTo(keywords);
+		form.add(keywords);
+		
+		form.add(new JLabel(""));
 		
 		JPanel p = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		account = new JTextField(36);
-		JTextFieldRegularPopupMenu.addTo(account);
-		p.add(account);
-		fieldPanel.add(p);
-		
-		p = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		JButton btnSubmit = new JButton("Submit");
-		btnSubmit.setAction(new SearchTwitterAction(frame, account));
+		btnSubmit.setAction(new FindRateeAction(frame, account, keywords));
 		p.add(btnSubmit);
-		fieldPanel.add(p);
+		form.add(p);
 
 		frame.getRootPane().setDefaultButton(btnSubmit);
 	}

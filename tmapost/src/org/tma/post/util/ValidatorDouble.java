@@ -5,40 +5,46 @@
  *
  * Authors addresses: 8LpN97eRQ2CQ95DaZoMiNLmuSM7NKKVKrUda, 6XUtJgWAzbqCH2XkU3eJhMm1eDcsQ8vDg8Uo
  *******************************************************************************/
-package org.tma.post;
+package org.tma.post.util;
 
-public class KeyValue {
-	private String key;
-	private String value;
+import java.awt.Color;
 
-	public KeyValue(String key, String value) {
-		this.key = key;
-		this.value = value;
+import javax.swing.JTextField;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+
+import org.tma.util.StringUtil;
+
+public class ValidatorDouble implements DocumentListener {
+	
+	private JTextField tf;
+	
+	public ValidatorDouble(JTextField tf) {
+		this.tf = tf;
 	}
 
-	public String getValue() {
-		return value;
+	public void insertUpdate(DocumentEvent e) {
+		validate();
 	}
 
-	public String getKey() {
-		return key;
+	public void removeUpdate(DocumentEvent e) {
+		validate();
+		
 	}
 
-	public String toString() {
-		return key;
+	public void changedUpdate(DocumentEvent e) {
+		validate();
+		
 	}
-
-	public boolean equals(Object obj) {
-		if (obj instanceof KeyValue) {
-			KeyValue kv = (KeyValue) obj;
-			return (kv.value.equals(this.value));
+	
+	private void validate() {
+		String value = StringUtil.trim(tf.getText());
+		try {
+			Double.parseDouble(value);
+			tf.setBackground(Color.white);
+		} catch (Exception e) {
+			tf.setBackground(Constants.VERY_LIGHT_RED);
 		}
-		return false;
 	}
 
-	public int hashCode() {
-		int hash = 7;
-		hash = 97 * hash + (this.value != null ? this.value.hashCode() : 0);
-		return hash;
-	}
 }

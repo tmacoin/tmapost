@@ -10,6 +10,8 @@ package org.tma.post.message;
 import java.awt.event.ActionEvent;
 import java.nio.charset.StandardCharsets;
 import java.security.PublicKey;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import javax.swing.AbstractAction;
@@ -26,6 +28,7 @@ import org.tma.blockchain.Transaction;
 import org.tma.blockchain.TransactionData;
 import org.tma.blockchain.TransactionOutput;
 import org.tma.blockchain.Wallet;
+import org.tma.peer.BootstrapRequest;
 import org.tma.peer.Network;
 import org.tma.peer.SendTransactionRequest;
 import org.tma.peer.thin.GetInputsRequest;
@@ -33,9 +36,9 @@ import org.tma.peer.thin.GetPublicKeyRequest;
 import org.tma.peer.thin.ResponseHolder;
 import org.tma.persistance.Encryptor;
 import org.tma.post.Caller;
-import org.tma.post.KeyValue;
-import org.tma.post.SwingUtil;
 import org.tma.post.Wallets;
+import org.tma.post.util.KeyValue;
+import org.tma.post.util.SwingUtil;
 import org.tma.util.Applications;
 import org.tma.util.Base58;
 import org.tma.util.Coin;
@@ -114,14 +117,23 @@ public class SendMessageAction extends AbstractAction implements Caller {
 		
 		ThreadExecutor.getInstance().execute(new TmaRunnable("SendTransactionAction") {
 			public void doRun() {
-				GetInputsRequest request = new GetInputsRequest(Network.getInstance(), tmaAddress, total);
+				Network network = Network.getInstance();
+				if(!network.isPeerSetComplete()) {
+					new BootstrapRequest(network).start();
+				}
+
+				List<Coin> totals = new ArrayList<Coin>();
+				totals.add(total);
+				GetInputsRequest request = new GetInputsRequest(network, tmaAddress, totals);
 				request.start();
 				@SuppressWarnings("unchecked")
-				Set<TransactionOutput> inputs = (Set<TransactionOutput>)ResponseHolder.getInstance().getObject(request.getCorrelationId()); 
+				List<Set<TransactionOutput>> inputList = (List<Set<TransactionOutput>>)ResponseHolder.getInstance().getObject(request.getCorrelationId());
+				int i = 0;
+				Set<TransactionOutput> inputs = inputList.get(i++); 
 				logger.debug("number of inputs: {} for {}", inputs.size(), tmaAddress);
 				
 				String recipientTmaAddress = jaddress.getText();
-				GetPublicKeyRequest getPublicKeyRequest = new GetPublicKeyRequest(Network.getInstance(), recipientTmaAddress);
+				GetPublicKeyRequest getPublicKeyRequest = new GetPublicKeyRequest(network, recipientTmaAddress);
 				getPublicKeyRequest.start();
 				recipient = (PublicKey) ResponseHolder.getInstance().getObject(getPublicKeyRequest.getCorrelationId());
 				
@@ -152,10 +164,10 @@ public class SendMessageAction extends AbstractAction implements Caller {
 				TransactionData expiringData = data;
 				
 				Transaction transaction = new Transaction(wallet.getPublicKey(), StringUtil.getStringFromKey(recipient), Coin.SATOSHI, 
-						new Coin(Integer.parseInt(fee)), inputs, wallet.getPrivateKey(), null, expiringData);
+						new Coin(Integer.parseInt(fee)), inputs, wallet.getPrivateKey(), null, expiringData, null);
 				transaction.setApp(Applications.MESSAGING);
 				logger.debug("sent {}", transaction);
-				new SendTransactionRequest(Network.getInstance(), transaction).start();
+				new SendTransactionRequest(network, transaction).start();
 				
 				label.setText("Message was sent");
 			}

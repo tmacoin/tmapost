@@ -24,8 +24,8 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 import org.tma.post.Caller;
-import org.tma.post.JTextFieldRegularPopupMenu;
 import org.tma.post.Wallets;
+import org.tma.post.util.JTextFieldRegularPopupMenu;
 
 public class CreateTwitter extends AbstractAction implements Caller {
 
@@ -94,7 +94,7 @@ public class CreateTwitter extends AbstractAction implements Caller {
 		labelPanel.add(label);
 		
 		JPanel p = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		account = new JTextField(36);
+		account = new JTextField(45);
 		JTextFieldRegularPopupMenu.addTo(account);
 		p.add(account);
 		fieldPanel.add(p);
@@ -103,7 +103,7 @@ public class CreateTwitter extends AbstractAction implements Caller {
 		labelPanel.add(label);
 		
 		p = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		JTextField description = new JTextField(36);
+		JTextField description = new JTextField(45);
 		JTextFieldRegularPopupMenu.addTo(description);
 		p.add(description);
 		fieldPanel.add(p);
@@ -112,7 +112,7 @@ public class CreateTwitter extends AbstractAction implements Caller {
 		labelPanel.add(label);
 		
 		p = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		JPasswordField passwordField = new JPasswordField(20);
+		JPasswordField passwordField = new JPasswordField(45);
 		p.add(passwordField);
 		fieldPanel.add(p);
 		

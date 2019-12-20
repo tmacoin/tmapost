@@ -10,7 +10,6 @@ package org.tma.post;
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
 import java.awt.FlowLayout;
-import java.awt.GridLayout;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -25,6 +24,8 @@ import javax.swing.JPasswordField;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import net.miginfocom.swing.MigLayout;
 
 public class TmaPost {
 	
@@ -82,34 +83,28 @@ public class TmaPost {
 	
 	private void createNewPassphrase() {
 		
-		JPanel form = new JPanel(new BorderLayout());
+		JPanel form = new JPanel(new MigLayout(
+		        "wrap 2",
+		        "[right][fill]"
+		        ));
 		
-		JPanel labelPanel = new JPanel(new GridLayout(3, 1));
-		JPanel fieldPanel = new JPanel(new GridLayout(3, 1));
-		form.add(labelPanel, BorderLayout.WEST);
-		form.add(fieldPanel, BorderLayout.CENTER);
+		JLabel label = new JLabel("Enter Passphrase:");
+		form.add(label);
 		
-		JLabel label = new JLabel("Enter Passphrase:", JLabel.RIGHT);
-		labelPanel.add(label);
+		passwordField = new JPasswordField(45);
+		form.add(passwordField);
 		
 		label = new JLabel("Reenter New Passphrase:");
-		labelPanel.add(label);
+		form.add(label);
+
+		confirmPasswordField = new JPasswordField(45);
+		form.add(confirmPasswordField);
 		
 		JPanel p = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		passwordField = new JPasswordField(20);
-		p.add(passwordField);
-		fieldPanel.add(p);
-		
-		p = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		confirmPasswordField = new JPasswordField(20);
-		p.add(confirmPasswordField);
-		fieldPanel.add(p);
-		
-		p = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		JButton btnSubmit = new JButton("Submit");
 		btnSubmit.setAction(new CreateKeyAction(frame, passwordField, confirmPasswordField));
 		p.add(btnSubmit);
-		fieldPanel.add(p);
+		form.add(p);
 
 		frame.getContentPane().add(form, BorderLayout.NORTH);
 		frame.getRootPane().setDefaultButton(btnSubmit);
@@ -117,28 +112,21 @@ public class TmaPost {
 	
 	private void enterPassphrase() {
 		
-		JPanel form = new JPanel(new BorderLayout());
+		JPanel form = new JPanel(new MigLayout("wrap 2", "[right][fill]"));
 		
-		JPanel labelPanel = new JPanel(new GridLayout(2, 1));
-		JPanel fieldPanel = new JPanel(new GridLayout(2, 1));
-		form.add(labelPanel, BorderLayout.WEST);
-		form.add(fieldPanel, BorderLayout.CENTER);
+		JLabel label = new JLabel("Enter Passphrase:");
+		form.add(label);
 		
-		JLabel label = new JLabel("Enter Passphrase:", JLabel.RIGHT);
-		labelPanel.add(label);
+		passwordField = new JPasswordField(45);
+		form.add(passwordField);
 		
 		JPanel p = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		passwordField = new JPasswordField(20);
-		p.add(passwordField);
-		fieldPanel.add(p);
-		
-		p = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		JButton btnSubmit = new JButton("Submit");
 		btnSubmit.setAction(new SubmitPasswordAction(frame, passwordField));
 		p.add(btnSubmit);
-		fieldPanel.add(p);
+		form.add(p);
 
-		frame.getContentPane().add(form, BorderLayout.NORTH);
+		frame.getContentPane().add(form);
 		
 		frame.getRootPane().setDefaultButton(btnSubmit);
 		

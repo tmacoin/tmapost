@@ -27,10 +27,10 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 import org.tma.post.Caller;
-import org.tma.post.JTextFieldRegularPopupMenu;
-import org.tma.post.KeyValue;
-import org.tma.post.ValidatorLong;
-import org.tma.post.ValidatorTmaAddress;
+import org.tma.post.util.JTextFieldRegularPopupMenu;
+import org.tma.post.util.KeyValue;
+import org.tma.post.util.ValidatorLong;
+import org.tma.post.util.ValidatorTmaAddress;
 
 public class SendMessage extends AbstractAction implements Caller {
 

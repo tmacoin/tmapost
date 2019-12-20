@@ -8,6 +8,8 @@
 package org.tma.post;
 
 import java.awt.event.ActionEvent;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import javax.swing.AbstractAction;
@@ -27,6 +29,7 @@ import org.tma.peer.Network;
 import org.tma.peer.SendTransactionRequest;
 import org.tma.peer.thin.GetInputsRequest;
 import org.tma.peer.thin.ResponseHolder;
+import org.tma.post.util.SwingUtil;
 import org.tma.util.Coin;
 import org.tma.util.StringUtil;
 import org.tma.util.ThreadExecutor;
@@ -99,7 +102,8 @@ public class SendTransactionAction extends AbstractAction implements Caller {
 			log("Please verify inputs");
 			return;
 		}
-		String tmaAddress = Network.getInstance().getTmaAddress();
+		Network network = Network.getInstance();
+		String tmaAddress = network.getTmaAddress();
 		Coin total = Coin.ONE.multiply(Double.parseDouble(amount)).add(new Coin(Long.parseLong(fee)));
 		Wallet wallet = Wallets.getInstance().getWallet(Wallets.TMA);
 		TransactionData expiringData = this.expiringData == null? null: new TransactionData(this.expiringData, Long.parseLong(expire));
@@ -109,13 +113,17 @@ public class SendTransactionAction extends AbstractAction implements Caller {
 		
 		ThreadExecutor.getInstance().execute(new TmaRunnable("SendTransactionAction") {
 			public void doRun() {
-				GetInputsRequest request = new GetInputsRequest(Network.getInstance(), tmaAddress, total);
+				List<Coin> totals = new ArrayList<Coin>();
+				totals.add(total);
+				GetInputsRequest request = new GetInputsRequest(network, tmaAddress, totals);
 				request.start();
 				@SuppressWarnings("unchecked")
-				Set<TransactionOutput> inputs = (Set<TransactionOutput>)ResponseHolder.getInstance().getObject(request.getCorrelationId()); 
+				List<Set<TransactionOutput>> inputList = (List<Set<TransactionOutput>>)ResponseHolder.getInstance().getObject(request.getCorrelationId());
+				int i = 0;
+				Set<TransactionOutput> inputs = inputList.get(i++);
 				logger.debug("number of inputs: {} for {}", inputs.size(), tmaAddress);
 				Transaction transaction = new Transaction(wallet.getPublicKey(), recipient, Coin.ONE.multiply(Double.parseDouble(amount)), 
-						new Coin(Integer.parseInt(fee)), inputs, wallet.getPrivateKey(), data, expiringData);
+						new Coin(Integer.parseInt(fee)), inputs, wallet.getPrivateKey(), data, expiringData, null);
 				logger.debug("sent {}", transaction);
 				new SendTransactionRequest(Network.getInstance(), transaction).start();
 				

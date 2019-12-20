@@ -25,6 +25,11 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
+import org.tma.post.util.JTextFieldRegularPopupMenu;
+import org.tma.post.util.ValidatorDouble;
+import org.tma.post.util.ValidatorLong;
+import org.tma.post.util.ValidatorTmaAddress;
+
 public class SendTransaction extends AbstractAction implements Caller {
 
 	private static final long serialVersionUID = 4036313657721664495L;

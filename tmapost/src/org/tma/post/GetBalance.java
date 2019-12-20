@@ -20,6 +20,9 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import org.tma.post.util.JTextFieldRegularPopupMenu;
+import org.tma.post.util.ValidatorTmaAddress;
+
 public class GetBalance extends AbstractAction implements Caller {
 
 	private static final long serialVersionUID = 4036313657721664495L;

@@ -14,7 +14,10 @@ import javax.swing.JMenuItem;
 
 import org.tma.post.message.SendMessage;
 import org.tma.post.message.ShowMessages;
+import org.tma.post.rating.CreateRatee;
+import org.tma.post.rating.FindRatee;
 import org.tma.post.tweet.CreateTwitter;
+import org.tma.post.tweet.MySubscriptionsAction;
 import org.tma.post.tweet.SearchTwitter;
 import org.tma.post.tweet.SendTweet;
 import org.tma.post.tweet.ShowMyTweets;
@@ -25,13 +28,38 @@ public class MenuCreator {
 		JMenuBar menuBar = new JMenuBar();
 		frame.setJMenuBar(menuBar);
 		
+		addMenuFile(menuBar);
+		addMenuTools(menuBar, frame);
+		addMenuMessaging(menuBar, frame);
+		addMenuTwitter(menuBar, frame);
+		addMenuRating(menuBar, frame);
+		menuBar.updateUI();
+	}
+	
+	private static void addMenuRating(JMenuBar menuBar, JFrame frame) {
+		JMenu menu = new JMenu("Rating");
+		menuBar.add(menu);
+		
+		JMenuItem menuItem = new JMenuItem("Create Ratee");
+		menuItem.setAction(new CreateRatee(frame));
+		menu.add(menuItem);
+		
+		menuItem = new JMenuItem("Find Ratee");
+		menuItem.setAction(new FindRatee(frame));
+		menu.add(menuItem);
+		
+	}
+	
+	private static void addMenuFile(JMenuBar menuBar) {
 		JMenu mnFile = new JMenu("File");
 		menuBar.add(mnFile);
 		
 		JMenuItem mntmExit = new JMenuItem("Exit");
 		mntmExit.setAction(new ExitAction());
 		mnFile.add(mntmExit);
-		
+	}
+	
+	private static void addMenuTools(JMenuBar menuBar, JFrame frame) {
 		JMenu mnTools = new JMenu("Tools");
 		menuBar.add(mnTools);
 		
@@ -50,7 +78,9 @@ public class MenuCreator {
 		JMenuItem mntmShowAddress = new JMenuItem("Show Address");
 		mntmShowAddress.setAction(new ShowAddress(frame));
 		mnTools.add(mntmShowAddress);
-		
+	}
+	
+	private static void addMenuMessaging(JMenuBar menuBar, JFrame frame) {
 		JMenu mnMessaging = new JMenu("Messaging");
 		menuBar.add(mnMessaging);
 		
@@ -61,7 +91,9 @@ public class MenuCreator {
 		JMenuItem mntmShowMessages = new JMenuItem("Show Messages");
 		mntmShowMessages.setAction(new ShowMessages(frame));
 		mnMessaging.add(mntmShowMessages);
-		
+	}
+	
+	private static void addMenuTwitter(JMenuBar menuBar, JFrame frame) {
 		JMenu mnTwitter = new JMenu("Twitter");
 		menuBar.add(mnTwitter);
 		
@@ -81,9 +113,11 @@ public class MenuCreator {
 		mntmSearchTwitter.setAction(new SearchTwitter(frame));
 		mnTwitter.add(mntmSearchTwitter);
 		
-		
-		
-		menuBar.updateUI();
+		JMenuItem mntmMySubscriptions = new JMenuItem("My Subscriptions");
+		mntmMySubscriptions.setAction(new MySubscriptionsAction(frame));
+		mnTwitter.add(mntmMySubscriptions);
 	}
+	
+	
 
 }

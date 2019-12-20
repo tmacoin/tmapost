@@ -20,76 +20,64 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.JTextField;
 
-import org.tma.peer.BootstrapRequest;
-import org.tma.peer.Network;
-import org.tma.peer.thin.ResponseHolder;
-import org.tma.peer.thin.SearchTwitterRequest;
 import org.tma.peer.thin.TwitterAccount;
 import org.tma.post.Caller;
+import org.tma.post.persistance.TwitterStore;
 import org.tma.post.util.SwingUtil;
 import org.tma.post.util.TableColumnAdjuster;
-import org.tma.util.StringUtil;
 import org.tma.util.ThreadExecutor;
 import org.tma.util.TmaRunnable;
 
-public class SearchTwitterAction extends AbstractAction implements Caller {
+public class MySubscriptionsAction extends AbstractAction implements Caller {
 
 	private static final long serialVersionUID = 4008418980341407814L;
 	
 	private JFrame frame;
-	private JTextField account;
 	
-	public SearchTwitterAction(JFrame frame, JTextField account) {
-		putValue(NAME, "Search Twitter Accounts");
-		putValue(SHORT_DESCRIPTION, "Search Twitter Accounts");
+	public MySubscriptionsAction(JFrame frame) {
+		putValue(NAME, "My Subscriptions");
+		putValue(SHORT_DESCRIPTION, "My Subscriptions");
 		this.frame = frame;
-		this.account = account;
 	}
 
 	public void actionPerformed(ActionEvent e) {
 		
-		JLabel label = SwingUtil.showWait(frame);
+		SwingUtil.showWait(frame);
 		
-		ThreadExecutor.getInstance().execute(new TmaRunnable("SearchTwitterAction") {
+		ThreadExecutor.getInstance().execute(new TmaRunnable("My Subscriptions") {
 			public void doRun() {
-				Network network = Network.getInstance();
-				if(!network.isPeerSetComplete()) {
-					new BootstrapRequest(network).start();
-				}
-				String accountName = StringUtil.trim(account.getText());
-				SearchTwitterRequest request = new SearchTwitterRequest(network, accountName);
-				request.start();
-				@SuppressWarnings("unchecked")
-				List<TwitterAccount> list = (List<TwitterAccount>) ResponseHolder.getInstance().getObject(request.getCorrelationId());
-				
-				if(list == null) {
-					label.setText("Failed to retrieve twitter accounts. Please try again");
-					return;
-				}
+
+				List<TwitterAccount> list = TwitterStore.getInstance().selectAll();
 				
 				frame.getContentPane().removeAll();
 				
 				JPanel form = new JPanel();
 				form.setLayout(new BoxLayout(form, BoxLayout.Y_AXIS));
 				
-				JLabel label = new JLabel("Twitter account(s) with name " + accountName);
-				form.add(label);
-				
-				form.add(Box.createRigidArea(new Dimension(0, 20)));
-				
-				TwitterAccountTableModel model = new TwitterAccountTableModel(list);
-				JTable table = new JTable(model);
+				if(list.size() != 0) {
+					JLabel label = new JLabel("My Subscriptions");
+					form.add(label);
+					
+					form.add(Box.createRigidArea(new Dimension(0, 20)));
+					
+					TwitterAccountTableModel model = new TwitterAccountTableModel(list);
+					JTable table = new JTable(model);
 
-				table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-				TableColumnAdjuster tca = new TableColumnAdjuster(table);
-				tca.adjustColumns();
-				table.addMouseListener(new TwitterAccountMouseAdapter(table, list, frame));
+					table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+					TableColumnAdjuster tca = new TableColumnAdjuster(table);
+					tca.adjustColumns();
+					table.addMouseListener(new TwitterAccountMouseAdapter(table, list, frame));
 
-				JScrollPane scroll = new JScrollPane (table);
-				scroll.setBorder(null);
-				form.add(scroll);
+					JScrollPane scroll = new JScrollPane (table);
+					scroll.setBorder(null);
+					form.add(scroll);
+				} else {
+					JLabel label = new JLabel("No Subscriptions found");
+					form.add(label);
+				}
+				
+				
 				
 				frame.getContentPane().add(form);
 				

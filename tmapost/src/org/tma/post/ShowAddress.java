@@ -21,6 +21,7 @@ import javax.swing.JTextField;
 
 import org.tma.blockchain.Wallet;
 import org.tma.peer.Network;
+import org.tma.post.util.JTextFieldRegularPopupMenu;
 
 public class ShowAddress extends AbstractAction implements Caller {
 

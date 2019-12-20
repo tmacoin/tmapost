@@ -5,22 +5,22 @@
  *
  * Authors addresses: 8LpN97eRQ2CQ95DaZoMiNLmuSM7NKKVKrUda, 6XUtJgWAzbqCH2XkU3eJhMm1eDcsQ8vDg8Uo
  *******************************************************************************/
-package org.tma.post.tweet;
+package org.tma.post.rating;
 
 import java.util.Date;
 import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
 
-import org.tma.peer.thin.TwitterAccount;
+import org.tma.peer.thin.Ratee;
 
-public class TwitterAccountTableModel extends AbstractTableModel {
+public class RateeTableModel extends AbstractTableModel {
 
 	private static final long serialVersionUID = 1012645969055258357L;
 	
-	private List<TwitterAccount> list;
+	private List<Ratee> list;
 	
-	public TwitterAccountTableModel(List<TwitterAccount> list) {
+	public RateeTableModel(List<Ratee> list) {
 		this.list = list;
 	}
 
@@ -33,20 +33,20 @@ public class TwitterAccountTableModel extends AbstractTableModel {
 	}
 
 	public Object getValueAt(int rowIndex, int columnIndex) {
-		TwitterAccount twitterAccount = list.toArray(new TwitterAccount[0])[rowIndex];
+		Ratee ratee = list.toArray(new Ratee[0])[rowIndex];
         Object value = "";
         switch (columnIndex) {
             case 0:
-                value = twitterAccount.getName();
+                value = ratee.getName();
                 break;
             case 1:
-            	value = twitterAccount.getTmaAddress();
-                break;
+            	value = ratee.getDescription().length() > 50? ratee.getDescription().substring(0, 50) + " ...": ratee.getDescription();
+    			break;
             case 2:
-            	value = new Date(twitterAccount.getTimeStamp()).toString();
+            	value = new Date(ratee.getTimeStamp()).toString();
     			break;
             case 3:
-            	value = twitterAccount.getDescription();
+            	value = ratee.getTotalRating();
     			break;
         }
         return value;
@@ -56,16 +56,16 @@ public class TwitterAccountTableModel extends AbstractTableModel {
 		String value = null;
 		switch (columnIndex) {
 		case 0:
-			value = "Twitter Account Name";
+			value = "Ratee";
 			break;
 		case 1:
-			value = "TMA Address";
+			value = "Description";
 			break;
 		case 2:
 			value = "Created on";
 			break;
 		case 3:
-			value = "Description";
+			value = "Rating";
 			break;
 		}
 		return value;

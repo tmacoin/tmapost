@@ -25,14 +25,15 @@ import javax.swing.JTable;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.tma.blockchain.Wallet;
+import org.tma.peer.BootstrapRequest;
 import org.tma.peer.Network;
 import org.tma.peer.thin.GetMessagesRequest;
 import org.tma.peer.thin.ResponseHolder;
 import org.tma.peer.thin.SecureMessage;
 import org.tma.post.Caller;
-import org.tma.post.SwingUtil;
-import org.tma.post.TableColumnAdjuster;
 import org.tma.post.Wallets;
+import org.tma.post.util.SwingUtil;
+import org.tma.post.util.TableColumnAdjuster;
 import org.tma.util.ThreadExecutor;
 import org.tma.util.TmaRunnable;
 
@@ -62,7 +63,11 @@ public class ShowMessages extends AbstractAction implements Caller {
 		PublicKey publicKey = wallet.getPublicKey();
 		ThreadExecutor.getInstance().execute(new TmaRunnable("ShowMessages") {
 			public void doRun() {
-				GetMessagesRequest request = new GetMessagesRequest(Network.getInstance(), publicKey);
+				Network network = Network.getInstance();
+				if(!network.isPeerSetComplete()) {
+					new BootstrapRequest(network).start();
+				}
+				GetMessagesRequest request = new GetMessagesRequest(network, publicKey);
 				request.start();
 				@SuppressWarnings("unchecked")
 				List<SecureMessage> list = (List<SecureMessage>) ResponseHolder.getInstance().getObject(request.getCorrelationId());
@@ -85,20 +90,24 @@ public class ShowMessages extends AbstractAction implements Caller {
 				
 				form.add(Box.createRigidArea(new Dimension(0, 20)));
 				
-				SecureMessageTableModel model = new SecureMessageTableModel(list);
-				JTable table = new JTable(model);
+				if(list.size() != 0) {
+					SecureMessageTableModel model = new SecureMessageTableModel(list);
+					JTable table = new JTable(model);
 
-				table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-				TableColumnAdjuster tca = new TableColumnAdjuster(table);
-				tca.adjustColumns();
-				table.addMouseListener(new MessageMouseAdapter(table, list, frame));
+					table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+					TableColumnAdjuster tca = new TableColumnAdjuster(table);
+					tca.adjustColumns();
+					table.addMouseListener(new MessageMouseAdapter(table, list, frame));
 
-				JScrollPane scroll = new JScrollPane (table);
-				scroll.setBorder(null);
-				form.add(scroll);
+					JScrollPane scroll = new JScrollPane (table);
+					scroll.setBorder(null);
+					form.add(scroll);
+				} else {
+					label.setText("No messages found for " + tmaAddress);
+				}
+				
 				
 				frame.getContentPane().add(form);
-				//frame.pack();
 				frame.revalidate();
 				frame.getContentPane().repaint();
 			}

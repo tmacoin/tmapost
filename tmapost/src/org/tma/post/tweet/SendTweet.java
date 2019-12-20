@@ -22,7 +22,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
 import org.tma.post.Caller;
-import org.tma.post.JTextFieldRegularPopupMenu;
+import org.tma.post.util.JTextFieldRegularPopupMenu;
 
 public class SendTweet extends AbstractAction implements Caller {
 
