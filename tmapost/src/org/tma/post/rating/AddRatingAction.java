@@ -9,7 +9,9 @@ package org.tma.post.rating;
 
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.swing.AbstractAction;
@@ -164,6 +166,7 @@ public class AddRatingAction extends AbstractAction implements Caller {
 		int i = 0;
 		
 		Keywords keywords = new Keywords();
+		keywords.getMap().put("rater", wallet.getTmaAddress());
 		keywords.getMap().put("ratee", accountName);
 		keywords.getMap().put("transactionId", transactionId.getText());
 		keywords.getMap().put("rating", SwingUtil.getSelectedButtonText(bgroup));
@@ -174,11 +177,12 @@ public class AddRatingAction extends AbstractAction implements Caller {
 		new SendTransactionRequest(network, transaction).start();
 		logger.debug("sent {}", transaction);
 		
-		
+		Map<String, String> map = new HashMap<String, String>(keywords.getMap());
+		map.remove("rater");
 		for(String word: accountKeywords.getMap().keySet()) {
 			if(word.equals(accountKeywords.getMap().get(word))) {
 				Keywords words = new Keywords();
-				words.getMap().putAll(keywords.getMap());
+				words.getMap().putAll(map);
 				transaction = new Transaction(wallet.getPublicKey(), StringUtil.getTmaAddressFromString(word), Coin.SATOSHI, Coin.SATOSHI, 
 						inputList.get(i++), wallet.getPrivateKey(), comment.getText().trim(), null, words);
 				transaction.setApp(Applications.RATING);

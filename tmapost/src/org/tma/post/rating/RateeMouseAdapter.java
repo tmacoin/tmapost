@@ -281,7 +281,6 @@ public class RateeMouseAdapter extends MouseAdapter {
 	}
 
 	private void displayRaterComments(String rater, JLabel label) {
-		logger.debug("rater={}", rater);
 		Network network = Network.getInstance();
 		if(!network.isPeerSetComplete()) {
 			new BootstrapRequest(network).start();
@@ -306,10 +305,9 @@ public class RateeMouseAdapter extends MouseAdapter {
 		form.add(new JLabel("Total number of comments found: " + list.size()), "span, left");
 		
 		showRatings(list, form);
-		
+	
 		frame.getContentPane().revalidate();
 		frame.getContentPane().repaint();
-		
 	}
 	
 }
