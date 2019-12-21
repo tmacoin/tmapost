@@ -93,5 +93,19 @@ public class TwitterStore {
 		}
 		return list;
 	}
+	
+	public void removeAll() {
+		try {
+			new DBExecutor() {
+				public void doWork() throws Exception {
+					String sql = "delete from TWITTER_SUBSCRIPTION";
+					ps = conn.prepareStatement(sql);
+					ps.executeUpdate();
+				}
+			}.execute();
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		}
+	}
 
 }
