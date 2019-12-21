@@ -7,11 +7,17 @@
  *******************************************************************************/
 package org.tma.post.rating;
 
+import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.font.TextAttribute;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
@@ -215,9 +221,15 @@ public class RateeMouseAdapter extends MouseAdapter {
 			
 			JTextField rater = new JTextField(45);
 			rater.setText(rating.getRater());
+			rater.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 			rater.setOpaque(false);
 			rater.setEditable(false);
 			rater.setBorder(null);
+			rater.setForeground(Color.BLUE);
+			Font font = rater.getFont();
+			Map<TextAttribute, Integer> attributes = new HashMap<>();
+			attributes.put(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_ON);
+			rater.setFont(font.deriveFont(attributes));
 			rater.addMouseListener(new MouseAdapter(){
 	            public void mouseClicked(MouseEvent e){
 	                showRater(rating.getRater());
@@ -302,7 +314,7 @@ public class RateeMouseAdapter extends MouseAdapter {
 		JScrollPane scrollPane = new JScrollPane(form, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		frame.getContentPane().add(scrollPane);
 		
-		form.add(new JLabel("Total number of comments found: " + list.size()), "span, left");
+		form.add(new JLabel("Total number of comments found for " + rater + ": " + list.size()), "span, left");
 		
 		showRatings(list, form);
 	
