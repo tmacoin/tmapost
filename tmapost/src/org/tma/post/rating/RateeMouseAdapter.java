@@ -39,6 +39,7 @@ import org.tma.peer.Network;
 import org.tma.peer.thin.Ratee;
 import org.tma.peer.thin.Rating;
 import org.tma.peer.thin.ResponseHolder;
+import org.tma.peer.thin.SearchRateeRequest;
 import org.tma.peer.thin.SearchRatingForRaterRequest;
 import org.tma.peer.thin.SearchRatingRequest;
 import org.tma.post.util.JTextFieldRegularPopupMenu;
@@ -241,10 +242,18 @@ public class RateeMouseAdapter extends MouseAdapter {
 			
 			JTextField ratee = new JTextField(45);
 			ratee.setText(rating.getRatee());
+			ratee.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 			ratee.setOpaque(false);
 			ratee.setEditable(false);
 			ratee.setBorder(null);
+			ratee.setForeground(Color.BLUE);
 			JTextFieldRegularPopupMenu.addTo(ratee);
+			ratee.setFont(font.deriveFont(attributes));
+			ratee.addMouseListener(new MouseAdapter(){
+	            public void mouseClicked(MouseEvent e){
+	                showRatee(rating.getRatee(), rating.getTransactionId());
+	            }
+	        });
 			form.add(ratee);
 			
 			form.add(new JLabel("Rate:"));
@@ -279,6 +288,35 @@ public class RateeMouseAdapter extends MouseAdapter {
 			form.add(comment);
 
 		}
+	}
+
+	private void showRatee(String ratee, String transactionId) {
+		JLabel label = SwingUtil.showWait(frame);
+
+		ThreadExecutor.getInstance().execute(new TmaRunnable("showRater") {
+			public void doRun() {
+				doShowRatee(ratee, transactionId, label);
+			}
+		});
+		
+	}
+
+	private void doShowRatee(String account, String transactionId, JLabel label) {
+		Network network = Network.getInstance();
+		if(!network.isPeerSetComplete()) {
+			new BootstrapRequest(network).start();
+		}
+
+		SearchRateeRequest request = new SearchRateeRequest(network, account, transactionId);
+		request.start();
+		Ratee ratee = (Ratee) ResponseHolder.getInstance().getObject(request.getCorrelationId());
+		
+		if(ratee == null) {
+			label.setText("Failed to retrieve ratee. Please try again");
+			return;
+		}
+		show(ratee);
+		
 	}
 
 	private void showRater(String rater) {

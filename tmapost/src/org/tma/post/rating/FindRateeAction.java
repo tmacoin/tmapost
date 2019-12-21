@@ -28,7 +28,7 @@ import org.tma.peer.BootstrapRequest;
 import org.tma.peer.Network;
 import org.tma.peer.thin.Ratee;
 import org.tma.peer.thin.ResponseHolder;
-import org.tma.peer.thin.SearchRateeRequest;
+import org.tma.peer.thin.SearchRateesRequest;
 import org.tma.post.Caller;
 import org.tma.post.util.SwingUtil;
 import org.tma.post.util.TableColumnAdjuster;
@@ -72,7 +72,7 @@ public class FindRateeAction extends AbstractAction implements Caller {
 		}
 		
 		String accountName = StringUtil.trim(account.getText());
-		SearchRateeRequest request = new SearchRateeRequest(network, accountName, words);
+		SearchRateesRequest request = new SearchRateesRequest(network, accountName, words);
 		request.start();
 		@SuppressWarnings("unchecked")
 		List<Ratee> list = (List<Ratee>) ResponseHolder.getInstance().getObject(request.getCorrelationId());
