@@ -68,8 +68,8 @@ public class SendMessageAction extends AbstractAction implements Caller {
 	
 
 	public SendMessageAction(JFrame frame, JTextField address, JTextField fee, JComboBox<KeyValue> expire, JTextField subject, JTextArea expiringData) {
-		putValue(NAME, "Send Message");
-		putValue(SHORT_DESCRIPTION, "Send Message Action");
+		putValue(NAME, "Send Secure Message");
+		putValue(SHORT_DESCRIPTION, "Send SecureS Message Action");
 		this.frame = frame;
 		
 		jaddress = address;

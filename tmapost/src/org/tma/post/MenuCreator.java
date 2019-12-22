@@ -84,7 +84,7 @@ public class MenuCreator {
 		JMenu mnMessaging = new JMenu("Messaging");
 		menuBar.add(mnMessaging);
 		
-		JMenuItem mntmSendMessage = new JMenuItem("Send Message");
+		JMenuItem mntmSendMessage = new JMenuItem("Send Secure Message");
 		mntmSendMessage.setAction(new SendMessage(frame));
 		mnMessaging.add(mntmSendMessage);
 		

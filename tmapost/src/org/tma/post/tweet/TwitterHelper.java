@@ -22,6 +22,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTextArea;
 import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
 
 import org.tma.peer.BootstrapRequest;
 import org.tma.peer.Network;
@@ -68,7 +69,10 @@ public class TwitterHelper {
 		panel.add(new JSeparator(), "growx, span");
 		area.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
-                displayTweet(tweet);
+            	if(SwingUtilities.isLeftMouseButton(e)) {
+            		displayTweet(tweet);
+            	}
+                
             }
 
         });

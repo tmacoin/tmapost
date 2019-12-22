@@ -31,6 +31,7 @@ import javax.swing.JSeparator;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -43,6 +44,7 @@ import org.tma.peer.thin.SearchRateeRequest;
 import org.tma.peer.thin.SearchRatingForRaterRequest;
 import org.tma.peer.thin.SearchRatingRequest;
 import org.tma.post.Wallets;
+import org.tma.post.message.SendMessage;
 import org.tma.post.util.JTextFieldRegularPopupMenu;
 import org.tma.post.util.SwingUtil;
 import org.tma.util.StringUtil;
@@ -108,6 +110,20 @@ public class RateeMouseAdapter extends MouseAdapter {
 		account.setEditable(false);
 		account.setBorder(null);
 		JTextFieldRegularPopupMenu.addTo(account);
+		account.addMouseListener(new MouseAdapter(){
+            public void mouseClicked(MouseEvent e){
+            	if(SwingUtilities.isLeftMouseButton(e)) {
+            		SendMessage sendMessage = new SendMessage(frame, ratee.getCreatorTmaAddress());
+            		sendMessage.setSubject("Re: " + ratee.getName());
+            		sendMessage.actionPerformed(null);
+            	}
+            }
+        });
+		account.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		account.setForeground(Color.BLUE);
+		Map<TextAttribute, Integer> attributes = new HashMap<>();
+		attributes.put(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_ON);
+		account.setFont(account.getFont().deriveFont(attributes));
 		form.add(account);
 
 		form.add(new JLabel("Description:"));
@@ -248,7 +264,9 @@ public class RateeMouseAdapter extends MouseAdapter {
 			rater.setFont(font.deriveFont(attributes));
 			rater.addMouseListener(new MouseAdapter(){
 	            public void mouseClicked(MouseEvent e){
-	                showRater(rating.getRater());
+	            	if(SwingUtilities.isLeftMouseButton(e)) {
+	            		showRater(rating.getRater());
+	            	}
 	            }
 	        });
 			form.add(rater);
@@ -266,7 +284,10 @@ public class RateeMouseAdapter extends MouseAdapter {
 			ratee.setFont(font.deriveFont(attributes));
 			ratee.addMouseListener(new MouseAdapter(){
 	            public void mouseClicked(MouseEvent e){
-	                showRatee(rating.getRatee(), rating.getTransactionId());
+	            	if(SwingUtilities.isLeftMouseButton(e)) {
+	            		showRatee(rating.getRatee(), rating.getTransactionId());
+	            	}
+	                
 	            }
 	        });
 			form.add(ratee);
