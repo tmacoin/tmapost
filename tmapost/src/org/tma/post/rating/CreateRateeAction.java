@@ -156,7 +156,7 @@ public class CreateRateeAction extends AbstractAction implements Caller {
 		String[] strings = jkeywords.getText().split(" ");
 		for(String str: strings) {
 			if(!"".equals(str)) {
-				set.add(str);
+				set.add(str.toLowerCase());
 			}
 		}
 		return set;
