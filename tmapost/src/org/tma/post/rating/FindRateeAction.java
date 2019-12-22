@@ -7,12 +7,15 @@
  *******************************************************************************/
 package org.tma.post.rating;
 
+import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import javax.swing.AbstractAction;
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -78,7 +81,12 @@ public class FindRateeAction extends AbstractAction implements Caller {
 		List<Ratee> list = (List<Ratee>) ResponseHolder.getInstance().getObject(request.getCorrelationId());
 		
 		if(list == null) {
-			label.setText("Failed to retrieve ratees. Please try again");
+			label.setText("Failed to retrieve posts. Please try again");
+			return;
+		}
+		
+		if(list.size() == 0) {
+			label.setText("No posts were found for provided keywords.");
 			return;
 		}
 		
@@ -89,6 +97,13 @@ public class FindRateeAction extends AbstractAction implements Caller {
 		form.setLayout(new BoxLayout(form, BoxLayout.Y_AXIS));
 		
 		logger.debug("list.size()={}", list.size());
+		
+		label.setText("Found " + list.size() + " posts: ");
+		JPanel flow = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		flow.add(label, FlowLayout.LEFT);
+		form.add(flow);
+		form.add(Box.createRigidArea(new Dimension(0, 10)), "span");
+		
 		
 		RateeTableModel model = new RateeTableModel(list);
 		JTable table = new JTable(model);
