@@ -41,14 +41,14 @@ public class SendMessage extends AbstractAction implements Caller {
 	private String subject;
 	
 	public SendMessage(JFrame frame) {
-		putValue(NAME, "Send Message");
-		putValue(SHORT_DESCRIPTION, "Send Message");
+		putValue(NAME, "Send Secure Message");
+		putValue(SHORT_DESCRIPTION, "Send Secure Message");
 		this.frame = frame;
 	}
 	
 	public SendMessage(JFrame frame, String recipient) {
-		putValue(NAME, "Send Message");
-		putValue(SHORT_DESCRIPTION, "Send Message");
+		putValue(NAME, "Send Secure Message");
+		putValue(SHORT_DESCRIPTION, "Send Secure Message");
 		this.frame = frame;
 		this.recipient = recipient;
 		
