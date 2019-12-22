@@ -42,6 +42,7 @@ import org.tma.peer.thin.ResponseHolder;
 import org.tma.peer.thin.SearchRateeRequest;
 import org.tma.peer.thin.SearchRatingForRaterRequest;
 import org.tma.peer.thin.SearchRatingRequest;
+import org.tma.post.Wallets;
 import org.tma.post.util.JTextFieldRegularPopupMenu;
 import org.tma.post.util.SwingUtil;
 import org.tma.util.StringUtil;
@@ -180,6 +181,20 @@ public class RateeMouseAdapter extends MouseAdapter {
 		form.add(p);
 		
 		showComments(form, ratee);
+		
+		form.add(new JSeparator(), "growx, span");
+		
+		String myTmaAdress = Wallets.getInstance().getWallet(Wallets.TMA).getTmaAddress();
+		
+		if(myTmaAdress.equals(ratee.getCreatorTmaAddress())) {
+			form.add(new JLabel(""));
+	        
+	        p = new JPanel(new FlowLayout(FlowLayout.LEFT));
+			JButton deleteRatee = new JButton("Delete Ratee");
+			deleteRatee.setAction(new DeleteRateeAction(frame, ratee.getTransactionId(), StringUtil.getTmaAddressFromString(ratee.getName())));
+			p.add(deleteRatee);
+			form.add(p);
+		}
 		
 		
 		frame.getContentPane().revalidate();
