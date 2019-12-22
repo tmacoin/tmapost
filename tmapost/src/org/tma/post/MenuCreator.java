@@ -37,14 +37,14 @@ public class MenuCreator {
 	}
 	
 	private static void addMenuRating(JMenuBar menuBar, JFrame frame) {
-		JMenu menu = new JMenu("Rating");
+		JMenu menu = new JMenu("Posting");
 		menuBar.add(menu);
 		
-		JMenuItem menuItem = new JMenuItem("Create Ratee");
+		JMenuItem menuItem = new JMenuItem("Create Post");
 		menuItem.setAction(new CreateRatee(frame));
 		menu.add(menuItem);
 		
-		menuItem = new JMenuItem("Find Ratee");
+		menuItem = new JMenuItem("Find Post");
 		menuItem.setAction(new FindRatee(frame));
 		menu.add(menuItem);
 		

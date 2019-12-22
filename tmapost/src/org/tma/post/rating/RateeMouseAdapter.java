@@ -100,7 +100,7 @@ public class RateeMouseAdapter extends MouseAdapter {
 		frame.getContentPane().add(scrollPane);
 
 		
-		form.add(new JLabel("Ratee:"));
+		form.add(new JLabel("Post:"));
 		
 		JTextField account = new JTextField(45);
 		account.setText(ratee.getName());
@@ -190,7 +190,7 @@ public class RateeMouseAdapter extends MouseAdapter {
 			form.add(new JLabel(""));
 	        
 	        p = new JPanel(new FlowLayout(FlowLayout.LEFT));
-			JButton deleteRatee = new JButton("Delete Ratee");
+			JButton deleteRatee = new JButton("Delete Post");
 			deleteRatee.setAction(new DeleteRateeAction(frame, ratee.getTransactionId(), StringUtil.getTmaAddressFromString(ratee.getName())));
 			p.add(deleteRatee);
 			form.add(p);
@@ -253,7 +253,7 @@ public class RateeMouseAdapter extends MouseAdapter {
 	        });
 			form.add(rater);
 			
-			form.add(new JLabel("Ratee:"));
+			form.add(new JLabel("Post:"));
 			
 			JTextField ratee = new JTextField(45);
 			ratee.setText(rating.getRatee());

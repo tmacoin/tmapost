@@ -46,8 +46,8 @@ public class FindRateeAction extends AbstractAction implements Caller {
     private JTextField jkeywords;
 	
 	public FindRateeAction(JFrame frame, JTextField account, JTextField jkeywords) {
-		putValue(NAME, "Find Ratee");
-		putValue(SHORT_DESCRIPTION, "Find Ratee");
+		putValue(NAME, "Find Post");
+		putValue(SHORT_DESCRIPTION, "Find Post");
 		this.frame = frame;
 		this.account = account;
 		this.jkeywords = jkeywords;
@@ -117,7 +117,7 @@ public class FindRateeAction extends AbstractAction implements Caller {
 		String[] strings = jkeywords.getText().split(" ");
 		for(String str: strings) {
 			if(!"".equals(str)) {
-				set.add(str);
+				set.add(str.toLowerCase());
 			}
 		}
 		return set;

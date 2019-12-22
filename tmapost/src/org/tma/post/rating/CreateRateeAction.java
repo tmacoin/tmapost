@@ -52,8 +52,8 @@ public class CreateRateeAction extends AbstractAction implements Caller {
     private JTextField jkeywords;
 	
 	public CreateRateeAction(JFrame frame, JTextField account, JTextArea description, JTextField jkeywords) {
-		putValue(NAME, "Create Ratee");
-		putValue(SHORT_DESCRIPTION, "Create Ratee");
+		putValue(NAME, "Create Post");
+		putValue(SHORT_DESCRIPTION, "Create Post");
 		this.frame = frame;
 		this.account = account;
 		this.description = description;
@@ -64,7 +64,7 @@ public class CreateRateeAction extends AbstractAction implements Caller {
 	public void actionPerformed(ActionEvent e) {
 		
 		if(StringUtil.isEmpty(account.getText())) {
-			log("Ratee can not be blank");
+			log("Post title can not be blank");
 			return;
 		}
 		if(StringUtil.isEmpty(description.getText())) {
@@ -82,7 +82,7 @@ public class CreateRateeAction extends AbstractAction implements Caller {
 			public void doRun() {
 				sendCreateRateeTransaction();
 				
-				label.setText("Ratee " + account.getText() + " was created successfully with keywords: " + getKeywords());
+				label.setText("Post " + account.getText() + " was created successfully with keywords: " + getKeywords());
 			}
 		});
 
@@ -156,7 +156,7 @@ public class CreateRateeAction extends AbstractAction implements Caller {
 		String[] strings = jkeywords.getText().split(" ");
 		for(String str: strings) {
 			if(!"".equals(str)) {
-				set.add(str);
+				set.add(str.toLowerCase());
 			}
 		}
 		return set;
