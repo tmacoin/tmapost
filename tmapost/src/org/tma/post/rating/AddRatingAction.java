@@ -107,7 +107,7 @@ public class AddRatingAction extends AbstractAction implements Caller {
 		String rating = "Yes".equals(SwingUtil.getSelectedButtonText(bgroup)) ? "Positive": "Negative";
 		form.add(new JLabel(rating + " rating was added"), "span, left");
 		
-		form.add(new JLabel("Ratee:"));
+		form.add(new JLabel("Post:"));
 		
 		JTextField account = new JTextField(45);
 		account.setText(this.account.getText());

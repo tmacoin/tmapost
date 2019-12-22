@@ -56,7 +56,7 @@ public class RateeTableModel extends AbstractTableModel {
 		String value = null;
 		switch (columnIndex) {
 		case 0:
-			value = "Ratee";
+			value = "Post";
 			break;
 		case 1:
 			value = "Description";

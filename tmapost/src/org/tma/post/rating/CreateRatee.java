@@ -33,8 +33,8 @@ public class CreateRatee extends AbstractAction implements Caller {
 	private JFrame frame;
 	
 	public CreateRatee(JFrame frame) {
-		putValue(NAME, "Create Ratee");
-		putValue(SHORT_DESCRIPTION, "Create Ratee");
+		putValue(NAME, "Create Post");
+		putValue(SHORT_DESCRIPTION, "Create Post");
 		this.frame = frame;
 	}
 	
@@ -54,7 +54,7 @@ public class CreateRatee extends AbstractAction implements Caller {
 		JPanel form = new JPanel(new MigLayout("wrap 2", "[right][fill]"));
 		frame.getContentPane().add(form, BorderLayout.NORTH);
 		
-		form.add(new JLabel("Ratee:"));
+		form.add(new JLabel("Post:"));
 		
 		JTextField account = new JTextField(45);
 		JTextFieldRegularPopupMenu.addTo(account);

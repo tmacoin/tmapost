@@ -31,8 +31,8 @@ public class FindRatee extends AbstractAction implements Caller {
 	private JFrame frame;
 	
 	public FindRatee(JFrame frame) {
-		putValue(NAME, "Find Ratee");
-		putValue(SHORT_DESCRIPTION, "Find Ratee");
+		putValue(NAME, "Find Post");
+		putValue(SHORT_DESCRIPTION, "Find Post");
 		this.frame = frame;
 	}
 	
@@ -55,7 +55,7 @@ public class FindRatee extends AbstractAction implements Caller {
 		        ));
 		frame.getContentPane().add(form, BorderLayout.NORTH);
 		
-		form.add(new JLabel("Ratee:"));
+		form.add(new JLabel("Post:"));
 		
 		JTextField account = new JTextField(45);
 		JTextFieldRegularPopupMenu.addTo(account);

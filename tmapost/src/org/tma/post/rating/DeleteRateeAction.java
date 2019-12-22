@@ -48,8 +48,8 @@ public class DeleteRateeAction extends AbstractAction implements Caller {
 	private String rateeTmaAddress;
 	
 	public DeleteRateeAction(JFrame frame, String transactionId, String rateeTmaAddress) {
-		putValue(NAME, "Delete Ratee");
-		putValue(SHORT_DESCRIPTION, "Delete Ratee");
+		putValue(NAME, "Delete Post");
+		putValue(SHORT_DESCRIPTION, "Delete Post");
 		this.frame = frame;
 		this.transactionId = transactionId;
 		this.rateeTmaAddress = rateeTmaAddress;
@@ -57,7 +57,7 @@ public class DeleteRateeAction extends AbstractAction implements Caller {
 
 	public void actionPerformed(ActionEvent e) {
 		int input = JOptionPane.showConfirmDialog(frame, 
-                "Are you sure you want to delete Ratee? This action cannot be undone!", "Confirm Ratee Deletion", 
+                "Are you sure you want to delete Post? This action cannot be undone!", "Confirm Post Deletion", 
                 JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE);
 
 		if(input != JOptionPane.OK_OPTION) {
@@ -78,7 +78,7 @@ public class DeleteRateeAction extends AbstractAction implements Caller {
 		
 		sendDeleteRateeTransaction();
 		
-		label.setText("Ratee with identifier " + transactionId + " was deleted.");
+		label.setText("Post with identifier " + transactionId + " was deleted.");
 	}
 
 	private void sendDeleteRateeTransaction() {
