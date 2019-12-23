@@ -28,7 +28,7 @@ public class StartNetwork {
 	public void start(Caller caller) {
 		ThreadExecutor.getInstance().execute(new TmaRunnable("StartNetwork") {
 			public void doRun() {
-				Wallet wallet = Wallets.getInstance().getWallet(Wallets.TMA);
+				Wallet wallet = Wallets.getInstance().getWallet(Wallets.TMA, "0");
 				String tmaAddress = wallet.getTmaAddress();
 				try {
 					new Network(tmaAddress);

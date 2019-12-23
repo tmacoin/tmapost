@@ -56,7 +56,7 @@ public class CreateKeyAction extends AbstractAction implements Caller {
 		}
 		try {
 			PasswordUtil passwordUtil = new PasswordUtil(this);
-			passwordUtil.generateKey(Wallets.TMA, passphrase, confirmPassword);
+			passwordUtil.generateKey(Wallets.TMA, "0", passphrase, confirmPassword);
 			
 			frame.getContentPane().removeAll();
 			JPanel form = new JPanel(new BorderLayout());

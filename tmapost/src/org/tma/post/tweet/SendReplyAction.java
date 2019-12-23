@@ -9,6 +9,7 @@ package org.tma.post.tweet;
 
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -77,7 +78,7 @@ public class SendReplyAction extends AbstractAction implements Caller {
 		String twitterTmaAddress = tweet.getRecipient();
 		String tmaAddress = network.getTmaAddress();
 		Wallets wallets = Wallets.getInstance();
-		Wallet wallet = wallets.getWallet(Wallets.TMA);
+		Wallet wallet = wallets.getWallet(Wallets.TMA, "0");
 		Coin amount = Coin.SATOSHI.multiply(2);
 		List<Coin> totals = new ArrayList<Coin>();
 		totals.add(amount);
@@ -90,9 +91,9 @@ public class SendReplyAction extends AbstractAction implements Caller {
 		
 		Keywords keywords = new Keywords();
 		keywords.getMap().put("transactionId", tweet.getTransactionId());
-		String key = wallets.getKeyStartsWith(Wallets.TWITTER + "-");
-		if (key != null) {
-			String accountName = key.split("-", 2)[1];
+		Collection<String> names = wallets.getNames(Wallets.TWITTER);
+		if (!names.isEmpty()) {
+			String accountName = names.iterator().next();
 			keywords.getMap().put("from", accountName);
 		} else {
 			log("You have not created your twitter account yet.");

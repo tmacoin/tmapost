@@ -9,6 +9,7 @@ package org.tma.post;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 import org.tma.blockchain.Wallet;
@@ -19,7 +20,7 @@ public class Wallets {
 	public static final String TMA = "tma";
 	public static final String TWITTER = "twitt";
 	
-	private Map<String, Wallet> wallets = new HashMap<String, Wallet>();
+	private Map<String, Map<String, Wallet>> wallets = new HashMap<String, Map<String, Wallet>>();
 	
 	private Wallets() {
 
@@ -29,38 +30,29 @@ public class Wallets {
 		return instance;
 	}
 
-	public Wallet getWallet(String key) {
-		return wallets.get(key);
+	public Wallet getWallet(String application, String name) {
+		return wallets.get(application).get(name);
 	}
 	
-	public Wallet getWalletStartsWith(String startsWith) {
-		Wallet wallet = null;
-		for (String key : wallets.keySet()) {
-			if (key.startsWith(startsWith)) {
-				wallet = getWallet(key);
-				break;
-			}
+	public void putWallet(String application, String name, Wallet wallet) {
+		Map<String, Wallet> applicationWallets = wallets.get(application);
+		if(applicationWallets == null) {
+			applicationWallets = new HashMap<String, Wallet>();
+			wallets.put(application, applicationWallets);
 		}
-		return wallet;
+		applicationWallets.put(name, wallet);
 	}
 	
-	public String getKeyStartsWith(String startsWith) {
-		String result = null;
-		for (String key : wallets.keySet()) {
-			if (key.startsWith(startsWith)) {
-				result = key;
-				break;
-			}
-		}
-		return result;
-	}
-	
-	public void putWallet(String key, Wallet wallet) {
-		wallets.put(key, wallet);
-	}
-	
-	public Collection<String> getKeys() {
+	public Collection<String> getApplications() {
 		return wallets.keySet();
+	}
+	
+	public Collection<String> getNames(String application) {
+		Map<String, Wallet> applicationWallets = wallets.get(application);
+		if(applicationWallets == null) {
+			return new HashSet<String>();
+		}
+		return applicationWallets.keySet();
 	}
 
 }

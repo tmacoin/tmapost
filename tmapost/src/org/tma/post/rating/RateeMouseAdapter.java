@@ -200,7 +200,7 @@ public class RateeMouseAdapter extends MouseAdapter {
 		
 		form.add(new JSeparator(), "growx, span");
 		
-		String myTmaAdress = Wallets.getInstance().getWallet(Wallets.TMA).getTmaAddress();
+		String myTmaAdress = Wallets.getInstance().getWallet(Wallets.TMA, "0").getTmaAddress();
 		
 		if(myTmaAdress.equals(ratee.getCreatorTmaAddress())) {
 			form.add(new JLabel(""));

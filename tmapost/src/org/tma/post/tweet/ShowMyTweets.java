@@ -9,6 +9,7 @@ package org.tma.post.tweet;
 
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -48,8 +49,11 @@ public class ShowMyTweets extends AbstractAction implements Caller {
 		putValue(SHORT_DESCRIPTION, "Show my tweets");
 		this.frame = frame;
 		Wallets wallets = Wallets.getInstance();
-		Wallet twitterWallet = wallets.getWalletStartsWith(Wallets.TWITTER + "-");
-		if (twitterWallet != null) {
+		
+		Collection<String> names = wallets.getNames(Wallets.TWITTER);
+		if(!names.isEmpty()) {
+			String accountName = names.iterator().next();
+			Wallet twitterWallet = wallets.getWallet(Wallets.TWITTER, accountName);
 			tmaAddress = twitterWallet.getTmaAddress();
 		}
 	}
@@ -68,7 +72,12 @@ public class ShowMyTweets extends AbstractAction implements Caller {
 	public void actionPerformed(ActionEvent actionEvent) {
 		frame.getContentPane().removeAll();
 		Wallets wallets = Wallets.getInstance();
-		Wallet twitterWallet = wallets.getWalletStartsWith(Wallets.TWITTER + "-");
+		Wallet twitterWallet = null;
+		Collection<String> names = wallets.getNames(Wallets.TWITTER);
+		if(!names.isEmpty()) {
+			String accountName = names.iterator().next();
+			twitterWallet = wallets.getWallet(Wallets.TWITTER, accountName);
+		}
 
 		if (twitterWallet == null) {
 			JPanel form = new JPanel(new BorderLayout());

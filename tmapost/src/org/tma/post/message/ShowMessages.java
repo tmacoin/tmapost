@@ -58,7 +58,7 @@ public class ShowMessages extends AbstractAction implements Caller {
 		
 		JLabel label = SwingUtil.showWait(frame);
 		
-		Wallet wallet = Wallets.getInstance().getWallet(Wallets.TMA);
+		Wallet wallet = Wallets.getInstance().getWallet(Wallets.TMA, "0");
 		PublicKey publicKey = wallet.getPublicKey();
 		ThreadExecutor.getInstance().execute(new TmaRunnable("ShowMessages") {
 			public void doRun() {

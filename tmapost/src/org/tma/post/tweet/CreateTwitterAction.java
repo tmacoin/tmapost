@@ -103,7 +103,7 @@ public class CreateTwitterAction extends AbstractAction implements Caller {
 		shardId = StringUtil.getShard(wallet.getTmaAddress(), Network.getInstance().getBootstrapShardingPower());
 		logger.debug("shardId: {}", shardId);
 		Wallets wallets = Wallets.getInstance();
-		wallets.putWallet(Wallets.TWITTER + "-" + account.getText(), wallet);
+		wallets.putWallet(Wallets.TWITTER, account.getText(), wallet);
 		passwordUtil.saveKeys(passphrase);
 		sendCreateTwitterTransaction(wallet.getTmaAddress());
 		return true;
@@ -115,7 +115,7 @@ public class CreateTwitterAction extends AbstractAction implements Caller {
 			new BootstrapRequest(network).start();
 		}
 		String tmaAddress = network.getTmaAddress();
-		Wallet wallet = Wallets.getInstance().getWallet(Wallets.TMA);
+		Wallet wallet = Wallets.getInstance().getWallet(Wallets.TMA, "0");
 		Coin amount = Coin.SATOSHI.multiply(2);
 		List<Coin> totals = new ArrayList<Coin>();
 		totals.add(amount);
