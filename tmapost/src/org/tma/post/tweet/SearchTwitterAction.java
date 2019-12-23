@@ -21,6 +21,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.border.EmptyBorder;
 
 import org.tma.peer.BootstrapRequest;
 import org.tma.peer.Network;
@@ -75,6 +76,8 @@ public class SearchTwitterAction extends AbstractAction implements Caller {
 				form.setLayout(new BoxLayout(form, BoxLayout.Y_AXIS));
 				
 				JLabel label = new JLabel("Twitter account(s) with name " + accountName);
+				label.setAlignmentX(JLabel.LEFT_ALIGNMENT);
+				label.setBorder(new EmptyBorder(5,5,5,5));
 				form.add(label);
 				
 				form.add(Box.createRigidArea(new Dimension(0, 20)));

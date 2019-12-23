@@ -18,6 +18,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.border.EmptyBorder;
 
 import org.tma.blockchain.Wallet;
 import org.tma.peer.Network;
@@ -54,6 +55,7 @@ public class ShowAddress extends AbstractAction implements Caller {
 		form.add(fieldPanel, BorderLayout.CENTER);
 		
 		JLabel label = new JLabel("Your TMA Address on shard " + Network.getInstance().getBootstrapBlockchainId() + ":", JLabel.RIGHT);
+		label.setBorder(new EmptyBorder(5,5,5,5));
 		labelPanel.add(label);
 		
 		JPanel p = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -64,7 +66,6 @@ public class ShowAddress extends AbstractAction implements Caller {
 		fieldPanel.add(p);
 		
 		frame.getContentPane().add(form, BorderLayout.NORTH);
-		//frame.pack();
 		frame.getContentPane().revalidate();
 		frame.getContentPane().repaint();
 	}

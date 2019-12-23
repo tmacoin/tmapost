@@ -7,15 +7,12 @@
  *******************************************************************************/
 package org.tma.post.rating;
 
-import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import javax.swing.AbstractAction;
-import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -24,6 +21,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.border.EmptyBorder;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -94,16 +92,17 @@ public class FindRateeAction extends AbstractAction implements Caller {
 		frame.getContentPane().removeAll();
 		
 		JPanel form = new JPanel();
-		form.setLayout(new BoxLayout(form, BoxLayout.Y_AXIS));
+		BoxLayout boxLayout = new BoxLayout(form, BoxLayout.Y_AXIS);
+		form.setLayout(boxLayout);
+		
+		frame.getContentPane().add(form);
 		
 		logger.debug("list.size()={}", list.size());
 		
-		label.setText("Found " + list.size() + " posts: ");
-		JPanel flow = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		flow.add(label, FlowLayout.LEFT);
-		form.add(flow);
-		form.add(Box.createRigidArea(new Dimension(0, 10)), "span");
-		
+		label = new JLabel("Found " + list.size() + " posts: ");
+		label.setAlignmentX(JLabel.LEFT_ALIGNMENT);
+		label.setBorder(new EmptyBorder(5,5,5,5));
+		form.add(label);
 		
 		RateeTableModel model = new RateeTableModel(list);
 		JTable table = new JTable(model);
@@ -112,12 +111,12 @@ public class FindRateeAction extends AbstractAction implements Caller {
 		TableColumnAdjuster tca = new TableColumnAdjuster(table);
 		tca.adjustColumns();
 		table.addMouseListener(new RateeMouseAdapter(table, list, frame));
-
+		
 		JScrollPane scroll = new JScrollPane (table);
 		scroll.setBorder(null);
+		scroll.setAlignmentX(JScrollPane.LEFT_ALIGNMENT);
 		form.add(scroll);
 		
-		frame.getContentPane().add(form);
 		frame.revalidate();
 		frame.getContentPane().repaint();
 		

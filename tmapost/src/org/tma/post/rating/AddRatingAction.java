@@ -97,10 +97,7 @@ public class AddRatingAction extends AbstractAction implements Caller {
 	private void feedback() {
 		frame.getContentPane().removeAll();
 
-		JPanel form = new JPanel(new MigLayout(
-		        "wrap 2",
-		        "[right][fill]"
-		        ));
+		JPanel form = new JPanel(new MigLayout("wrap 2", "[right][fill]"));
 		JScrollPane scrollPane = new JScrollPane(form, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		frame.getContentPane().add(scrollPane);
 		

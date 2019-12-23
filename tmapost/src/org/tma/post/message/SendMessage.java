@@ -25,6 +25,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.border.EmptyBorder;
 
 import org.tma.post.Caller;
 import org.tma.post.util.JTextFieldRegularPopupMenu;
@@ -75,6 +76,7 @@ public class SendMessage extends AbstractAction implements Caller {
 		labelPanel.add(label);
 		
 		label = new JLabel("Fee in satoshis:", JLabel.RIGHT);
+		label.setBorder(new EmptyBorder(0,5,0,0));
 		labelPanel.add(label);
 		
 		label = new JLabel("Expire after:", JLabel.RIGHT);

@@ -15,6 +15,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
 
 import org.apache.derby.shared.common.error.DerbySQLIntegrityConstraintViolationException;
 import org.apache.logging.log4j.LogManager;
@@ -60,6 +61,7 @@ public class SubscribeAction extends AbstractAction implements Caller {
 				frame.getContentPane().removeAll();
 				JPanel form = new JPanel(new BorderLayout());
 				JLabel label = new JLabel(message);
+				label.setBorder(new EmptyBorder(5,5,5,5));
 				form.add(label);
 				frame.getContentPane().add(form, BorderLayout.NORTH);
 				frame.revalidate();

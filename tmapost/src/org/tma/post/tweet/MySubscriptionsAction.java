@@ -7,12 +7,10 @@
  *******************************************************************************/
 package org.tma.post.tweet;
 
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.util.List;
 
 import javax.swing.AbstractAction;
-import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -20,6 +18,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.border.EmptyBorder;
 
 import org.tma.peer.thin.TwitterAccount;
 import org.tma.post.Caller;
@@ -57,9 +56,9 @@ public class MySubscriptionsAction extends AbstractAction implements Caller {
 				
 				if(list.size() != 0) {
 					JLabel label = new JLabel("My Subscriptions");
+					label.setAlignmentX(JLabel.LEFT_ALIGNMENT);
+					label.setBorder(new EmptyBorder(5,5,5,5));
 					form.add(label);
-					
-					form.add(Box.createRigidArea(new Dimension(0, 20)));
 					
 					TwitterAccountTableModel model = new TwitterAccountTableModel(list);
 					JTable table = new JTable(model);
@@ -74,6 +73,8 @@ public class MySubscriptionsAction extends AbstractAction implements Caller {
 					form.add(scroll);
 				} else {
 					JLabel label = new JLabel("No Subscriptions found");
+					label.setAlignmentX(JLabel.LEFT_ALIGNMENT);
+					label.setBorder(new EmptyBorder(5,5,5,5));
 					form.add(label);
 				}
 				
