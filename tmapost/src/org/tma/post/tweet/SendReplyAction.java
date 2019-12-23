@@ -78,7 +78,7 @@ public class SendReplyAction extends AbstractAction implements Caller {
 		String twitterTmaAddress = tweet.getRecipient();
 		String tmaAddress = network.getTmaAddress();
 		Wallets wallets = Wallets.getInstance();
-		Wallet wallet = wallets.getWallet(Wallets.TMA, "0");
+		Wallet wallet = wallets.getWallet(Wallets.TMA, Wallets.WALLET_NAME);
 		Coin amount = Coin.SATOSHI.multiply(2);
 		List<Coin> totals = new ArrayList<Coin>();
 		totals.add(amount);

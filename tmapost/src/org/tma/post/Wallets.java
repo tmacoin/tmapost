@@ -19,6 +19,7 @@ public class Wallets {
 	private static final Wallets instance = new Wallets();
 	public static final String TMA = "tma";
 	public static final String TWITTER = "twitt";
+	public static String WALLET_NAME;
 	
 	private Map<String, Map<String, Wallet>> wallets = new HashMap<String, Map<String, Wallet>>();
 	

@@ -101,7 +101,7 @@ public class CreateRateeAction extends AbstractAction implements Caller {
 			new BootstrapRequest(network).start();
 		}
 		String tmaAddress = network.getTmaAddress();
-		Wallet wallet = Wallets.getInstance().getWallet(Wallets.TMA, "0");
+		Wallet wallet = Wallets.getInstance().getWallet(Wallets.TMA, Wallets.WALLET_NAME);
 		Coin amount = Coin.SATOSHI.multiply(2);
 		List<Coin> totals = new ArrayList<Coin>();
 		totals.add(amount);

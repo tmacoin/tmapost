@@ -12,5 +12,6 @@
 	<classpathentry kind="lib" path="lib/miglayout-swing-5.2.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/t&apos;ma"/>
 	<classpathentry kind="lib" path="/t&apos;ma/lib/derby.jar"/>
+	<classpathentry kind="lib" path="/t&apos;ma/lib/args4j-2.33.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
