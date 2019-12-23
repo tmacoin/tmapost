@@ -22,6 +22,7 @@ import javax.swing.JPasswordField;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.border.EmptyBorder;
 
 import org.tma.post.Caller;
 import org.tma.post.Wallets;
@@ -59,6 +60,7 @@ public class CreateTwitter extends AbstractAction implements Caller {
 			message.setWrapStyleWord(true);
 			message.setOpaque(false);
 			message.setEditable(false);
+			message.setBorder(new EmptyBorder(5,5,5,5));
 
 			JScrollPane scroll = new JScrollPane(message);
 			scroll.setBorder(null);

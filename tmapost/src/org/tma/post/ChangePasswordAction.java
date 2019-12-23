@@ -16,6 +16,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
+import javax.swing.border.EmptyBorder;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -59,6 +60,8 @@ public class ChangePasswordAction extends AbstractAction implements Caller {
 			frame.getContentPane().removeAll();
 			JPanel form = new JPanel(new BorderLayout());
 			JLabel label = new JLabel("Passphrase Changed");
+			label.setAlignmentX(JLabel.LEFT_ALIGNMENT);
+			label.setBorder(new EmptyBorder(5,5,5,5));
 			form.add(label);
 			frame.getContentPane().add(form, BorderLayout.NORTH);
 			frame.revalidate();

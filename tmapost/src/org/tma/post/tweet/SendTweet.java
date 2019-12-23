@@ -20,6 +20,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.border.EmptyBorder;
 
 import org.tma.post.Caller;
 import org.tma.post.util.JTextFieldRegularPopupMenu;
@@ -60,6 +61,7 @@ public class SendTweet extends AbstractAction implements Caller {
 		
 		
 		JLabel label = new JLabel("Enter tweet:", JLabel.RIGHT);
+		label.setBorder(new EmptyBorder(5,5,5,5));
 		labelPanel.add(label);
 		
 		JPanel p = new JPanel(new FlowLayout(FlowLayout.LEFT));

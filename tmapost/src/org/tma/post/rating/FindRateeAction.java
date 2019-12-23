@@ -21,6 +21,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.border.EmptyBorder;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -78,7 +79,12 @@ public class FindRateeAction extends AbstractAction implements Caller {
 		List<Ratee> list = (List<Ratee>) ResponseHolder.getInstance().getObject(request.getCorrelationId());
 		
 		if(list == null) {
-			label.setText("Failed to retrieve ratees. Please try again");
+			label.setText("Failed to retrieve posts. Please try again");
+			return;
+		}
+		
+		if(list.size() == 0) {
+			label.setText("No posts were found for provided keywords.");
 			return;
 		}
 		
@@ -86,9 +92,17 @@ public class FindRateeAction extends AbstractAction implements Caller {
 		frame.getContentPane().removeAll();
 		
 		JPanel form = new JPanel();
-		form.setLayout(new BoxLayout(form, BoxLayout.Y_AXIS));
+		BoxLayout boxLayout = new BoxLayout(form, BoxLayout.Y_AXIS);
+		form.setLayout(boxLayout);
+		
+		frame.getContentPane().add(form);
 		
 		logger.debug("list.size()={}", list.size());
+		
+		label = new JLabel("Found " + list.size() + " posts: ");
+		label.setAlignmentX(JLabel.LEFT_ALIGNMENT);
+		label.setBorder(new EmptyBorder(5,5,5,5));
+		form.add(label);
 		
 		RateeTableModel model = new RateeTableModel(list);
 		JTable table = new JTable(model);
@@ -97,12 +111,12 @@ public class FindRateeAction extends AbstractAction implements Caller {
 		TableColumnAdjuster tca = new TableColumnAdjuster(table);
 		tca.adjustColumns();
 		table.addMouseListener(new RateeMouseAdapter(table, list, frame));
-
+		
 		JScrollPane scroll = new JScrollPane (table);
 		scroll.setBorder(null);
+		scroll.setAlignmentX(JScrollPane.LEFT_ALIGNMENT);
 		form.add(scroll);
 		
-		frame.getContentPane().add(form);
 		frame.revalidate();
 		frame.getContentPane().repaint();
 		

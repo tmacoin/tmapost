@@ -7,13 +7,11 @@
  *******************************************************************************/
 package org.tma.post.message;
 
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.security.PublicKey;
 import java.util.List;
 
 import javax.swing.AbstractAction;
-import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -21,6 +19,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.border.EmptyBorder;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -86,9 +85,9 @@ public class ShowMessages extends AbstractAction implements Caller {
 				form.setLayout(new BoxLayout(form, BoxLayout.Y_AXIS));
 				
 				JLabel label = new JLabel("Messages for " + tmaAddress);
+				label.setAlignmentX(JLabel.LEFT_ALIGNMENT);
+				label.setBorder(new EmptyBorder(5,5,5,5));
 				form.add(label);
-				
-				form.add(Box.createRigidArea(new Dimension(0, 20)));
 				
 				if(list.size() != 0) {
 					SecureMessageTableModel model = new SecureMessageTableModel(list);

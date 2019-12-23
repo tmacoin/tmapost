@@ -19,6 +19,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.border.EmptyBorder;
 
 import org.tma.post.Caller;
 import org.tma.post.util.JTextFieldRegularPopupMenu;
@@ -61,6 +62,7 @@ public class SearchTwitter extends AbstractAction implements Caller {
 		form.add(fieldPanel, BorderLayout.CENTER);
 		
 		JLabel label = new JLabel("Account name:", JLabel.RIGHT);
+		label.setBorder(new EmptyBorder(5,5,5,5));
 		labelPanel.add(label);
 		
 		JPanel p = new JPanel(new FlowLayout(FlowLayout.LEFT));

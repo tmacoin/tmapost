@@ -24,6 +24,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.border.EmptyBorder;
 
 import org.tma.post.util.JTextFieldRegularPopupMenu;
 import org.tma.post.util.ValidatorDouble;
@@ -60,6 +61,7 @@ public class SendTransaction extends AbstractAction implements Caller {
 		form.add(fieldPanel, BorderLayout.CENTER);
 		
 		JLabel label = new JLabel("Recipient TMA Address:", JLabel.RIGHT);
+		label.setBorder(new EmptyBorder(0,5,0,0));
 		labelPanel.add(label);
 		
 		label = new JLabel("Amount in coins:", JLabel.RIGHT);
