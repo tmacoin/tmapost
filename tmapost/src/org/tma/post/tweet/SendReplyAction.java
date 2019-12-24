@@ -62,7 +62,7 @@ public class SendReplyAction extends AbstractAction implements Caller {
 
 		ThreadExecutor.getInstance().execute(new TmaRunnable("SendTweet") {
 			public void doRun() {
-				if(sendTweetReplyTransaction()) {
+				if(sendTweetReplyTransaction(jlabel)) {
 					jlabel.setText("Reply was sent");
 				}
 			}
@@ -70,7 +70,7 @@ public class SendReplyAction extends AbstractAction implements Caller {
 
 	}
 
-	private boolean sendTweetReplyTransaction() {
+	private boolean sendTweetReplyTransaction(JLabel label) {
 		Network network = Network.getInstance();
 		if(!network.isPeerSetComplete()) {
 			new BootstrapRequest(network).start();
@@ -87,6 +87,12 @@ public class SendReplyAction extends AbstractAction implements Caller {
 		@SuppressWarnings("unchecked")
 		List<Set<TransactionOutput>> inputList = (List<Set<TransactionOutput>>)ResponseHolder.getInstance().getObject(request.getCorrelationId());
 		int i = 0;
+		
+		if(inputList.size() == 0) {
+			label.setText("No inputs available for tma address " + tmaAddress + ". Please check your balance.");
+			return false;
+		}
+		
 		Set<TransactionOutput> inputs = inputList.get(i++);
 		
 		Keywords keywords = new Keywords();

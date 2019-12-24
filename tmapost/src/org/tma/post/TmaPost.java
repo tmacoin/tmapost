@@ -88,7 +88,7 @@ public class TmaPost {
 		} else {
 			enterPassphrase();
 		}
-		
+		frame.setSize(640, 480);
 		setIcon();
 		
 	}
@@ -141,8 +141,6 @@ public class TmaPost {
 		frame.getContentPane().add(form);
 		
 		frame.getRootPane().setDefaultButton(btnSubmit);
-		
-		frame.setSize(640, 480);
 	}
 	
 	private void setIcon() {
