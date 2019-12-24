@@ -28,6 +28,7 @@ import org.tma.peer.thin.GetMyTweetsRequest;
 import org.tma.peer.thin.ResponseHolder;
 import org.tma.peer.thin.Tweet;
 import org.tma.peer.thin.TwitterAccount;
+import org.tma.post.persistance.TwitterStore;
 import org.tma.post.util.SwingUtil;
 import org.tma.util.ThreadExecutor;
 import org.tma.util.TmaRunnable;
@@ -81,14 +82,17 @@ public class TwitterAccountMouseAdapter extends MouseAdapter {
 				
 				if(title != null) {
 					
-					JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-					JButton btnSubmit = new JButton("Submit");
-					twitterAccount.setDescription(title.getText());
-					
-					btnSubmit.setAction(new SubscribeAction(frame, twitterAccount));
-					buttonPanel.add(btnSubmit);
-					panel.add(buttonPanel);
-					
+					List<TwitterAccount> subscribedAccounts = TwitterStore.getInstance().selectAll();
+					if(!subscribedAccounts.contains(twitterAccount)) {
+						JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+						JButton btnSubmit = new JButton("Submit");
+						twitterAccount.setDescription(title.getText());
+						
+						btnSubmit.setAction(new SubscribeAction(frame, twitterAccount));
+						buttonPanel.add(btnSubmit);
+						panel.add(buttonPanel);
+					}
+
 					twitterHelper.print(panel, title.getText());
 				}
 				
