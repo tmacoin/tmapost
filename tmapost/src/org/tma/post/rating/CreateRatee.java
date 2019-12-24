@@ -72,6 +72,7 @@ public class CreateRatee extends AbstractAction implements Caller {
 		
 		JTextField keywords = new JTextField(45);
 		JTextFieldRegularPopupMenu.addTo(keywords);
+		keywords.setToolTipText("Enter list of words separated by blank spaces that will be used to find this post");
 		form.add(keywords);
 		
 		form.add(new JLabel(""));
