@@ -22,7 +22,6 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
@@ -32,6 +31,8 @@ import org.tma.post.util.JTextFieldRegularPopupMenu;
 import org.tma.post.util.KeyValue;
 import org.tma.post.util.ValidatorLong;
 import org.tma.post.util.ValidatorTmaAddress;
+
+import com.jidesoft.swing.AutoResizingTextArea;
 
 public class SendMessage extends AbstractAction implements Caller {
 
@@ -67,10 +68,15 @@ public class SendMessage extends AbstractAction implements Caller {
 		JPanel form = new JPanel(new BorderLayout());
 		frame.getContentPane().add(form, BorderLayout.NORTH);
 		
-		JPanel labelPanel = new JPanel(new GridLayout(5, 1));
-		JPanel fieldPanel = new JPanel(new GridLayout(5, 1));
+		JPanel labelPanel = new JPanel(new GridLayout(6, 1));
+		JPanel fieldPanel = new JPanel(new GridLayout(6, 1));
 		form.add(labelPanel, BorderLayout.WEST);
 		form.add(fieldPanel, BorderLayout.CENTER);
+		
+		labelPanel.add(new JLabel("", JLabel.RIGHT));
+		JPanel p = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		p.add(new JLabel("Send Secure Encrypted Message", JLabel.LEFT));
+		fieldPanel.add(p);
 		
 		JLabel label = new JLabel("Recipient:", JLabel.RIGHT);
 		labelPanel.add(label);
@@ -88,8 +94,8 @@ public class SendMessage extends AbstractAction implements Caller {
 		label = new JLabel("Body:", JLabel.RIGHT);
 		labelPanel.add(label);
 		
-		JPanel p = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		JTextField address = new JTextField(36);
+		p = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		JTextField address = new JTextField(45);
 		address.getDocument().addDocumentListener(new ValidatorTmaAddress(address));
 		JTextFieldRegularPopupMenu.addTo(address);
 		if(recipient != null) {
@@ -99,7 +105,7 @@ public class SendMessage extends AbstractAction implements Caller {
 		fieldPanel.add(p);
 		
 		p = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		JTextField fee = new JTextField(36);
+		JTextField fee = new JTextField(45);
 		fee.setText("1");
 		fee.getDocument().addDocumentListener(new ValidatorLong(fee));
 		JTextFieldRegularPopupMenu.addTo(fee);
@@ -118,7 +124,7 @@ public class SendMessage extends AbstractAction implements Caller {
 		fieldPanel.add(p);
 		
 		p = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		JTextField subject = new JTextField(36);
+		JTextField subject = new JTextField(45);
 		subject.setBounds(160, 101, 260, 20);
 		subject.setText(this.subject);
 		JTextFieldRegularPopupMenu.addTo(subject);
@@ -128,19 +134,33 @@ public class SendMessage extends AbstractAction implements Caller {
 		p = new JPanel();
 		p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
 		
-		JTextArea expiringData = new JTextArea();
-		expiringData.setToolTipText("Encrypted message is limited to 32672 chars together with subject");
+		JTextArea expiringData = new AutoResizingTextArea(5, 40, 45);
+		expiringData.setToolTipText("Encrypted message is limited to 32672 chars together with the subject field");
+		expiringData.setLineWrap(true);
+		expiringData.setWrapStyleWord(true);
 		JTextFieldRegularPopupMenu.addTo(expiringData);
-		JScrollPane scroll = new JScrollPane (expiringData);
-		p.add(scroll);
+		expiringData.setBorder(new JTextField().getBorder());
+		p.add(expiringData);
 		
 		p.add(Box.createRigidArea(new Dimension(0, 10)));
-
+		
+		JPanel flow = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		JButton btnSubmit = new JButton("Submit");
 		btnSubmit.setAction(new SendMessageAction(frame, address, fee, expire, subject, expiringData));
-		p.add(btnSubmit);
+		flow.add(btnSubmit);
+		p.add(flow);
 		
 		p.add(Box.createRigidArea(new Dimension(0, 10)));
+		
+		JTextArea description = new AutoResizingTextArea(1, 40, 45);
+		description.setText("Secure messaging is utilizing public/private key cryptography and only recipient of the message is able to read it in clear text. "
+				+ "No one, even the sender would be able to decrypt the message, unless they have access to the private key of the recipient.");
+		description.setLineWrap(true);
+		description.setWrapStyleWord(true);
+		description.setOpaque(false);
+		description.setEditable(false);
+		description.revalidate();
+		p.add(description);
 		
 		frame.getContentPane().add(p);
 

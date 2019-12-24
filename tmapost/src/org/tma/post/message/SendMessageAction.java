@@ -130,7 +130,7 @@ public class SendMessageAction extends AbstractAction implements Caller {
 				List<Set<TransactionOutput>> inputList = (List<Set<TransactionOutput>>)ResponseHolder.getInstance().getObject(request.getCorrelationId());
 				int i = 0;
 				
-				if(inputList.size() == 0) {
+				if(inputList.size() != totals.size()) {
 					label.setText("No inputs available for tma address " + tmaAddress + ". Please check your balance.");
 					return;
 				}
