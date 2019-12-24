@@ -11,6 +11,7 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
+import java.util.Collection;
 
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
@@ -48,14 +49,15 @@ public class CreateTwitter extends AbstractAction implements Caller {
 
 	public void actionPerformed(ActionEvent actionEvent) {
 		frame.getContentPane().removeAll();
-		String key = wallets.getKeyStartsWith(Wallets.TWITTER + "-");
-		if (key != null) {
-			String accountName = key.split("-", 2)[1];
+		Collection<String> names = wallets.getNames(Wallets.TWITTER);
+		if (!names.isEmpty()) {
+			String accountName = names.iterator().next();
 
 			JPanel form = new JPanel(new BorderLayout());
 
 			JTextArea message = new JTextArea();
-			message.setText("Twitter account was already created. Account name is " + accountName + " with tma address " + wallets.getWallet(key).getTmaAddress());
+			message.setText("Twitter account was already created. Account name is " + accountName + " with tma address " + 
+					wallets.getWallet(Wallets.TWITTER, accountName).getTmaAddress());
 			message.setLineWrap(true);
 			message.setWrapStyleWord(true);
 			message.setOpaque(false);

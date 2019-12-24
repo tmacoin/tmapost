@@ -28,6 +28,7 @@ import org.tma.peer.thin.GetMyTweetsRequest;
 import org.tma.peer.thin.ResponseHolder;
 import org.tma.peer.thin.Tweet;
 import org.tma.peer.thin.TwitterAccount;
+import org.tma.post.persistance.TwitterStore;
 import org.tma.post.util.SwingUtil;
 import org.tma.util.ThreadExecutor;
 import org.tma.util.TmaRunnable;
@@ -78,17 +79,21 @@ public class TwitterAccountMouseAdapter extends MouseAdapter {
 				}
 				
 				TwitterHelper twitterHelper = new TwitterHelper(frame);
+				List<TwitterAccount> subscribedAccounts = TwitterStore.getInstance().selectAll();
 				
 				if(title != null) {
 					
-					JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-					JButton btnSubmit = new JButton("Submit");
-					twitterAccount.setDescription(title.getText());
 					
-					btnSubmit.setAction(new SubscribeAction(frame, twitterAccount));
-					buttonPanel.add(btnSubmit);
-					panel.add(buttonPanel);
-					
+					if(!subscribedAccounts.contains(twitterAccount)) {
+						JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+						JButton btnSubmit = new JButton("Submit");
+						twitterAccount.setDescription(title.getText());
+						
+						btnSubmit.setAction(new SubscribeAction(frame, twitterAccount));
+						buttonPanel.add(btnSubmit);
+						panel.add(buttonPanel);
+					}
+
 					twitterHelper.print(panel, title.getText());
 				}
 				
@@ -103,6 +108,14 @@ public class TwitterAccountMouseAdapter extends MouseAdapter {
 				
 				for(Tweet tweet: list) {
 					twitterHelper.addTweet(panel, tweet);
+				}
+				
+				if(subscribedAccounts.contains(twitterAccount)) {
+					JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+					JButton btnSubmit = new JButton("Submit");
+					btnSubmit.setAction(new UnSubscribeAction(frame, twitterAccount));
+					buttonPanel.add(btnSubmit);
+					panel.add(buttonPanel);
 				}
 				
 				JScrollPane jScrollPane = new JScrollPane (panel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);

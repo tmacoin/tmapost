@@ -147,7 +147,7 @@ public class AddRatingAction extends AbstractAction implements Caller {
 		
 		
 		String tmaAddress = network.getTmaAddress();
-		Wallet wallet = Wallets.getInstance().getWallet(Wallets.TMA);
+		Wallet wallet = Wallets.getInstance().getWallet(Wallets.TMA, Wallets.WALLET_NAME);
 		Coin amount = Coin.SATOSHI.multiply(2);
 		List<Coin> totals = new ArrayList<Coin>();
 		totals.add(amount);

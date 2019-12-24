@@ -111,7 +111,7 @@ public class SendMessageAction extends AbstractAction implements Caller {
 		}
 		String tmaAddress = Network.getInstance().getTmaAddress();
 		Coin total = Coin.SATOSHI.add(new Coin(Long.parseLong(fee)));
-		Wallet wallet = Wallets.getInstance().getWallet(Wallets.TMA);
+		Wallet wallet = Wallets.getInstance().getWallet(Wallets.TMA, Wallets.WALLET_NAME);
 		
 		JLabel label = SwingUtil.showWait(frame);
 		
@@ -129,6 +129,12 @@ public class SendMessageAction extends AbstractAction implements Caller {
 				@SuppressWarnings("unchecked")
 				List<Set<TransactionOutput>> inputList = (List<Set<TransactionOutput>>)ResponseHolder.getInstance().getObject(request.getCorrelationId());
 				int i = 0;
+				
+				if(inputList.size() == 0) {
+					label.setText("No inputs available for tma address " + tmaAddress + ". Please check your balance.");
+					return;
+				}
+				
 				Set<TransactionOutput> inputs = inputList.get(i++); 
 				logger.debug("number of inputs: {} for {}", inputs.size(), tmaAddress);
 				

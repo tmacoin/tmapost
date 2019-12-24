@@ -105,7 +105,7 @@ public class SendTransactionAction extends AbstractAction implements Caller {
 		Network network = Network.getInstance();
 		String tmaAddress = network.getTmaAddress();
 		Coin total = Coin.ONE.multiply(Double.parseDouble(amount)).add(new Coin(Long.parseLong(fee)));
-		Wallet wallet = Wallets.getInstance().getWallet(Wallets.TMA);
+		Wallet wallet = Wallets.getInstance().getWallet(Wallets.TMA, Wallets.WALLET_NAME);
 		TransactionData expiringData = this.expiringData == null? null: new TransactionData(this.expiringData, Long.parseLong(expire));
 
 
@@ -120,6 +120,12 @@ public class SendTransactionAction extends AbstractAction implements Caller {
 				@SuppressWarnings("unchecked")
 				List<Set<TransactionOutput>> inputList = (List<Set<TransactionOutput>>)ResponseHolder.getInstance().getObject(request.getCorrelationId());
 				int i = 0;
+				
+				if(inputList.size() == 0) {
+					label.setText("No inputs available for tma address " + tmaAddress + ". Please check your balance.");
+					return;
+				}
+				
 				Set<TransactionOutput> inputs = inputList.get(i++);
 				logger.debug("number of inputs: {} for {}", inputs.size(), tmaAddress);
 				Transaction transaction = new Transaction(wallet.getPublicKey(), recipient, Coin.ONE.multiply(Double.parseDouble(amount)), 

@@ -24,6 +24,10 @@ import javax.swing.JPasswordField;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.kohsuke.args4j.CmdLineException;
+import org.kohsuke.args4j.CmdLineParser;
+import org.kohsuke.args4j.Option;
+import org.kohsuke.args4j.OptionHandlerFilter;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -35,18 +39,25 @@ public class TmaPost {
 	private JFrame frame;
 	private JPasswordField passwordField;
 	private JPasswordField confirmPasswordField;
+	
+	@Option(name="-w", aliases="--walletId", usage="Optional wallet id number, default 0", metaVar="<wallet id number>")
+	private String walletId = "0";
 
 	/**
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
 		//TwitterStore.getInstance().removeAll();
+		
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					TmaPost window = new TmaPost();
-					window.frame.setVisible(true);
+					TmaPost tmapost = new TmaPost();
+					tmapost.parseArgs(args);
+					Wallets.WALLET_NAME = tmapost.walletId;
+					tmapost.frame.setVisible(true);
 					logger.debug("TMA Post Started");
+					logger.debug("Wallets.WALLET_NAME={}", Wallets.WALLET_NAME);
 				} catch (Exception e) {
 					logger.error(e.getMessage(), e);
 				}
@@ -77,7 +88,7 @@ public class TmaPost {
 		} else {
 			enterPassphrase();
 		}
-		
+		frame.setSize(640, 480);
 		setIcon();
 		
 	}
@@ -130,8 +141,6 @@ public class TmaPost {
 		frame.getContentPane().add(form);
 		
 		frame.getRootPane().setDefaultButton(btnSubmit);
-		
-		frame.setSize(640, 480);
 	}
 	
 	private void setIcon() {
@@ -142,6 +151,26 @@ public class TmaPost {
         } catch (IOException e) {
         	logger.error(e.getMessage(), e);
         }
+	}
+	
+	private void parseArgs(final String[] arguments) throws IOException {
+		final CmdLineParser parser = new CmdLineParser(this);
+		if (arguments.length != 0 && arguments.length != 2) {
+			printUsage(parser);
+		}
+		try {
+			parser.parseArgument(arguments);
+		} catch (CmdLineException e) {
+			System.err.println(e.getMessage());
+			printUsage(parser);
+		}
+	}
+	
+	private void printUsage(CmdLineParser parser) {
+		System.err.println("Usage: org.tma.post.TmaPost [options...]");
+		parser.printUsage(System.err);
+		System.err.println("Example: java org.tma.post.TmaPost" + parser.printExample(OptionHandlerFilter.REQUIRED));
+		System.exit(-1);
 	}
 	
 	

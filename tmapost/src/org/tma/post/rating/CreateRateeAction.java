@@ -80,9 +80,9 @@ public class CreateRateeAction extends AbstractAction implements Caller {
 		
 		ThreadExecutor.getInstance().execute(new TmaRunnable("CreateRateeAction") {
 			public void doRun() {
-				sendCreateRateeTransaction();
-				
-				label.setText("Post " + account.getText() + " was created successfully with keywords: " + getKeywords());
+				if(sendCreateRateeTransaction(label) != null) {
+					label.setText("Post " + account.getText() + " was created successfully with keywords: " + getKeywords());
+				}
 			}
 		});
 
@@ -92,7 +92,7 @@ public class CreateRateeAction extends AbstractAction implements Caller {
 	}
 	
 	
-	private Transaction sendCreateRateeTransaction() {
+	private Transaction sendCreateRateeTransaction(JLabel label) {
 		Set<String> words = getKeywords();
 		String accountName = account.getText().trim();
 		String ratee = StringUtil.getTmaAddressFromString(accountName);
@@ -101,7 +101,7 @@ public class CreateRateeAction extends AbstractAction implements Caller {
 			new BootstrapRequest(network).start();
 		}
 		String tmaAddress = network.getTmaAddress();
-		Wallet wallet = Wallets.getInstance().getWallet(Wallets.TMA);
+		Wallet wallet = Wallets.getInstance().getWallet(Wallets.TMA, Wallets.WALLET_NAME);
 		Coin amount = Coin.SATOSHI.multiply(2);
 		List<Coin> totals = new ArrayList<Coin>();
 		totals.add(amount);
@@ -113,6 +113,12 @@ public class CreateRateeAction extends AbstractAction implements Caller {
 		@SuppressWarnings("unchecked")
 		List<Set<TransactionOutput>> inputList = (List<Set<TransactionOutput>>)ResponseHolder.getInstance().getObject(request.getCorrelationId());
 		int i = 0;
+		
+		if(inputList.size() == 0) {
+			label.setText("No inputs available for tma address " + tmaAddress + ". Please check your balance.");
+			return null;
+		}
+		
 		Set<TransactionOutput> inputs = inputList.get(i++);
 		Keywords keywords = new Keywords();
 		keywords.getMap().put("create", accountName);

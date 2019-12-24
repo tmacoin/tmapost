@@ -9,6 +9,7 @@ package org.tma.post.tweet;
 
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -61,7 +62,7 @@ public class SendReplyAction extends AbstractAction implements Caller {
 
 		ThreadExecutor.getInstance().execute(new TmaRunnable("SendTweet") {
 			public void doRun() {
-				if(sendTweetReplyTransaction()) {
+				if(sendTweetReplyTransaction(jlabel)) {
 					jlabel.setText("Reply was sent");
 				}
 			}
@@ -69,7 +70,7 @@ public class SendReplyAction extends AbstractAction implements Caller {
 
 	}
 
-	private boolean sendTweetReplyTransaction() {
+	private boolean sendTweetReplyTransaction(JLabel label) {
 		Network network = Network.getInstance();
 		if(!network.isPeerSetComplete()) {
 			new BootstrapRequest(network).start();
@@ -77,7 +78,7 @@ public class SendReplyAction extends AbstractAction implements Caller {
 		String twitterTmaAddress = tweet.getRecipient();
 		String tmaAddress = network.getTmaAddress();
 		Wallets wallets = Wallets.getInstance();
-		Wallet wallet = wallets.getWallet(Wallets.TMA);
+		Wallet wallet = wallets.getWallet(Wallets.TMA, Wallets.WALLET_NAME);
 		Coin amount = Coin.SATOSHI.multiply(2);
 		List<Coin> totals = new ArrayList<Coin>();
 		totals.add(amount);
@@ -86,13 +87,19 @@ public class SendReplyAction extends AbstractAction implements Caller {
 		@SuppressWarnings("unchecked")
 		List<Set<TransactionOutput>> inputList = (List<Set<TransactionOutput>>)ResponseHolder.getInstance().getObject(request.getCorrelationId());
 		int i = 0;
+		
+		if(inputList.size() == 0) {
+			label.setText("No inputs available for tma address " + tmaAddress + ". Please check your balance.");
+			return false;
+		}
+		
 		Set<TransactionOutput> inputs = inputList.get(i++);
 		
 		Keywords keywords = new Keywords();
 		keywords.getMap().put("transactionId", tweet.getTransactionId());
-		String key = wallets.getKeyStartsWith(Wallets.TWITTER + "-");
-		if (key != null) {
-			String accountName = key.split("-", 2)[1];
+		Collection<String> names = wallets.getNames(Wallets.TWITTER);
+		if (!names.isEmpty()) {
+			String accountName = names.iterator().next();
 			keywords.getMap().put("from", accountName);
 		} else {
 			log("You have not created your twitter account yet.");

@@ -9,6 +9,7 @@ package org.tma.post.tweet;
 
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -60,11 +61,14 @@ public class SendTweetAction extends AbstractAction implements Caller {
 		ThreadExecutor.getInstance().execute(new TmaRunnable("SendTweet") {
 			public void doRun() {
 				Wallets wallets = Wallets.getInstance();
-				Wallet twitterWallet = wallets.getWalletStartsWith(Wallets.TWITTER + "-");
-				if(twitterWallet == null) {
+				Collection<String> names = wallets.getNames(Wallets.TWITTER);
+				if(names.isEmpty()) {
 					jlabel.setText("Please create your twitter account first.");
 					return;
 				}
+				String accountName = names.iterator().next();
+				Wallet twitterWallet = wallets.getWallet(Wallets.TWITTER, accountName);
+				
 				sendTweetTransaction(twitterWallet.getTmaAddress());
 				jlabel.setText("Tweet was sent");
 			}
@@ -79,7 +83,7 @@ public class SendTweetAction extends AbstractAction implements Caller {
 		}
 		String tmaAddress = network.getTmaAddress();
 		Wallets wallets = Wallets.getInstance();
-		Wallet wallet = wallets.getWallet(Wallets.TMA);
+		Wallet wallet = wallets.getWallet(Wallets.TMA, Wallets.WALLET_NAME);
 		Coin amount = Coin.SATOSHI.multiply(2);
 		List<Coin> totals = new ArrayList<Coin>();
 		totals.add(amount);
@@ -90,12 +94,15 @@ public class SendTweetAction extends AbstractAction implements Caller {
 		int i = 0;
 		Set<TransactionOutput> inputs = inputList.get(i++);
 		
-		String key = wallets.getKeyStartsWith(Wallets.TWITTER + "-");
 		Keywords keywords = null;
-		if (key != null) {
-			String accountName = key.split("-", 2)[1];
+		Collection<String> names = wallets.getNames(Wallets.TWITTER);
+		if(!names.isEmpty()) {
+			String accountName = names.iterator().next();
 			keywords = new Keywords();
 			keywords.getMap().put("from", accountName);
+		} else {
+			logger.error("Twitter account is not created yet");
+			return;
 		}
 		
 		Transaction transaction = new Transaction(wallet.getPublicKey(), twitterTmaAddress, Coin.SATOSHI, Coin.SATOSHI, 

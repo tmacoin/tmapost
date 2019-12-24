@@ -28,6 +28,7 @@ import org.tma.blockchain.Wallet;
 import org.tma.peer.BootstrapRequest;
 import org.tma.peer.Network;
 import org.tma.peer.SendTransactionRequest;
+import org.tma.peer.thin.GetBalanceRequest;
 import org.tma.peer.thin.GetInputsRequest;
 import org.tma.peer.thin.ResponseHolder;
 import org.tma.post.Caller;
@@ -68,10 +69,8 @@ public class CreateTwitterAction extends AbstractAction implements Caller {
 		ThreadExecutor.getInstance().execute(new TmaRunnable("CreateTwitterAction") {
 			public void doRun() {
 				try {
-					if(generateKeyPair()) {
+					if(generateKeyPair(label)) {
 						label.setText("Twitter account key pair created for " + account.getText());
-					} else {
-						label.setText("");
 					}
 				} catch (Exception e) {
 					logger.error(e.getMessage(), e);
@@ -83,7 +82,18 @@ public class CreateTwitterAction extends AbstractAction implements Caller {
 		});
 	}
 	
-	private boolean generateKeyPair() throws Exception {
+	private boolean generateKeyPair(JLabel label) throws Exception {
+		
+		Network network = Network.getInstance();
+		
+		GetBalanceRequest request = new GetBalanceRequest(network, network.getTmaAddress());
+		request.start();
+		String balance = (String)ResponseHolder.getInstance().getObject(request.getCorrelationId());
+		if("0".equals(balance)) {
+			label.setText("Your balance is zero. You cannot create Twitter account.");
+			return false;
+		}
+		
 		String passphrase = StringUtil.trim(new String(passwordField.getPassword()));
 		PasswordUtil passwordUtil = new PasswordUtil(this);
 
@@ -100,22 +110,21 @@ public class CreateTwitterAction extends AbstractAction implements Caller {
 				break;
 			}
 		}
-		shardId = StringUtil.getShard(wallet.getTmaAddress(), Network.getInstance().getBootstrapShardingPower());
+		shardId = StringUtil.getShard(wallet.getTmaAddress(), network.getBootstrapShardingPower());
 		logger.debug("shardId: {}", shardId);
 		Wallets wallets = Wallets.getInstance();
-		wallets.putWallet(Wallets.TWITTER + "-" + account.getText(), wallet);
+		wallets.putWallet(Wallets.TWITTER, account.getText(), wallet);
 		passwordUtil.saveKeys(passphrase);
-		sendCreateTwitterTransaction(wallet.getTmaAddress());
-		return true;
+		return sendCreateTwitterTransaction(wallet.getTmaAddress(), label);
 	}
 	
-	private void sendCreateTwitterTransaction(String twitterTmaAddress) {
+	private boolean sendCreateTwitterTransaction(String twitterTmaAddress, JLabel label) {
 		Network network = Network.getInstance();
 		if(!network.isPeerSetComplete()) {
 			new BootstrapRequest(network).start();
 		}
 		String tmaAddress = network.getTmaAddress();
-		Wallet wallet = Wallets.getInstance().getWallet(Wallets.TMA);
+		Wallet wallet = Wallets.getInstance().getWallet(Wallets.TMA, Wallets.WALLET_NAME);
 		Coin amount = Coin.SATOSHI.multiply(2);
 		List<Coin> totals = new ArrayList<Coin>();
 		totals.add(amount);
@@ -124,6 +133,12 @@ public class CreateTwitterAction extends AbstractAction implements Caller {
 		@SuppressWarnings("unchecked")
 		List<Set<TransactionOutput>> inputList = (List<Set<TransactionOutput>>)ResponseHolder.getInstance().getObject(request.getCorrelationId());
 		int i = 0;
+		
+		if(inputList.size() == 0) {
+			label.setText("No inputs available for tma address " + tmaAddress + ". Please check your balance.");
+			return false;
+		}
+		
 		Set<TransactionOutput> inputs = inputList.get(i++);
 		
 		Keywords keywords = new Keywords();
@@ -134,6 +149,7 @@ public class CreateTwitterAction extends AbstractAction implements Caller {
 		transaction.setApp(Applications.TWITTER);
 		new SendTransactionRequest(network, transaction).start();
 		logger.debug("sent {}", transaction);
+		return true;
 	}
 
 	public void log(String message) {
