@@ -19,6 +19,7 @@ import java.io.OutputStreamWriter;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.Security;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -58,7 +59,7 @@ public class PasswordUtil {
 			String line;
 			int i = 0;
 			while ((line = in.readLine()) != null) {
-				List<String> list =  Arrays.asList(line.split(","));
+				List<String> list =  new ArrayList<String>(Arrays.asList(line.split(",")));
 				int size = list.size();
 				if(size != 4 && size != 2) {
 					continue;
