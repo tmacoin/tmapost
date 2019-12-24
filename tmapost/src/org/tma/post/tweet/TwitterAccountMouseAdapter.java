@@ -79,10 +79,11 @@ public class TwitterAccountMouseAdapter extends MouseAdapter {
 				}
 				
 				TwitterHelper twitterHelper = new TwitterHelper(frame);
+				List<TwitterAccount> subscribedAccounts = TwitterStore.getInstance().selectAll();
 				
 				if(title != null) {
 					
-					List<TwitterAccount> subscribedAccounts = TwitterStore.getInstance().selectAll();
+					
 					if(!subscribedAccounts.contains(twitterAccount)) {
 						JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 						JButton btnSubmit = new JButton("Submit");
@@ -107,6 +108,14 @@ public class TwitterAccountMouseAdapter extends MouseAdapter {
 				
 				for(Tweet tweet: list) {
 					twitterHelper.addTweet(panel, tweet);
+				}
+				
+				if(subscribedAccounts.contains(twitterAccount)) {
+					JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+					JButton btnSubmit = new JButton("Submit");
+					btnSubmit.setAction(new UnSubscribeAction(frame, twitterAccount));
+					buttonPanel.add(btnSubmit);
+					panel.add(buttonPanel);
 				}
 				
 				JScrollPane jScrollPane = new JScrollPane (panel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);

@@ -108,4 +108,20 @@ public class TwitterStore {
 		}
 	}
 
+	public void delete(TwitterAccount twitterAccount) {
+		try {
+			new DBExecutor() {
+				public void doWork() throws Exception {
+					String sql = "delete from TWITTER_SUBSCRIPTION where address = ? ";
+					ps = conn.prepareStatement(sql);
+					int i = 1;
+		            ps.setString(i++, twitterAccount.getTmaAddress());
+					ps.executeUpdate();
+				}
+			}.execute();
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		}
+	}
+
 }
