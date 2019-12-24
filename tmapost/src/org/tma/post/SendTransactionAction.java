@@ -120,6 +120,12 @@ public class SendTransactionAction extends AbstractAction implements Caller {
 				@SuppressWarnings("unchecked")
 				List<Set<TransactionOutput>> inputList = (List<Set<TransactionOutput>>)ResponseHolder.getInstance().getObject(request.getCorrelationId());
 				int i = 0;
+				
+				if(inputList.size() == 0) {
+					label.setText("No inputs available for tma address " + tmaAddress + ". Please check your balance.");
+					return;
+				}
+				
 				Set<TransactionOutput> inputs = inputList.get(i++);
 				logger.debug("number of inputs: {} for {}", inputs.size(), tmaAddress);
 				Transaction transaction = new Transaction(wallet.getPublicKey(), recipient, Coin.ONE.multiply(Double.parseDouble(amount)), 
