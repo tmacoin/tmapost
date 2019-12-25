@@ -85,15 +85,15 @@ public class AddRatingAction extends AbstractAction implements Caller {
 			return;
 		}
 		
-		SwingUtil.showWait(frame);
+		JLabel label = SwingUtil.showWait(frame);
 
 		ThreadExecutor.getInstance().execute(new TmaRunnable("AddRatingAction") {
 			public void doRun() {
 				logger.debug("comment: {}", comment.getText());
 				logger.debug("selected button: {}", SwingUtil.getSelectedButtonText(bgroup));
-				doIt();
-				feedback();
-				
+				if(doIt(label)) {
+					feedback();
+				}
 			}
 
 			
@@ -151,7 +151,7 @@ public class AddRatingAction extends AbstractAction implements Caller {
 		
 	}
 
-	private void doIt() {
+	private boolean doIt(JLabel label) {
 		String accountName = account.getText().trim();
 		String ratee = StringUtil.getTmaAddressFromString(accountName);
 		Network network = Network.getInstance();
@@ -181,6 +181,11 @@ public class AddRatingAction extends AbstractAction implements Caller {
 		List<Set<TransactionOutput>> inputList = (List<Set<TransactionOutput>>)ResponseHolder.getInstance().getObject(request.getCorrelationId());
 		int i = 0;
 		
+		if(inputList.size() != totals.size()) {
+			label.setText("No inputs available for tma address " + tmaAddress + ". Please check your balance.");
+			return false;
+		}
+		
 		Keywords keywords = new Keywords();
 		keywords.getMap().put("rater", wallet.getTmaAddress());
 		keywords.getMap().put("ratee", accountName);
@@ -209,7 +214,7 @@ public class AddRatingAction extends AbstractAction implements Caller {
 		
 		frame.getContentPane().revalidate();
 		frame.getContentPane().repaint();
-		
+		return true;
 	}
 
 	public void log(String message) {

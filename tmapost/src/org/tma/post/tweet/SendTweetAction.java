@@ -56,27 +56,27 @@ public class SendTweetAction extends AbstractAction implements Caller {
 
 	public void actionPerformed(ActionEvent e) {
 		
-		JLabel jlabel = SwingUtil.showWait(frame);
+		JLabel label = SwingUtil.showWait(frame);
 		
 		ThreadExecutor.getInstance().execute(new TmaRunnable("SendTweet") {
 			public void doRun() {
 				Wallets wallets = Wallets.getInstance();
 				Collection<String> names = wallets.getNames(Wallets.TWITTER);
 				if(names.isEmpty()) {
-					jlabel.setText("Please create your twitter account first.");
+					label.setText("Please create your twitter account first.");
 					return;
 				}
 				String accountName = names.iterator().next();
 				Wallet twitterWallet = wallets.getWallet(Wallets.TWITTER, accountName);
 				
-				sendTweetTransaction(twitterWallet.getTmaAddress());
-				jlabel.setText("Tweet was sent");
+				sendTweetTransaction(twitterWallet.getTmaAddress(), label);
+				
 			}
 		});
 	}
 
 	
-	private void sendTweetTransaction(String twitterTmaAddress) {
+	private void sendTweetTransaction(String twitterTmaAddress, JLabel label) {
 		Network network = Network.getInstance();
 		if(!network.isPeerSetComplete()) {
 			new BootstrapRequest(network).start();
@@ -92,6 +92,12 @@ public class SendTweetAction extends AbstractAction implements Caller {
 		@SuppressWarnings("unchecked")
 		List<Set<TransactionOutput>> inputList = (List<Set<TransactionOutput>>)ResponseHolder.getInstance().getObject(request.getCorrelationId());
 		int i = 0;
+		
+		if(inputList.size() != totals.size()) {
+			label.setText("No inputs available for tma address " + tmaAddress + ". Please check your balance.");
+			return;
+		}
+		
 		Set<TransactionOutput> inputs = inputList.get(i++);
 		
 		Keywords keywords = null;
@@ -110,6 +116,8 @@ public class SendTweetAction extends AbstractAction implements Caller {
 		transaction.setApp(Applications.TWITTER);
 		new SendTransactionRequest(network, transaction).start();
 		logger.debug("sent {}", transaction);
+		label.setText("Tweet was sent");
+		return;
 	}
 
 	public void log(String message) {
