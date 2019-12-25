@@ -175,10 +175,7 @@ public class AddRatingAction extends AbstractAction implements Caller {
 				totals.add(amount);
 			}
 		}
-		GetInputsRequest request = new GetInputsRequest(Network.getInstance(), tmaAddress, totals);
-		request.start();
-		@SuppressWarnings("unchecked")
-		List<Set<TransactionOutput>> inputList = (List<Set<TransactionOutput>>)ResponseHolder.getInstance().getObject(request.getCorrelationId());
+		List<Set<TransactionOutput>> inputList = new GetInputsRequest(network, tmaAddress, totals).getInputlist();
 		int i = 0;
 		
 		if(inputList.size() != totals.size()) {

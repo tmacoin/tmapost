@@ -104,10 +104,7 @@ public class DeleteRateeAction extends AbstractAction implements Caller {
 			}
 		}
 
-		GetInputsRequest request = new GetInputsRequest(network, tmaAddress, totals);
-		request.start();
-		@SuppressWarnings("unchecked")
-		List<Set<TransactionOutput>> inputList = (List<Set<TransactionOutput>>)ResponseHolder.getInstance().getObject(request.getCorrelationId());
+		List<Set<TransactionOutput>> inputList = new GetInputsRequest(network, tmaAddress, totals).getInputlist();
 		int i = 0;
 		
 		if(inputList.size() != totals.size()) {

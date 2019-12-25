@@ -128,10 +128,7 @@ public class CreateTwitterAction extends AbstractAction implements Caller {
 		Coin amount = Coin.SATOSHI.multiply(2);
 		List<Coin> totals = new ArrayList<Coin>();
 		totals.add(amount);
-		GetInputsRequest request = new GetInputsRequest(Network.getInstance(), tmaAddress, totals);
-		request.start();
-		@SuppressWarnings("unchecked")
-		List<Set<TransactionOutput>> inputList = (List<Set<TransactionOutput>>)ResponseHolder.getInstance().getObject(request.getCorrelationId());
+		List<Set<TransactionOutput>> inputList = new GetInputsRequest(network, tmaAddress, totals).getInputlist();
 		int i = 0;
 		
 		if(inputList.size() != totals.size()) {
