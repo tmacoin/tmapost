@@ -31,7 +31,6 @@ import org.tma.peer.BootstrapRequest;
 import org.tma.peer.Network;
 import org.tma.peer.SendTransactionRequest;
 import org.tma.peer.thin.GetInputsRequest;
-import org.tma.peer.thin.ResponseHolder;
 import org.tma.post.Caller;
 import org.tma.post.Wallets;
 import org.tma.post.util.SwingUtil;
@@ -108,10 +107,7 @@ public class CreateRateeAction extends AbstractAction implements Caller {
 		for(@SuppressWarnings("unused") String word: words) {
 			totals.add(amount);
 		}
-		GetInputsRequest request = new GetInputsRequest(Network.getInstance(), tmaAddress, totals);
-		request.start();
-		@SuppressWarnings("unchecked")
-		List<Set<TransactionOutput>> inputList = (List<Set<TransactionOutput>>)ResponseHolder.getInstance().getObject(request.getCorrelationId());
+		List<Set<TransactionOutput>> inputList = new GetInputsRequest(network, tmaAddress, totals).getInputlist();
 		int i = 0;
 		
 		if(inputList.size() != totals.size()) {

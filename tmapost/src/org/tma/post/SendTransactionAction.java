@@ -28,7 +28,6 @@ import org.tma.blockchain.Wallet;
 import org.tma.peer.Network;
 import org.tma.peer.SendTransactionRequest;
 import org.tma.peer.thin.GetInputsRequest;
-import org.tma.peer.thin.ResponseHolder;
 import org.tma.post.util.SwingUtil;
 import org.tma.util.Coin;
 import org.tma.util.StringUtil;
@@ -115,10 +114,7 @@ public class SendTransactionAction extends AbstractAction implements Caller {
 			public void doRun() {
 				List<Coin> totals = new ArrayList<Coin>();
 				totals.add(total);
-				GetInputsRequest request = new GetInputsRequest(network, tmaAddress, totals);
-				request.start();
-				@SuppressWarnings("unchecked")
-				List<Set<TransactionOutput>> inputList = (List<Set<TransactionOutput>>)ResponseHolder.getInstance().getObject(request.getCorrelationId());
+				List<Set<TransactionOutput>> inputList = new GetInputsRequest(network, tmaAddress, totals).getInputlist();
 				int i = 0;
 				
 				if(inputList.size() != totals.size()) {

@@ -17,6 +17,8 @@ import javax.swing.AbstractAction;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
 import org.apache.logging.log4j.LogManager;
@@ -29,7 +31,6 @@ import org.tma.peer.BootstrapRequest;
 import org.tma.peer.Network;
 import org.tma.peer.SendTransactionRequest;
 import org.tma.peer.thin.GetInputsRequest;
-import org.tma.peer.thin.ResponseHolder;
 import org.tma.peer.thin.Tweet;
 import org.tma.post.Caller;
 import org.tma.post.Wallets;
@@ -38,6 +39,10 @@ import org.tma.util.Applications;
 import org.tma.util.Coin;
 import org.tma.util.ThreadExecutor;
 import org.tma.util.TmaRunnable;
+
+import com.jidesoft.swing.AutoResizingTextArea;
+
+import net.miginfocom.swing.MigLayout;
 
 public class SendReplyAction extends AbstractAction implements Caller {
 
@@ -62,15 +67,14 @@ public class SendReplyAction extends AbstractAction implements Caller {
 
 		ThreadExecutor.getInstance().execute(new TmaRunnable("SendTweet") {
 			public void doRun() {
-				if(sendTweetReplyTransaction(jlabel)) {
-					jlabel.setText("Reply was sent");
-				}
+				sendTweetReplyTransaction(jlabel);
+				
 			}
 		});
 
 	}
 
-	private boolean sendTweetReplyTransaction(JLabel label) {
+	private void sendTweetReplyTransaction(JLabel label) {
 		Network network = Network.getInstance();
 		if(!network.isPeerSetComplete()) {
 			new BootstrapRequest(network).start();
@@ -82,15 +86,12 @@ public class SendReplyAction extends AbstractAction implements Caller {
 		Coin amount = Coin.SATOSHI.multiply(2);
 		List<Coin> totals = new ArrayList<Coin>();
 		totals.add(amount);
-		GetInputsRequest request = new GetInputsRequest(network, tmaAddress, totals);
-		request.start();
-		@SuppressWarnings("unchecked")
-		List<Set<TransactionOutput>> inputList = (List<Set<TransactionOutput>>)ResponseHolder.getInstance().getObject(request.getCorrelationId());
+		List<Set<TransactionOutput>> inputList = new GetInputsRequest(network, tmaAddress, totals).getInputlist();
 		int i = 0;
 		
 		if(inputList.size() != totals.size()) {
 			label.setText("No inputs available for tma address " + tmaAddress + ". Please check your balance.");
-			return false;
+			return;
 		}
 		
 		Set<TransactionOutput> inputs = inputList.get(i++);
@@ -102,8 +103,8 @@ public class SendReplyAction extends AbstractAction implements Caller {
 			String accountName = names.iterator().next();
 			keywords.getMap().put("from", accountName);
 		} else {
-			log("You have not created your twitter account yet.");
-			return false;
+			label.setText("You have not created your twitter account yet.");
+			return;
 		}
 		
 		Transaction transaction = new Transaction(wallet.getPublicKey(), twitterTmaAddress, Coin.SATOSHI, Coin.SATOSHI, 
@@ -112,7 +113,32 @@ public class SendReplyAction extends AbstractAction implements Caller {
 		
 		new SendTransactionRequest(network, transaction).start();
 		logger.debug("sent {}", transaction);
-		return true;
+		feedback();
+	}
+	
+	private void feedback() {
+		frame.getContentPane().removeAll();
+
+		JPanel form = new JPanel(new MigLayout("wrap 2", "[right][fill]"));
+		JScrollPane scrollPane = new JScrollPane(form, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		frame.getContentPane().add(scrollPane);
+		
+		form.add(new JLabel("The reply was successfully sent:"), "span, left");
+		
+		JTextArea description = new AutoResizingTextArea(5, 40, 55);
+		description.setText(area.getText());
+		
+		description.setLineWrap(true);
+		description.setWrapStyleWord(true);
+		description.setOpaque(false);
+		description.setEditable(false);
+		description.revalidate();
+		
+		form.add(description, "span, left");
+		
+		frame.getContentPane().revalidate();
+		frame.getContentPane().repaint();
+		
 	}
 
 	public void log(String message) {

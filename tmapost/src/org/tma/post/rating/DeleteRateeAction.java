@@ -76,12 +76,12 @@ public class DeleteRateeAction extends AbstractAction implements Caller {
 	private void doIt(JLabel label) {
 		logger.debug("transactionId={}", transactionId);
 		
-		sendDeleteRateeTransaction();
+		sendDeleteRateeTransaction(label);
 		
-		label.setText("Post with identifier " + transactionId + " was deleted.");
+		
 	}
 
-	private void sendDeleteRateeTransaction() {
+	private void sendDeleteRateeTransaction(JLabel label) {
 		Network network = Network.getInstance();
 		if(!network.isPeerSetComplete()) {
 			new BootstrapRequest(network).start();
@@ -103,14 +103,14 @@ public class DeleteRateeAction extends AbstractAction implements Caller {
 				totals.add(amount);
 			}
 		}
-		
-		
-		
-		GetInputsRequest request = new GetInputsRequest(network, tmaAddress, totals);
-		request.start();
-		@SuppressWarnings("unchecked")
-		List<Set<TransactionOutput>> inputList = (List<Set<TransactionOutput>>)ResponseHolder.getInstance().getObject(request.getCorrelationId());
+
+		List<Set<TransactionOutput>> inputList = new GetInputsRequest(network, tmaAddress, totals).getInputlist();
 		int i = 0;
+		
+		if(inputList.size() != totals.size()) {
+			label.setText("No inputs available for tma address " + tmaAddress + ". Please check your balance.");
+			return;
+		}
 
 		Keywords keywords = new Keywords();
 		keywords.getMap().put("delete", transactionId);
@@ -133,6 +133,7 @@ public class DeleteRateeAction extends AbstractAction implements Caller {
 			}
 		}
 		
+		label.setText("Post with identifier " + transactionId + " was deleted.");
 	}
 
 	public void log(String message) {
