@@ -7,7 +7,12 @@
  *******************************************************************************/
 package org.tma.post.rating;
 
+import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.font.TextAttribute;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -23,6 +28,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -106,13 +112,26 @@ public class AddRatingAction extends AbstractAction implements Caller {
 		
 		form.add(new JLabel("Post:"));
 		
-		JTextField account = new JTextField(45);
-		account.setText(this.account.getText());
-		account.setOpaque(false);
-		account.setEditable(false);
-		account.setBorder(null);
-		JTextFieldRegularPopupMenu.addTo(account);
-		form.add(account);
+		JTextField ratee = new JTextField(45);
+		ratee.setText(account.getText());
+		ratee.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		ratee.setOpaque(false);
+		ratee.setEditable(false);
+		ratee.setBorder(null);
+		ratee.setForeground(Color.BLUE);
+		JTextFieldRegularPopupMenu.addTo(ratee);
+		Map<TextAttribute, Integer> attributes = new HashMap<>();
+		attributes.put(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_ON);
+		ratee.setFont(ratee.getFont().deriveFont(attributes));
+		ratee.addMouseListener(new MouseAdapter(){
+            public void mouseClicked(MouseEvent e){
+            	if(SwingUtilities.isLeftMouseButton(e)) {
+            		new RatingHelper(frame).showRatee(account.getText(), transactionId.getText());
+            	}
+                
+            }
+        });
+		form.add(ratee);
 		
 		form.add(new JLabel("Comment:"));
 		
@@ -196,5 +215,7 @@ public class AddRatingAction extends AbstractAction implements Caller {
 	public void log(String message) {
 		JOptionPane.showMessageDialog(frame, message);
 	}
+	
+
 
 }

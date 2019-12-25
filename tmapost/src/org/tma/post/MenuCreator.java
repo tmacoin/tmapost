@@ -16,6 +16,7 @@ import org.tma.post.message.SendMessage;
 import org.tma.post.message.ShowMessages;
 import org.tma.post.rating.CreateRatee;
 import org.tma.post.rating.FindRatee;
+import org.tma.post.rating.MyRatings;
 import org.tma.post.tweet.CreateTwitter;
 import org.tma.post.tweet.MySubscriptionsAction;
 import org.tma.post.tweet.SearchTwitter;
@@ -47,6 +48,11 @@ public class MenuCreator {
 		menuItem = new JMenuItem("Find Post");
 		menuItem.setAction(new FindRatee(frame));
 		menu.add(menuItem);
+		
+		menuItem = new JMenuItem("My Ratings");
+		menuItem.setAction(new MyRatings(frame));
+		menu.add(menuItem);
+		
 		
 	}
 	
