@@ -145,7 +145,7 @@ public class TmaPost {
 	
 	private void setIcon() {
 		try {
-            URL resource = frame.getClass().getResource("/tmaLogo.png");
+            URL resource = ClassLoader.getSystemResource("tmaLogo.png");
             BufferedImage image = ImageIO.read(resource);
             frame.setIconImage(image);
         } catch (IOException e) {
