@@ -25,6 +25,7 @@ import org.tma.blockchain.Transaction;
 import org.tma.blockchain.TransactionData;
 import org.tma.blockchain.TransactionOutput;
 import org.tma.blockchain.Wallet;
+import org.tma.peer.BootstrapRequest;
 import org.tma.peer.Network;
 import org.tma.peer.SendTransactionRequest;
 import org.tma.peer.thin.GetInputsRequest;
@@ -112,6 +113,10 @@ public class SendTransactionAction extends AbstractAction implements Caller {
 		
 		ThreadExecutor.getInstance().execute(new TmaRunnable("SendTransactionAction") {
 			public void doRun() {
+				Network network = Network.getInstance();
+				if(!network.isPeerSetComplete()) {
+					new BootstrapRequest(network).start();
+				}
 				List<Coin> totals = new ArrayList<Coin>();
 				totals.add(total);
 				List<Set<TransactionOutput>> inputList = new GetInputsRequest(network, tmaAddress, totals).getInputlist();

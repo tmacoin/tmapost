@@ -20,6 +20,7 @@ import javax.swing.JTextField;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.tma.peer.BootstrapRequest;
 import org.tma.peer.Network;
 import org.tma.peer.thin.GetBalanceRequest;
 import org.tma.peer.thin.ResponseHolder;
@@ -55,6 +56,10 @@ public class GetBalanceAction extends AbstractAction implements Caller {
 		
 		ThreadExecutor.getInstance().execute(new TmaRunnable("GetBalanceAction") {
 			public void doRun() {
+				Network network = Network.getInstance();
+				if(!network.isPeerSetComplete()) {
+					new BootstrapRequest(network).start();
+				}
 				GetBalanceRequest request = new GetBalanceRequest(Network.getInstance(), address);
 				request.start();
 				String balance = (String)ResponseHolder.getInstance().getObject(request.getCorrelationId()); 
