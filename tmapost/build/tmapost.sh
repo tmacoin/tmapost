@@ -1,0 +1,1 @@
+java -Xmx512m -jar tmapost.jar -w "0"
