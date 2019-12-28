@@ -164,6 +164,11 @@ public class AddRatingAction extends AbstractAction implements Caller {
 		
 		Keywords accountKeywords = (Keywords)ResponseHolder.getInstance().getObject(getKeywordsRequest.getCorrelationId());
 		
+		if(accountKeywords == null || accountKeywords.getMap().isEmpty()) {
+			label.setText("Could not retrieve any keywords for " + accountName);
+			return false;
+		}
+		
 		
 		String tmaAddress = network.getTmaAddress();
 		Wallet wallet = Wallets.getInstance().getWallet(Wallets.TMA, Wallets.WALLET_NAME);

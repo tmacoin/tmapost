@@ -92,6 +92,11 @@ public class DeleteRateeAction extends AbstractAction implements Caller {
 		
 		Keywords accountKeywords = (Keywords)ResponseHolder.getInstance().getObject(getKeywordsRequest.getCorrelationId());
 		
+		if(accountKeywords == null || accountKeywords.getMap().isEmpty()) {
+			label.setText("Could not retrieve any keywords for identifier " + transactionId);
+			return;
+		}
+		
 		String tmaAddress = network.getTmaAddress();
 		Wallets wallets = Wallets.getInstance();
 		Wallet wallet = wallets.getWallet(Wallets.TMA, Wallets.WALLET_NAME);
