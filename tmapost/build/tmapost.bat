@@ -1,1 +1,1 @@
-java -Xmx512m -jar tmapost.jar -w "0"
+java -Xmx512m -Xdebug -Xrunjdwp:transport=dt_socket,address=18000,server=y,suspend=n -jar tmapost.jar -w "0"
