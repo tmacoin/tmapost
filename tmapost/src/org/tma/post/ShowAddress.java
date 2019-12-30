@@ -22,6 +22,8 @@ import javax.swing.border.EmptyBorder;
 
 import org.tma.blockchain.Wallet;
 import org.tma.peer.Network;
+import org.tma.peer.thin.GetBalanceRequest;
+import org.tma.peer.thin.ResponseHolder;
 import org.tma.post.util.JTextFieldRegularPopupMenu;
 
 public class ShowAddress extends AbstractAction implements Caller {
@@ -59,10 +61,25 @@ public class ShowAddress extends AbstractAction implements Caller {
 		labelPanel.add(label);
 		
 		JPanel p = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		JTextField address = new JTextField(30);
-		address.setText(wallet.getTmaAddress());
-		JTextFieldRegularPopupMenu.addTo(address);
-		p.add(address);
+		JTextField textField = new JTextField(30);
+		textField.setText(wallet.getTmaAddress());
+		JTextFieldRegularPopupMenu.addTo(textField);
+		p.add(textField);
+		fieldPanel.add(p);
+		
+		GetBalanceRequest request = new GetBalanceRequest(Network.getInstance(), wallet.getTmaAddress());
+		request.start();
+		String balance = (String)ResponseHolder.getInstance().getObject(request.getCorrelationId()); 
+		
+		label = new JLabel("Balance:", JLabel.RIGHT);
+		label.setBorder(new EmptyBorder(5,5,5,5));
+		labelPanel.add(label);
+		
+		p = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		textField = new JTextField(30);
+		textField.setText(balance + " coins");
+		JTextFieldRegularPopupMenu.addTo(textField);
+		p.add(textField);
 		fieldPanel.add(p);
 		
 		frame.getContentPane().add(form, BorderLayout.NORTH);
