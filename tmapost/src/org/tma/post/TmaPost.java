@@ -29,6 +29,7 @@ import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 import org.kohsuke.args4j.OptionHandlerFilter;
 import org.tma.persistance.PeerStore;
+import org.tma.post.util.Constants;
 import org.tma.util.Configurator;
 
 import net.miginfocom.swing.MigLayout;
@@ -36,7 +37,6 @@ import net.miginfocom.swing.MigLayout;
 public class TmaPost {
 	
 	private static final Logger logger = LogManager.getLogger();
-	public static final String KEYS = "config/keys.csv";
 
 	private JFrame frame;
 	private JPasswordField passwordField;
@@ -87,7 +87,7 @@ public class TmaPost {
 		//frame.getContentPane().setLayout(null);
 		frame.setTitle("TMA Post");
 
-		File file = new File(KEYS);
+		File file = new File(Constants.KEYS);
 		if(!file.exists()) {
 			createNewPassphrase();
 		} else {
