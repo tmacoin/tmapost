@@ -109,7 +109,7 @@ public class PasswordUtil {
 			}
 	}
 	
-	public void generateKey(String application, String name, String passphrase, String confirmPassword) {
+	public void generateKey(String application, String name, String passphrase) {
 		Wallet wallet = new Wallet();
 		wallet.generateKeyPair();
 		wallets.putWallet(application, name, wallet);

@@ -158,7 +158,7 @@ public class TmaPost {
         }
 	}
 	
-	private void parseArgs(final String[] arguments) throws IOException {
+	private void parseArgs(final String[] arguments) {
 		final CmdLineParser parser = new CmdLineParser(this);
 		if (arguments.length != 0 && arguments.length != 2) {
 			printUsage(parser);

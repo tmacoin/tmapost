@@ -14,7 +14,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
 import java.util.Date;
@@ -226,7 +225,7 @@ public class MessageMouseAdapter extends MouseAdapter {
 				}
 				sendMessage.setSubject("RE " + subject.getText());
 			}
-		} catch (IOException | GeneralSecurityException e) {
+		} catch (GeneralSecurityException e) {
 			logger.error(e.getMessage(), e);
 		}
 
