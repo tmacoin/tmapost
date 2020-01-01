@@ -135,6 +135,7 @@ public class ShowMyTweets extends AbstractAction implements Caller {
 				TwitterHelper twitterHelper = new TwitterHelper(frame);
 				
 				if(title != null) {
+					twitterHelper.print(panel, title.getKeywords().getMap().get("create"));
 					twitterHelper.print(panel, title.getText());
 				}
 				
