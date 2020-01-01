@@ -28,13 +28,15 @@ import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 import org.kohsuke.args4j.OptionHandlerFilter;
+import org.tma.persistance.PeerStore;
+import org.tma.post.util.Constants;
+import org.tma.util.Configurator;
 
 import net.miginfocom.swing.MigLayout;
 
 public class TmaPost {
 	
 	private static final Logger logger = LogManager.getLogger();
-	public static final String KEYS = "config/keys.csv";
 
 	private JFrame frame;
 	private JPasswordField passwordField;
@@ -58,6 +60,9 @@ public class TmaPost {
 					tmapost.frame.setVisible(true);
 					logger.debug("TMA Post Started");
 					logger.debug("Wallets.WALLET_NAME={}", Wallets.WALLET_NAME);
+					if(Configurator.getInstance().getBooleanProperty("org.tma.peer.listed.peers.only")) {
+						PeerStore.getInstance().removeAll();
+					}
 				} catch (Exception e) {
 					logger.error(e.getMessage(), e);
 				}
@@ -82,7 +87,7 @@ public class TmaPost {
 		//frame.getContentPane().setLayout(null);
 		frame.setTitle("TMA Post");
 
-		File file = new File(KEYS);
+		File file = new File(Constants.KEYS);
 		if(!file.exists()) {
 			createNewPassphrase();
 		} else {
@@ -153,7 +158,7 @@ public class TmaPost {
         }
 	}
 	
-	private void parseArgs(final String[] arguments) throws IOException {
+	private void parseArgs(final String[] arguments) {
 		final CmdLineParser parser = new CmdLineParser(this);
 		if (arguments.length != 0 && arguments.length != 2) {
 			printUsage(parser);

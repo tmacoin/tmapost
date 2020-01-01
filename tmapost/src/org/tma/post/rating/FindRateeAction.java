@@ -13,18 +13,11 @@ import java.util.List;
 import java.util.Set;
 
 import javax.swing.AbstractAction;
-import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
 import javax.swing.JTextField;
-import javax.swing.border.EmptyBorder;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.tma.peer.BootstrapRequest;
 import org.tma.peer.Network;
 import org.tma.peer.thin.Ratee;
@@ -32,7 +25,6 @@ import org.tma.peer.thin.ResponseHolder;
 import org.tma.peer.thin.SearchRateesRequest;
 import org.tma.post.Caller;
 import org.tma.post.util.SwingUtil;
-import org.tma.post.util.TableColumnAdjuster;
 import org.tma.util.StringUtil;
 import org.tma.util.ThreadExecutor;
 import org.tma.util.TmaRunnable;
@@ -40,7 +32,6 @@ import org.tma.util.TmaRunnable;
 public class FindRateeAction extends AbstractAction implements Caller {
 
 	private static final long serialVersionUID = 6886690569988480986L;
-	private static final Logger logger = LogManager.getLogger();
 	
     private JFrame frame;
     private JTextField account;
@@ -89,36 +80,7 @@ public class FindRateeAction extends AbstractAction implements Caller {
 		}
 		
 		
-		frame.getContentPane().removeAll();
-		
-		JPanel form = new JPanel();
-		BoxLayout boxLayout = new BoxLayout(form, BoxLayout.Y_AXIS);
-		form.setLayout(boxLayout);
-		
-		frame.getContentPane().add(form);
-		
-		logger.debug("list.size()={}", list.size());
-		
-		label = new JLabel("Found " + list.size() + " posts: ");
-		label.setAlignmentX(JLabel.LEFT_ALIGNMENT);
-		label.setBorder(new EmptyBorder(5,5,5,5));
-		form.add(label);
-		
-		RateeTableModel model = new RateeTableModel(list);
-		JTable table = new JTable(model);
-
-		table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-		TableColumnAdjuster tca = new TableColumnAdjuster(table);
-		tca.adjustColumns();
-		table.addMouseListener(new RateeMouseAdapter(table, list, frame));
-		
-		JScrollPane scroll = new JScrollPane (table);
-		scroll.setBorder(null);
-		scroll.setAlignmentX(JScrollPane.LEFT_ALIGNMENT);
-		form.add(scroll);
-		
-		frame.revalidate();
-		frame.getContentPane().repaint();
+		new RatingHelper(frame).displayPosts(list, label);
 		
 	}
 	

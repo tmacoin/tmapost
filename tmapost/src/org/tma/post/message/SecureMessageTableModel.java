@@ -7,7 +7,6 @@
  *******************************************************************************/
 package org.tma.post.message;
 
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
 import java.util.Date;
@@ -64,7 +63,7 @@ public class SecureMessageTableModel extends AbstractTableModel {
 						index = index == -1? str.length(): index;
 						value = str.substring(0, index);
 					}
-				} catch (IOException | GeneralSecurityException e) {
+				} catch (GeneralSecurityException e) {
 					logger.error(e.getMessage(), e);
 				}
                 break;
