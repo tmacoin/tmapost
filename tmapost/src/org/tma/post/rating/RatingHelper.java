@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -21,15 +22,20 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
+import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
+import javax.swing.border.EmptyBorder;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.tma.peer.BootstrapRequest;
 import org.tma.peer.Network;
 import org.tma.peer.thin.Ratee;
 import org.tma.peer.thin.Rating;
 import org.tma.peer.thin.ResponseHolder;
+import org.tma.peer.thin.SearchPostsRequest;
 import org.tma.peer.thin.SearchRateeRequest;
 import org.tma.peer.thin.SearchRatingForRaterRequest;
 import org.tma.peer.thin.SearchRatingRequest;
@@ -37,6 +43,7 @@ import org.tma.post.Wallets;
 import org.tma.post.message.SendMessage;
 import org.tma.post.util.JTextFieldRegularPopupMenu;
 import org.tma.post.util.SwingUtil;
+import org.tma.post.util.TableColumnAdjuster;
 import org.tma.util.StringUtil;
 import org.tma.util.ThreadExecutor;
 import org.tma.util.TmaRunnable;
@@ -46,6 +53,8 @@ import com.jidesoft.swing.AutoResizingTextArea;
 import net.miginfocom.swing.MigLayout;
 
 public class RatingHelper {
+	
+	private static final Logger logger = LogManager.getLogger();
 
 	private JFrame frame;
 
@@ -353,6 +362,77 @@ public class RatingHelper {
 		showRatings(list, form);
 	
 		frame.getContentPane().revalidate();
+		frame.getContentPane().repaint();
+	}
+
+	public void showPosts(String tmaAddress) {
+		JLabel label = SwingUtil.showWait(frame);
+
+		ThreadExecutor.getInstance().execute(new TmaRunnable("showRater") {
+			public void doRun() {
+				doShowPosts(tmaAddress, label);
+			}
+		});
+		
+	}
+
+	private void doShowPosts(String tmaAddress, JLabel label) {
+		Network network = Network.getInstance();
+		if(!network.isPeerSetComplete()) {
+			new BootstrapRequest(network).start();
+		}
+		
+		SearchPostsRequest request = new SearchPostsRequest(network, tmaAddress);
+		request.start();
+		@SuppressWarnings("unchecked")
+		List<Ratee> list = (List<Ratee>) ResponseHolder.getInstance().getObject(request.getCorrelationId());
+		
+		if(list == null) {
+			label.setText("Failed to retrieve posts. Please try again");
+			return;
+		}
+		
+		logger.debug("Retrieved {} posts", list.size());
+		
+		if(list.size() == 0) {
+			label.setText("No posts were found.");
+			return;
+		}
+		
+		displayPosts(list, label);
+		
+	}
+	
+	public void displayPosts(List<Ratee> list, JLabel label) {
+		frame.getContentPane().removeAll();
+		
+		JPanel form = new JPanel();
+		BoxLayout boxLayout = new BoxLayout(form, BoxLayout.Y_AXIS);
+		form.setLayout(boxLayout);
+		
+		frame.getContentPane().add(form);
+		
+		logger.debug("list.size()={}", list.size());
+		
+		label = new JLabel("Found " + list.size() + " posts: ");
+		label.setAlignmentX(JLabel.LEFT_ALIGNMENT);
+		label.setBorder(new EmptyBorder(5,5,5,5));
+		form.add(label);
+		
+		RateeTableModel model = new RateeTableModel(list);
+		JTable table = new JTable(model);
+
+		table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		TableColumnAdjuster tca = new TableColumnAdjuster(table);
+		tca.adjustColumns();
+		table.addMouseListener(new RateeMouseAdapter(table, list, frame));
+		
+		JScrollPane scroll = new JScrollPane (table);
+		scroll.setBorder(null);
+		scroll.setAlignmentX(JScrollPane.LEFT_ALIGNMENT);
+		form.add(scroll);
+		
+		frame.revalidate();
 		frame.getContentPane().repaint();
 	}
 
