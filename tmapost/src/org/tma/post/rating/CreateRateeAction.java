@@ -9,7 +9,6 @@ package org.tma.post.rating;
 
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -80,7 +79,7 @@ public class CreateRateeAction extends AbstractAction implements Caller {
 		ThreadExecutor.getInstance().execute(new TmaRunnable("CreateRateeAction") {
 			public void doRun() {
 				if(sendCreateRateeTransaction(label) != null) {
-					label.setText("Post " + account.getText() + " was created successfully with keywords: " + getKeywords());
+					label.setText("Post " + account.getText() + " was created successfully with keywords: " + new RatingHelper(frame).getKeywords(jkeywords));
 				}
 			}
 		});
@@ -92,7 +91,7 @@ public class CreateRateeAction extends AbstractAction implements Caller {
 	
 	
 	private Transaction sendCreateRateeTransaction(JLabel label) {
-		Set<String> words = getKeywords();
+		Set<String> words = new RatingHelper(frame).getKeywords(jkeywords);
 		String accountName = account.getText().trim();
 		String ratee = StringUtil.getTmaAddressFromString(accountName);
 		Network network = Network.getInstance();
@@ -152,17 +151,5 @@ public class CreateRateeAction extends AbstractAction implements Caller {
 	public void log(String message) {
 		JOptionPane.showMessageDialog(frame, message);
 	}
-	
-	private Set<String> getKeywords() {
-		Set<String> set = new HashSet<String>();
-		String[] strings = jkeywords.getText().split(" ");
-		for(String str: strings) {
-			if(!"".equals(str)) {
-				set.add(str.toLowerCase());
-			}
-		}
-		return set;
-	}
-
 
 }

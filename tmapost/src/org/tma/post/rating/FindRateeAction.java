@@ -8,7 +8,6 @@
 package org.tma.post.rating;
 
 import java.awt.event.ActionEvent;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -57,7 +56,7 @@ public class FindRateeAction extends AbstractAction implements Caller {
 	
 	
 	private void findRatees(JLabel label) {
-		Set<String> words = getKeywords();
+		Set<String> words = new RatingHelper(frame).getKeywords(jkeywords);
 		Network network = Network.getInstance();
 		if(!network.isPeerSetComplete()) {
 			new BootstrapRequest(network).start();
@@ -87,17 +86,5 @@ public class FindRateeAction extends AbstractAction implements Caller {
 	public void log(String message) {
 		JOptionPane.showMessageDialog(frame, message);
 	}
-	
-	private Set<String> getKeywords() {
-		Set<String> set = new HashSet<String>();
-		String[] strings = jkeywords.getText().split(" ");
-		for(String str: strings) {
-			if(!"".equals(str)) {
-				set.add(str.toLowerCase());
-			}
-		}
-		return set;
-	}
-
 
 }

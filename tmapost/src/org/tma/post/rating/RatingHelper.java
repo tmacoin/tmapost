@@ -9,8 +9,10 @@ import java.awt.event.MouseEvent;
 import java.awt.font.TextAttribute;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -55,6 +57,7 @@ import net.miginfocom.swing.MigLayout;
 public class RatingHelper {
 	
 	private static final Logger logger = LogManager.getLogger();
+	private static final int MAX_NUMBER_OF_KEYWORDS = 10;
 
 	private JFrame frame;
 
@@ -434,6 +437,20 @@ public class RatingHelper {
 		
 		frame.revalidate();
 		frame.getContentPane().repaint();
+	}
+	
+	public Set<String> getKeywords(JTextField jkeywords) {
+		Set<String> set = new HashSet<String>();
+		String[] strings = jkeywords.getText().split(" ");
+		for(String str: strings) {
+			if(set.size() > MAX_NUMBER_OF_KEYWORDS) {
+				break;
+			}
+			if(!"".equals(str)) {
+				set.add(str.toLowerCase());
+			}
+		}
+		return set;
 	}
 
 }
