@@ -16,6 +16,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.Security;
@@ -84,12 +86,24 @@ public class PasswordUtil {
 				i++;
 			}
 		}
+		if(wallets.getNames(Wallets.TMA).isEmpty()) {
+			generateKey(Wallets.TMA, Wallets.WALLET_NAME, passphrase);
+			return true;
+		}
 		saveKeys(passphrase);
 		return true;
 	}
 	
 	public void saveKeys(String passphrase) throws Exception {
 		File file = new File(Constants.KEYS);
+		try {
+			if(file.exists()) {
+				Files.copy(file.toPath(), new File(Constants.KEYS + ".backup").toPath(), StandardCopyOption.REPLACE_EXISTING);
+			}
+			
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		}
 		file.delete();
 		try (
 				OutputStream os = new FileOutputStream(Constants.KEYS);
@@ -113,6 +127,7 @@ public class PasswordUtil {
 		Wallet wallet = new Wallet();
 		wallet.generateKeyPair();
 		wallets.putWallet(application, name, wallet);
+		caller.log("New key was generated for application " + application + " with name " + name + " and address " + wallet.getTmaAddress());
 		try {
 			saveKeys(passphrase);
 		} catch (Exception e) {
