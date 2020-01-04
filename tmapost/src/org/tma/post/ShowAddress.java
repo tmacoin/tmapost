@@ -21,6 +21,7 @@ import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
 import org.tma.blockchain.Wallet;
+import org.tma.peer.BootstrapRequest;
 import org.tma.peer.Network;
 import org.tma.peer.thin.GetBalanceRequest;
 import org.tma.peer.thin.ResponseHolder;
@@ -66,6 +67,11 @@ public class ShowAddress extends AbstractAction implements Caller {
 		JTextFieldRegularPopupMenu.addTo(textField);
 		p.add(textField);
 		fieldPanel.add(p);
+		
+		Network network = Network.getInstance();
+		if(!network.isPeerSetComplete()) {
+			new BootstrapRequest(network).start();
+		}
 		
 		GetBalanceRequest request = new GetBalanceRequest(Network.getInstance(), wallet.getTmaAddress());
 		request.start();
