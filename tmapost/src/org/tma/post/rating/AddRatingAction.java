@@ -84,6 +84,10 @@ public class AddRatingAction extends AbstractAction implements Caller {
 			log("Please click on Yes or No radio button for rating.");
 			return;
 		}
+		if(StringUtil.isEmpty(comment.getText())) {
+			log("Please enter comment.");
+			return;
+		}
 		
 		JLabel label = SwingUtil.showWait(frame);
 
