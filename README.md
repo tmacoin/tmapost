@@ -4,6 +4,9 @@ Tma Post does not require downloading of blockchain and can be installed and sta
 
 It will ask you to enter passphrase and confirm it. In case you have existing key it will ask you to enter passphrase for it.
 
+![Passphrase](https://raw.githubusercontent.com/tmacoin/tmapost/master/tmapost/images/image001.png)
+
+
 It will then start network by connecting to full peers specified in peers.config and locals.config in case you have full instances running on your local network.
 
 You can check balance of any address.
