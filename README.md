@@ -6,19 +6,30 @@ It will ask you to enter passphrase and confirm it. In case you have existing ke
 
 ![Passphrase](https://raw.githubusercontent.com/tmacoin/tmapost/master/tmapost/images/image001.png)
 
-
 It will then start network by connecting to full peers specified in peers.config and locals.config in case you have full instances running on your local network.
 
 You can check balance of any address.
 
+![Balance](https://raw.githubusercontent.com/tmacoin/tmapost/master/tmapost/images/image002.png)
+
 Send transaction
+
+![Transaction](https://raw.githubusercontent.com/tmacoin/tmapost/master/tmapost/images/image003.png)
 
 Send secure encrypted message.
 
+![Secure Message](https://raw.githubusercontent.com/tmacoin/tmapost/master/tmapost/images/image004.png)
+
 Send Twitter like messages.
+
+![Twitter](https://raw.githubusercontent.com/tmacoin/tmapost/master/tmapost/images/image005.png)
 
 Search for posts
 
+![Search for posts](https://raw.githubusercontent.com/tmacoin/tmapost/master/tmapost/images/image006.png)
+
 Create your own posts or submit reviews of any other posts.
+
+![View Post](https://raw.githubusercontent.com/tmacoin/tmapost/master/tmapost/images/image007.png)
 
 Posts and reviews are stored on TMA blockchain and can be only removed by the original poster. As any other blockchain it is censorship free.
