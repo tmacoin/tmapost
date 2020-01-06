@@ -33,3 +33,6 @@ Create your own posts or submit reviews of any other posts.
 ![View Post](https://raw.githubusercontent.com/tmacoin/tmapost/master/tmapost/images/image007.png)
 
 Posts and reviews are stored on TMA blockchain and can be only removed by the original poster. As any other blockchain it is censorship free.
+
+Limited web version of TMA Post can be viewed for demonstration purpose at https://tma.tmacoin.net/
+
