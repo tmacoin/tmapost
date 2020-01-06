@@ -45,7 +45,9 @@
   	
     <h2>TMA Post Web</h2>
     <p>
-    	This is a limited web version of TMA Post desktop application: https://github.com/tmacoin/tmapost created for demonstration purpose. TMA Post stores its data on distributed sharded 
+    	This is a limited web version of TMA Post desktop application: 
+    	<a href="https://github.com/tmacoin/tmapost">https://github.com/tmacoin/tmapost</a>
+    	created for demonstration purpose. TMA Post stores its data on distributed sharded 
     	blockchain TMA Coin and cannot be removed or censured. It can be used as uncensured variant of Yelp, Twitter, Craiglist or eBay. It does not store images or any other media. 
     	It only stores text limited to 1000 characters but can include external links and is searchable by entered keywords.
     </p>

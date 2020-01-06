@@ -54,7 +54,7 @@
 	    </div>
 	    <div class="row"> 
 	      <div class="col-md-2 font-weight-bold">Description:</div>
-	      <div class="col-md-10" style="white-space: pre-wrap;" >${post.description}</div>
+	      <div class="col-md-10" style="white-space: pre-wrap; word-wrap: break-word" >${post.description}</div>
 	    </div>
 	    <div class="row"> 
 	      <div class="col-md-2 font-weight-bold">Date:</div>
@@ -134,7 +134,7 @@
 		    </div>
 			<div class="row"> 
 		      <div class="col-md-2 font-weight-bold">Comment:</div>
-		      <div class="col-md-10" style="white-space: pre-wrap;">${comment}</div>
+		      <div class="col-md-10" style="white-space: pre-wrap; word-wrap: break-word">${comment}</div>
 		    </div>	    
 				    
 		</s:iterator>
