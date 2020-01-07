@@ -11,10 +11,10 @@ Tma Post does not require downloading of blockchain and can be installed and sta
 
 Installation instructions:
 
-* Install Java version 8 or 9
-* Download project from github. You would need just tmapost/build folder. 
-* If you already have keys.csv file with existing keys you can just copy it to config folder, otherwise it will create new key. 
-* Start it by running tmapost.sh or tmabost.bat depending on your operating system.
+1. Install Java version 8 or 9
+2. Download project from github. You would need just tmapost/build folder. 
+3. If you already have keys.csv file with existing keys you can just copy it to config folder, otherwise it will create new key. 
+4. Start it by running tmapost.sh or tmabost.bat depending on your operating system.
 
 It will ask you to enter passphrase and confirm it. In case you have existing key it will ask you to enter passphrase for it.
 
