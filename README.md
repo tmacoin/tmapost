@@ -1,6 +1,20 @@
-TMA Post is a light client for TMA blockchain. It provides ability to check balance of any address on any shard in TMA, sending of secure encrypted messages between TMA addresses, Twitter like functionality and posting announcements which can be used as decentralized, distributed, uncensored version of Yelp, Craiglist or eBay.
+TMA Post is a light client for TMA blockchain.
 
-Tma Post does not require downloading of blockchain and can be installed and started quickly. Install Java version 8 or 9, download project from github. You would need just tmapost/build folder. If you already have keys.csv file with existing keys you can just copy it to config folder, otherwise it will create new key. Start it by running tmapost.sh or tmabost.bat depending on your operating system.
+TMA Post functionality includes the following:
+
+* Checking balance of any address on any shard in TMA.
+* Sending secure encrypted messages between TMA addresses.
+* Twitter like functionality.
+* Posting announcements,  which can be used as decentralized, distributed, uncensored version of Yelp, Craiglist or eBay.
+
+Tma Post does not require downloading of blockchain and can be installed and started quickly; most importantly, TMA Post uses less resources on your system. 
+
+Installation instructions:
+
+* Install Java version 8 or 9
+* Download project from github. You would need just tmapost/build folder. 
+* If you already have keys.csv file with existing keys you can just copy it to config folder, otherwise it will create new key. 
+* Start it by running tmapost.sh or tmabost.bat depending on your operating system.
 
 It will ask you to enter passphrase and confirm it. In case you have existing key it will ask you to enter passphrase for it.
 
