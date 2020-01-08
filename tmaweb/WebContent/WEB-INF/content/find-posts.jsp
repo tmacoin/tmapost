@@ -1,5 +1,6 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="s" uri="/struts-tags" %>
+<%@ taglib uri = "http://java.sun.com/jsp/jstl/core" prefix = "c" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!doctype html>
 <html lang="en">
@@ -68,7 +69,12 @@
 		  	<s:iterator value="posts" status="post">
 		    <tr>
 		      <td>
-		      	<a href="${pageContext.request.contextPath}/show-post?identifier=${transactionId}&name=${name}">${name}</a>
+		      	<s:url action="show-post" var="url">
+		      		<s:param name="identifier">${transactionId}</s:param>
+		      		<s:param name="name">${name}</s:param>
+		      	</s:url>
+		      	
+		      	<a href="${url}">${name}</a>
 		      </td>
 		      <td>
 		      	<jsp:useBean id="startDate" class="java.util.Date" />
