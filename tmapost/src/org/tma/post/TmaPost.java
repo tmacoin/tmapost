@@ -14,11 +14,15 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 
 import javax.imageio.ImageIO;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 
@@ -88,7 +92,7 @@ public class TmaPost {
 		frame.setTitle("TMA Post");
 
 		File file = new File(Constants.KEYS);
-		if(!file.exists()) {
+		if(!file.exists() && !copyExisting()) {
 			createNewPassphrase();
 		} else {
 			enterPassphrase();
@@ -98,6 +102,35 @@ public class TmaPost {
 		
 	}
 	
+	private boolean copyExisting() {
+		int input = JOptionPane.showConfirmDialog(frame, 
+                "Do you want to import existing key file?", "Select existing kye file", 
+                JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE);
+
+		if(input != JOptionPane.YES_OPTION) {
+			return false;
+		}
+		JFileChooser jfc = new JFileChooser();
+		int returnValue = jfc.showOpenDialog(null);
+
+		if (returnValue != JFileChooser.APPROVE_OPTION) {
+			return false;
+		}
+		File selectedFile = jfc.getSelectedFile();
+		File file = new File(Constants.KEYS);
+		try {
+			if (file.exists()) {
+				Files.copy(file.toPath(), new File(Constants.KEYS + ".backupOriginalFile").toPath(),
+						StandardCopyOption.REPLACE_EXISTING);
+			}
+			Files.copy(selectedFile.toPath(), file.toPath(), StandardCopyOption.REPLACE_EXISTING);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			return false;
+		}
+		return true;
+	}
+
 	private void createNewPassphrase() {
 		
 		JPanel form = new JPanel(new MigLayout(
