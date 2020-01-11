@@ -1,7 +1,5 @@
 package org.tma.util;
 
-import java.net.InetSocketAddress;
-
 import org.tinylog.Level;
 import org.tinylog.provider.LoggingProvider;
 import org.tinylog.provider.ProviderRegistry;
@@ -56,6 +54,18 @@ public class TmaLogger {
 	public void info(String message, Object... arguments) {
 		if (MINIMUM_LEVEL_COVERS_INFO) {
 			provider.log(STACKTRACE_DEPTH, null, Level.INFO, null, message, arguments);
+		}
+	}
+	
+	public void trace(String message, Object... arguments) {
+		if (MINIMUM_LEVEL_COVERS_TRACE) {
+			provider.log(STACKTRACE_DEPTH, null, Level.TRACE, null, message, arguments);
+		}
+	}
+	
+	public void warn(String message, Object... arguments) {
+		if (MINIMUM_LEVEL_COVERS_WARN) {
+			provider.log(STACKTRACE_DEPTH, null, Level.WARN, null, message, arguments);
 		}
 	}
 
