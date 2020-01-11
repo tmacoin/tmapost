@@ -22,21 +22,20 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.tma.peer.BootstrapRequest;
 import org.tma.peer.Network;
 import org.tma.peer.thin.Ratee;
 import org.tma.peer.thin.ResponseHolder;
 import org.tma.peer.thin.SearchRateesRequest;
 import org.tma.util.StringUtil;
+import org.tma.util.TmaLogger;
 
 import com.opensymphony.xwork2.ActionSupport;
 
 public class FindPostsAction extends ActionSupport {
 
 	private static final long serialVersionUID = 2135249924702466538L;
-	private static final Logger logger = LogManager.getLogger();
+	private static final TmaLogger logger = TmaLogger.getLogger();
 	private static final int MAX_NUMBER_OF_KEYWORDS = 10;
 	
 	private String post;

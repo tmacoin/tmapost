@@ -9,16 +9,15 @@ package org.tma.web.action;
 
 import java.net.UnknownHostException;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.tma.blockchain.Wallet;
 import org.tma.peer.Network;
 import org.tma.util.ThreadExecutor;
+import org.tma.util.TmaLogger;
 import org.tma.util.TmaRunnable;
 
 public class StartNetwork {
 	
-	private static final Logger logger = LogManager.getLogger();
+	private static final TmaLogger logger = TmaLogger.getLogger();
 	private static final StartNetwork instance = new StartNetwork();
 	
 	public static StartNetwork getInstance() {

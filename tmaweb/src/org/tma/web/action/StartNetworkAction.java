@@ -1,13 +1,12 @@
 package org.tma.web.action;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.tma.util.TmaLogger;
 
 import com.opensymphony.xwork2.ActionSupport;
 
 public class StartNetworkAction extends ActionSupport {
 
     private static final long serialVersionUID = 7353477345330099548L;
-    private static final Logger logger = LogManager.getLogger();
+    private static final TmaLogger logger = TmaLogger.getLogger();
     
     private String passphrase;
     private boolean walletLoaded;

@@ -24,8 +24,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.tma.blockchain.Keywords;
 import org.tma.blockchain.Transaction;
 import org.tma.blockchain.TransactionOutput;
@@ -39,13 +37,14 @@ import org.tma.peer.thin.ResponseHolder;
 import org.tma.util.Applications;
 import org.tma.util.Coin;
 import org.tma.util.StringUtil;
+import org.tma.util.TmaLogger;
 
 import com.opensymphony.xwork2.ActionSupport;
 
 public class AddRatingAction extends ActionSupport {
 
 	private static final long serialVersionUID = 2135249924702466538L;
-	private static final Logger logger = LogManager.getLogger();
+	private static final TmaLogger logger = TmaLogger.getLogger();
 	
 	private String transactionId;
 	private String name;

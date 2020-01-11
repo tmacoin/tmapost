@@ -24,8 +24,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.tma.blockchain.Keywords;
 import org.tma.blockchain.Transaction;
 import org.tma.blockchain.TransactionOutput;
@@ -37,13 +35,14 @@ import org.tma.peer.thin.GetInputsRequest;
 import org.tma.util.Applications;
 import org.tma.util.Coin;
 import org.tma.util.StringUtil;
+import org.tma.util.TmaLogger;
 
 import com.opensymphony.xwork2.ActionSupport;
 
 public class CreatePostAction extends ActionSupport {
 
 	private static final long serialVersionUID = 2135249924702466538L;
-	private static final Logger logger = LogManager.getLogger();
+	private static final TmaLogger logger = TmaLogger.getLogger();
 	private static final int MAX_NUMBER_OF_KEYWORDS = 10;
 	private String post;
 	private String description;

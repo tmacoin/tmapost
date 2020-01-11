@@ -20,20 +20,19 @@ package org.tma.web.action;
 
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.tma.peer.BootstrapRequest;
 import org.tma.peer.Network;
 import org.tma.peer.thin.Rating;
 import org.tma.peer.thin.ResponseHolder;
 import org.tma.peer.thin.SearchRatingForRaterRequest;
+import org.tma.util.TmaLogger;
 
 import com.opensymphony.xwork2.ActionSupport;
 
 public class ShowRatingsAction extends ActionSupport {
 
 	private static final long serialVersionUID = 2135249924702466538L;
-	private static final Logger logger = LogManager.getLogger();
+	private static final TmaLogger logger = TmaLogger.getLogger();
 	
 	private String rater;
 	private List<Rating> ratings;

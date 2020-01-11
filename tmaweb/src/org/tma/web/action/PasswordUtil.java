@@ -25,13 +25,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.tma.blockchain.Wallet;
-import org.tma.persistance.Encryptor;
 import org.tma.util.Base58;
+import org.tma.util.Encryptor;
 import org.tma.util.StringUtil;
+import org.tma.util.TmaLogger;
 
 public class PasswordUtil {
 	
@@ -42,8 +41,7 @@ public class PasswordUtil {
 	
 	private static final Wallets wallets = Wallets.getInstance();
 	private static final Encryptor encryptor = new Encryptor();
-	private static final Logger logger = LogManager.getLogger();
-
+	private static final TmaLogger logger = TmaLogger.getLogger();
 	
 	public PasswordUtil() {
 
