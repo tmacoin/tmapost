@@ -85,6 +85,8 @@ public class PasswordUtil {
 				wallets.putWallet(application, name, wallet);
 				i++;
 			}
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
 		}
 		if(wallets.getNames(Wallets.TMA).isEmpty()) {
 			generateKey(Wallets.TMA, Wallets.WALLET_NAME, passphrase);
