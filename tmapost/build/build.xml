@@ -12,27 +12,26 @@
         <copy todir="${dir.buildfile}/lib">
             	<fileset dir="${dir.jarfile}/lib/">
         			<include name="bcprov-jdk15on-161.jar"/>
-        			<include name="log4j-api-2.12.1.jar"/>
-        			<include name="log4j-core-2.12.1.jar"/>
         			<include name="jide-oss-3.6.18.jar"/>
         			<include name="miglayout-core-5.2.jar"/>
         			<include name="miglayout-swing-5.2.jar"/>
+            		<include name="args4j-2.33.jar"/>
       			</fileset>
-      			<fileset dir="${dir.workspace}/tma/t'ma/lib/">
-        			<include name="derby.jar"/>
+      			<fileset dir="${dir.workspace}/tmapost/tmalite/lib/">
         			<include name="commons-lang3-3.8.jar"/>
         			<include name="gson-2.8.5.jar"/>
-        			<include name="args4j-2.33.jar"/>
+      				<include name="tinylog-api-2.0.1.jar"/>
+      				<include name="tinylog-impl-2.0.1.jar"/>
       			</fileset>
     	</copy>
     
         <jar destfile="${dir.buildfile}/tmapost.jar" filesetmanifest="mergewithoutmain">
             <manifest>
                 <attribute name="Main-Class" value="org.tma.post.TmaPost"/>
-                <attribute name="Class-Path" value=". config/ media/ lib/bcprov-jdk15on-161.jar lib/derby.jar lib/log4j-api-2.12.1.jar lib/log4j-core-2.12.1.jar lib/gson-2.8.5.jar lib/commons-lang3-3.8.jar lib/args4j-2.33.jar lib/jide-oss-3.6.18.jar lib/miglayout-core-5.2.jar lib/miglayout-swing-5.2.jar"/>
+                <attribute name="Class-Path" value=". config/ media/ lib/bcprov-jdk15on-161.jar lib/args4j-2.33.jar lib/tinylog-api-2.0.1.jar lib/tinylog-impl-2.0.1.jar lib/gson-2.8.5.jar lib/commons-lang3-3.8.jar lib/jide-oss-3.6.18.jar lib/miglayout-core-5.2.jar lib/miglayout-swing-5.2.jar"/>
             </manifest>
             <fileset dir="${dir.jarfile}/bin"/>
-            <fileset dir="${dir.workspace}/tma/t'ma/bin"/>
+            <fileset dir="${dir.workspace}/tmapost/tmalite/bin"/>
         </jar>
     </target>
 </project>
