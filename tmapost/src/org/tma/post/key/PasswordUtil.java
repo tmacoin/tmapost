@@ -29,8 +29,8 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.tma.blockchain.Wallet;
 import org.tma.post.Caller;
 import org.tma.post.Wallets;
-import org.tma.post.util.Constants;
 import org.tma.util.Base58;
+import org.tma.util.Constants;
 import org.tma.util.Encryptor;
 import org.tma.util.StringUtil;
 import org.tma.util.TmaLogger;
@@ -54,7 +54,7 @@ public class PasswordUtil {
 	
 	public boolean loadKeys(String passphrase) throws Exception {
 		try (
-				InputStream is = new FileInputStream(Constants.KEYS);
+				InputStream is = new FileInputStream(Constants.FILES_DIRECTORY + Constants.KEYS);
 				BufferedReader in = new BufferedReader(new InputStreamReader(is));
 		) {
 			String line;
@@ -96,10 +96,10 @@ public class PasswordUtil {
 	}
 	
 	public void saveKeys(String passphrase) throws Exception {
-		File file = new File(Constants.KEYS);
+		File file = new File(Constants.FILES_DIRECTORY + Constants.KEYS);
 		try {
 			if(file.exists()) {
-				Files.copy(file.toPath(), new File(Constants.KEYS + ".backup").toPath(), StandardCopyOption.REPLACE_EXISTING);
+				Files.copy(file.toPath(), new File(Constants.FILES_DIRECTORY + Constants.KEYS + ".backup").toPath(), StandardCopyOption.REPLACE_EXISTING);
 			}
 			
 		} catch (Exception e) {
@@ -107,7 +107,7 @@ public class PasswordUtil {
 		}
 		file.delete();
 		try (
-				OutputStream os = new FileOutputStream(Constants.KEYS);
+				OutputStream os = new FileOutputStream(Constants.FILES_DIRECTORY + Constants.KEYS);
 				BufferedWriter out = new BufferedWriter(new OutputStreamWriter(os));
 			) {
 				for (String application : wallets.getApplications()) {

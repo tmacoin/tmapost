@@ -10,6 +10,5 @@ package org.tma.post.util;
 import java.awt.Color;
 
 public interface Constants {
-	public static final String KEYS = "config/keys.csv";
 	public static final Color VERY_LIGHT_RED = new Color(255,200,200);
 }

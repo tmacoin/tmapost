@@ -9,7 +9,6 @@ package org.tma.util;
 
 import java.io.BufferedWriter;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -20,23 +19,22 @@ public class Configurator {
 	private static final TmaLogger logger = TmaLogger.getLogger();
 
 	private static Configurator instance = new Configurator();
-	public static final String APP_PROPERTIES = "config/tma.properties";
 
 	private Properties props = null;
 
 	private Configurator() {
 		props = new Properties();
 		try {
-			Path filePath = Paths.get(APP_PROPERTIES);
+			Path filePath = Paths.get(Constants.FILES_DIRECTORY + "config/tma.properties");
 			if (!Files.exists(filePath)) {
 				try (BufferedWriter writer = Files.newBufferedWriter(filePath)) {
 					writer.newLine();
 					writer.close();
 				}
 			}
-			props.load(new FileInputStream(APP_PROPERTIES));
+			props.load(new FileInputStream(Constants.FILES_DIRECTORY + "config/tma.properties"));
 		} catch (Exception e) {
-			logger.error(e.getLocalizedMessage());
+			logger.error(e.getMessage(), e);
 		}
 	}
 
@@ -69,12 +67,5 @@ public class Configurator {
 	public boolean getBooleanProperty(String key) {
 		String str = getProperty(key);
 		return "true".equals(str);
-	}
-
-	public synchronized void setProperty(String key, String value) throws Exception {
-		props.setProperty(key, value);
-		FileOutputStream out = new FileOutputStream(APP_PROPERTIES);
-		props.store(out, null);
-		out.close();
 	}
 }

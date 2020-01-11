@@ -7,7 +7,7 @@
  *******************************************************************************/
 package org.tma.util;
 
-public interface Constants {
+public class Constants {
 
 	public static final long ONE_MINUTE = 1000 * 60;
 	public static final long ONE_SECOND = 1000;
@@ -15,4 +15,6 @@ public interface Constants {
 	public static final int MAX_SIZE = 1000;
 	public static final int MINUTES_IN_A_DAY = 60 * 24;
 	public static final int MINUTES_IN_A_YEAR = MINUTES_IN_A_DAY * 365;
+	public static String FILES_DIRECTORY = "";
+	public static final String KEYS = "config/keys.csv";
 }

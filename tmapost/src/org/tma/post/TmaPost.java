@@ -30,7 +30,7 @@ import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 import org.kohsuke.args4j.OptionHandlerFilter;
-import org.tma.post.util.Constants;
+import org.tma.util.Constants;
 import org.tma.util.TmaLogger;
 
 import net.miginfocom.swing.MigLayout;
@@ -83,7 +83,7 @@ public class TmaPost {
 		//frame.getContentPane().setLayout(null);
 		frame.setTitle("TMA Post");
 
-		File file = new File(Constants.KEYS);
+		File file = new File(Constants.FILES_DIRECTORY + Constants.KEYS);
 		if(!file.exists() && !copyExisting()) {
 			createNewPassphrase();
 		} else {
@@ -109,10 +109,10 @@ public class TmaPost {
 			return false;
 		}
 		File selectedFile = jfc.getSelectedFile();
-		File file = new File(Constants.KEYS);
+		File file = new File(Constants.FILES_DIRECTORY + Constants.KEYS);
 		try {
 			if (file.exists()) {
-				Files.copy(file.toPath(), new File(Constants.KEYS + ".backupOriginalFile").toPath(),
+				Files.copy(file.toPath(), new File(Constants.FILES_DIRECTORY + Constants.KEYS + ".backupOriginalFile").toPath(),
 						StandardCopyOption.REPLACE_EXISTING);
 			}
 			Files.copy(selectedFile.toPath(), file.toPath(), StandardCopyOption.REPLACE_EXISTING);

@@ -18,6 +18,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -189,27 +190,62 @@ public class Network implements Serializable {
 		peers.addAll(getLocals());
 		peers.addAll(getFromPeers());
 		peers.addAll(getToPeers());
-		peers.removeIf(p -> p == null);
+		
+		Iterator<Peer> i = peers.iterator();
+		 
+		while(i.hasNext()) {
+			Peer p = i.next();
+		    if (p == null) {
+		        i.remove();
+		    }
+		}
+		
 		return peers;
 	}
 	
 	public Set<Peer> getMatePeers() {
 		Set<Peer> peers = getAllPeers();
 		List<Integer> blockShardIds = getMateShardsId();
-		peers.removeIf(peer -> peer.isBlockchainIdSet() && !blockShardIds.contains(peer.getBlockchainId()));
+		
+		Iterator<Peer> i = peers.iterator();
+		 
+		while(i.hasNext()) {
+			Peer peer = i.next();
+		    if (peer.isBlockchainIdSet() && !blockShardIds.contains(peer.getBlockchainId())) {
+		        i.remove();
+		    }
+		}
+		
 		return peers;
 	}
 	
 	public Set<Peer> getCommonPeers(int shardId) {
 		Set<Peer> peers = getAllPeers();
 		List<Integer> blockShardIds = getCommonShards(shardId);
-		peers.removeIf(peer -> peer.isBlockchainIdSet() && !blockShardIds.contains(peer.getBlockchainId()));
+		
+		Iterator<Peer> i = peers.iterator();
+		 
+		while(i.hasNext()) {
+			Peer peer = i.next();
+		    if (peer.isBlockchainIdSet() && !blockShardIds.contains(peer.getBlockchainId())) {
+		        i.remove();
+		    }
+		}
 		return peers;
 	}
 	
 	public List<Peer> getPeersByShardId(int shardId) {
 		List<Peer> list = new ArrayList<Peer>(getAllPeers());
-		list.removeIf(peer -> peer.isBlockchainIdSet() && peer.getBlockchainId() != shardId);
+		
+		Iterator<Peer> i = list.iterator();
+		 
+		while(i.hasNext()) {
+			Peer peer = i.next();
+		    if (peer.isBlockchainIdSet() && peer.getBlockchainId() != shardId) {
+		        i.remove();
+		    }
+		}
+
 		return list;
 	}
 
@@ -321,7 +357,15 @@ public class Network implements Serializable {
 	public List<Peer> getConnectedPeers() {
 		Set<Peer> mates = getMatePeers();
 		
-		mates.removeIf(peer -> !peer.isConnected() || !peer.isBlockchainIdSet());
+		Iterator<Peer> i = mates.iterator();
+		 
+		while(i.hasNext()) {
+			Peer peer = i.next();
+		    if (!peer.isConnected() || !peer.isBlockchainIdSet()) {
+		        i.remove();
+		    }
+		}
+
 		List<Peer> list = new ArrayList<Peer>(mates);
 		Collections.sort(list, new Comparator<Peer>() {
 	        @Override
@@ -393,7 +437,16 @@ public class Network implements Serializable {
 		Set<String> connectedIds = getConnectedNetworkIds();
 		Map<String, Peer> map = SkipPeers.getInstance().getMap();
 		synchronized(map) {
-			map.keySet().removeIf(id -> !connectedIds.contains(id));
+			
+			Iterator<String> i = map.keySet().iterator();
+			 
+			while(i.hasNext()) {
+				String id = i.next();
+			    if (!connectedIds.contains(id)) {
+			        i.remove();
+			    }
+			}
+
 			Set<Peer> result = new HashSet<Peer>(map.values());
 			result.addAll(getConnectedPeers());
 			return result;

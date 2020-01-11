@@ -7,6 +7,7 @@
  *******************************************************************************/
 package org.tma.peer;
 
+import java.util.Iterator;
 import java.util.List;
 
 public class BootstrapResponse extends Response {
@@ -20,7 +21,16 @@ public class BootstrapResponse extends Response {
 	}
 	
 	public Request getRequest(Network clientNetwork, Peer peer) {
-		peers.removeIf(p -> p.getiNetAddress().getAddress() == null);
+		
+		Iterator<Peer> i = peers.iterator();
+		 
+		while(i.hasNext()) {
+			Peer p = i.next();
+		    if (p.getiNetAddress().getAddress() == null) {
+		        i.remove();
+		    }
+		}
+
 		ConnectRequest request = new ConnectRequest(clientNetwork, peers);
 		request.start();
 		return request;

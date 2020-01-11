@@ -8,9 +8,12 @@
 package org.tma.util;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
@@ -25,6 +28,10 @@ public class Bootstrap {
 	private static final TmaLogger logger = TmaLogger.getLogger();
 	
 	private Set<Peer> getBootstrapPeers(String config) {
+		File file = new File(config);
+		if(!file.exists()) {
+			createAndCopy(config);
+		}
 		Set<Peer> set = new HashSet<Peer>();
 		try (
 			InputStream is = new FileInputStream(config);
@@ -54,17 +61,40 @@ public class Bootstrap {
 		return set;
 	}
 
+	private void createAndCopy(String config) {
+		String resource = "";
+		if(config.endsWith("locals.config")) {
+			resource = "org/tma/resources/locals.config";
+		}
+		if(config.endsWith("peers.config")) {
+			resource = "org/tma/resources/peers.config";
+		}
+		try (
+				InputStream is = getClass().getClassLoader().getResourceAsStream(resource);
+				OutputStream os = new FileOutputStream(config);
+		) {
+			
+			int b;
+			while((b = is.read()) != -1) {
+				os.write(b);
+			}
+		} catch(Exception e) {
+			logger.debug(e.getMessage(), e);
+		}
+		
+	}
+
 	public void addPeers(Network network) {
 		addListedPeers(network);
 	}
 	
 	public void addListedPeers(Network network) {
-		network.addBootstrap(getBootstrapPeers("config/peers.config"));
-		network.addLocals(getBootstrapPeers("config/locals.config"));
+		network.addBootstrap(getBootstrapPeers(Constants.FILES_DIRECTORY + "config/peers.config"));
+		network.addLocals(getBootstrapPeers(Constants.FILES_DIRECTORY + "config/locals.config"));
 	}
 	
 	public void addLocals(Network network) {
-		network.addLocals(getBootstrapPeers("config/locals.config"));
+		network.addLocals(getBootstrapPeers(Constants.FILES_DIRECTORY + "config/locals.config"));
 	}
 
 }
