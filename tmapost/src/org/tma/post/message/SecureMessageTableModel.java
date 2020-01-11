@@ -16,9 +16,9 @@ import javax.swing.table.AbstractTableModel;
 
 import org.tma.blockchain.Wallet;
 import org.tma.peer.thin.SecureMessage;
-import org.tma.persistance.Encryptor;
 import org.tma.post.Wallets;
 import org.tma.util.Base58;
+import org.tma.util.Encryptor;
 import org.tma.util.StringUtil;
 import org.tma.util.TmaLogger;
 

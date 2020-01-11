@@ -28,7 +28,6 @@ import org.tma.peer.thin.GetMyTweetsRequest;
 import org.tma.peer.thin.ResponseHolder;
 import org.tma.peer.thin.Tweet;
 import org.tma.peer.thin.TwitterAccount;
-import org.tma.post.persistance.TwitterStore;
 import org.tma.post.util.SwingUtil;
 import org.tma.util.ThreadExecutor;
 import org.tma.util.TmaRunnable;
@@ -79,7 +78,7 @@ public class TwitterAccountMouseAdapter extends MouseAdapter {
 				}
 				
 				TwitterHelper twitterHelper = new TwitterHelper(frame);
-				List<TwitterAccount> subscribedAccounts = TwitterStore.getInstance().selectAll();
+				List<TwitterAccount> subscribedAccounts = SubscriptionStore.getInstance().getSubscriptions();
 				
 				if(title != null) {
 					

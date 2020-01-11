@@ -17,19 +17,15 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-import org.apache.derby.shared.common.error.DerbySQLIntegrityConstraintViolationException;
 import org.tma.peer.thin.TwitterAccount;
 import org.tma.post.Caller;
-import org.tma.post.persistance.TwitterStore;
 import org.tma.post.util.SwingUtil;
 import org.tma.util.ThreadExecutor;
-import org.tma.util.TmaLogger;
 import org.tma.util.TmaRunnable;
 
 public class SubscribeAction extends AbstractAction implements Caller {
 
 	private static final long serialVersionUID = 4008418980341407814L;
-	private static final TmaLogger logger = TmaLogger.getLogger();
 	
 	private JFrame frame;
 	private TwitterAccount twitterAccount;
@@ -48,15 +44,7 @@ public class SubscribeAction extends AbstractAction implements Caller {
 		ThreadExecutor.getInstance().execute(new TmaRunnable("Subscribe") {
 			public void doRun() {
 				String message = "Subscribed to account: " + twitterAccount.getName();
-				try {
-					TwitterStore.getInstance().save(twitterAccount);
-				} catch (DerbySQLIntegrityConstraintViolationException e) {
-					message = "You already have twitter account " + twitterAccount.getName() + " in your subscriptions";
-				} catch (Exception e) {
-					logger.debug(e.getMessage(), e);
-					message = e.getMessage();
-				}
-				
+				save(twitterAccount);
 				frame.getContentPane().removeAll();
 				JPanel form = new JPanel(new BorderLayout());
 				JLabel label = new JLabel(message);
@@ -67,6 +55,10 @@ public class SubscribeAction extends AbstractAction implements Caller {
 				frame.getContentPane().repaint();
 			}
 		});
+	}
+
+	private void save(TwitterAccount twitterAccount) {
+		SubscriptionStore.getInstance().save(twitterAccount);
 	}
 
 	public void log(String message) {

@@ -27,11 +27,11 @@ import java.util.List;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.tma.blockchain.Wallet;
-import org.tma.persistance.Encryptor;
 import org.tma.post.Caller;
 import org.tma.post.Wallets;
 import org.tma.post.util.Constants;
 import org.tma.util.Base58;
+import org.tma.util.Encryptor;
 import org.tma.util.StringUtil;
 import org.tma.util.TmaLogger;
 

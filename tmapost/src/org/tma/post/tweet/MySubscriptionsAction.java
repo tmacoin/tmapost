@@ -22,7 +22,6 @@ import javax.swing.border.EmptyBorder;
 
 import org.tma.peer.thin.TwitterAccount;
 import org.tma.post.Caller;
-import org.tma.post.persistance.TwitterStore;
 import org.tma.post.util.SwingUtil;
 import org.tma.post.util.TableColumnAdjuster;
 import org.tma.util.ThreadExecutor;
@@ -47,7 +46,7 @@ public class MySubscriptionsAction extends AbstractAction implements Caller {
 		ThreadExecutor.getInstance().execute(new TmaRunnable("My Subscriptions") {
 			public void doRun() {
 
-				List<TwitterAccount> list = TwitterStore.getInstance().selectAll();
+				List<TwitterAccount> list = SubscriptionStore.getInstance().getSubscriptions();
 				
 				frame.getContentPane().removeAll();
 				

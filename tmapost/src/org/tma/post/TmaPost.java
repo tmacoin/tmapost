@@ -30,9 +30,7 @@ import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 import org.kohsuke.args4j.OptionHandlerFilter;
-import org.tma.persistance.PeerStore;
 import org.tma.post.util.Constants;
-import org.tma.util.Configurator;
 import org.tma.util.TmaLogger;
 
 import net.miginfocom.swing.MigLayout;
@@ -52,8 +50,6 @@ public class TmaPost {
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
-		//TwitterStore.getInstance().removeAll();
-		
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -63,9 +59,6 @@ public class TmaPost {
 					tmapost.frame.setVisible(true);
 					logger.debug("TMA Post Started");
 					logger.debug("Wallets.WALLET_NAME={}", Wallets.WALLET_NAME);
-					if(Configurator.getInstance().getBooleanProperty("org.tma.peer.listed.peers.only")) {
-						PeerStore.getInstance().removeAll();
-					}
 				} catch (Exception e) {
 					logger.error(e.getMessage(), e);
 				}

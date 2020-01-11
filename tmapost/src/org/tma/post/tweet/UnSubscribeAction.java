@@ -19,7 +19,6 @@ import javax.swing.border.EmptyBorder;
 
 import org.tma.peer.thin.TwitterAccount;
 import org.tma.post.Caller;
-import org.tma.post.persistance.TwitterStore;
 import org.tma.post.util.SwingUtil;
 import org.tma.util.ThreadExecutor;
 import org.tma.util.TmaLogger;
@@ -48,7 +47,7 @@ public class UnSubscribeAction extends AbstractAction implements Caller {
 			public void doRun() {
 				String message = "Unsubscribed from account: " + twitterAccount.getName();
 				try {
-					TwitterStore.getInstance().delete(twitterAccount);
+					delete(twitterAccount);
 				} catch (Exception e) {
 					logger.debug(e.getMessage(), e);
 					message = e.getMessage();
@@ -64,6 +63,10 @@ public class UnSubscribeAction extends AbstractAction implements Caller {
 				frame.getContentPane().repaint();
 			}
 		});
+	}
+
+	private void delete(TwitterAccount twitterAccount) {
+		SubscriptionStore.getInstance().delete(twitterAccount);
 	}
 
 	public void log(String message) {
