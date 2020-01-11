@@ -20,8 +20,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.tma.blockchain.Keywords;
 import org.tma.blockchain.Transaction;
 import org.tma.blockchain.TransactionOutput;
@@ -37,12 +35,13 @@ import org.tma.util.Applications;
 import org.tma.util.Coin;
 import org.tma.util.StringUtil;
 import org.tma.util.ThreadExecutor;
+import org.tma.util.TmaLogger;
 import org.tma.util.TmaRunnable;
 
 public class CreateRateeAction extends AbstractAction implements Caller {
 
 	private static final long serialVersionUID = 6886690569988480986L;
-	private static final Logger logger = LogManager.getLogger();
+	private static final TmaLogger logger = TmaLogger.getLogger();
 	
     private JFrame frame;
     private JTextField account;

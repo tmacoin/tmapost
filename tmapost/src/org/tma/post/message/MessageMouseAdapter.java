@@ -32,18 +32,17 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.tma.blockchain.Wallet;
 import org.tma.peer.thin.SecureMessage;
 import org.tma.persistance.Encryptor;
 import org.tma.post.Wallets;
 import org.tma.util.Base58;
 import org.tma.util.StringUtil;
+import org.tma.util.TmaLogger;
 
 public class MessageMouseAdapter extends MouseAdapter {
 	
-	private static final Logger logger = LogManager.getLogger();
+	private static final TmaLogger logger = TmaLogger.getLogger();
 	private static final Encryptor encryptor = new Encryptor();
 	
 	private JTable table;

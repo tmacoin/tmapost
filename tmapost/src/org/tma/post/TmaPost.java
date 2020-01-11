@@ -26,8 +26,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
@@ -35,12 +33,13 @@ import org.kohsuke.args4j.OptionHandlerFilter;
 import org.tma.persistance.PeerStore;
 import org.tma.post.util.Constants;
 import org.tma.util.Configurator;
+import org.tma.util.TmaLogger;
 
 import net.miginfocom.swing.MigLayout;
 
 public class TmaPost {
 	
-	private static final Logger logger = LogManager.getLogger();
+	private static final TmaLogger logger = TmaLogger.getLogger();
 
 	private JFrame frame;
 	private JPasswordField passwordField;

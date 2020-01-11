@@ -21,8 +21,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.border.EmptyBorder;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.tma.blockchain.Wallet;
 import org.tma.peer.BootstrapRequest;
 import org.tma.peer.Network;
@@ -34,12 +32,13 @@ import org.tma.post.Wallets;
 import org.tma.post.util.SwingUtil;
 import org.tma.post.util.TableColumnAdjuster;
 import org.tma.util.ThreadExecutor;
+import org.tma.util.TmaLogger;
 import org.tma.util.TmaRunnable;
 
 public class ShowMessages extends AbstractAction implements Caller {
 
 	private static final long serialVersionUID = 4036313657721664495L;
-	private static final Logger logger = LogManager.getLogger();
+	private static final TmaLogger logger = TmaLogger.getLogger();
 	
 	private JFrame frame;
 	

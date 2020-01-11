@@ -14,20 +14,19 @@ import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.tma.blockchain.Wallet;
 import org.tma.peer.thin.SecureMessage;
 import org.tma.persistance.Encryptor;
 import org.tma.post.Wallets;
 import org.tma.util.Base58;
 import org.tma.util.StringUtil;
+import org.tma.util.TmaLogger;
 
 public class SecureMessageTableModel extends AbstractTableModel {
 
 	private static final long serialVersionUID = 1012645969055258357L;
 	private static final Encryptor encryptor = new Encryptor();
-	private static final Logger logger = LogManager.getLogger();
+	private static final TmaLogger logger = TmaLogger.getLogger();
 	
 	private List<SecureMessage> list;
 	

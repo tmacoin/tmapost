@@ -13,14 +13,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.tma.peer.thin.TwitterAccount;
 import org.tma.persistance.DBExecutor;
+import org.tma.util.TmaLogger;
 
 public class TwitterStore {
 	
-	private static final Logger logger = LogManager.getLogger();
+	private static final TmaLogger logger = TmaLogger.getLogger();
 	private static Map<String, String> tables = new HashMap<String, String>();
 	private static TwitterStore instance = new TwitterStore();
 	

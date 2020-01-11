@@ -18,8 +18,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.tma.peer.BootstrapRequest;
 import org.tma.peer.Network;
 import org.tma.peer.thin.GetBalanceRequest;
@@ -27,12 +25,13 @@ import org.tma.peer.thin.ResponseHolder;
 import org.tma.post.util.SwingUtil;
 import org.tma.util.StringUtil;
 import org.tma.util.ThreadExecutor;
+import org.tma.util.TmaLogger;
 import org.tma.util.TmaRunnable;
 
 public class GetBalanceAction extends AbstractAction implements Caller {
 
 	private static final long serialVersionUID = 4798442956508802794L;
-	private static final Logger logger = LogManager.getLogger();
+	private static final TmaLogger logger = TmaLogger.getLogger();
 	
 	private JFrame frame;
 	private JTextField jAddress;

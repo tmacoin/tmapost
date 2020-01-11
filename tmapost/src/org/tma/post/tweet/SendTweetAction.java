@@ -21,8 +21,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.tma.blockchain.Keywords;
 import org.tma.blockchain.Transaction;
 import org.tma.blockchain.TransactionOutput;
@@ -37,6 +35,7 @@ import org.tma.post.util.SwingUtil;
 import org.tma.util.Applications;
 import org.tma.util.Coin;
 import org.tma.util.ThreadExecutor;
+import org.tma.util.TmaLogger;
 import org.tma.util.TmaRunnable;
 
 import com.jidesoft.swing.AutoResizingTextArea;
@@ -46,7 +45,7 @@ import net.miginfocom.swing.MigLayout;
 public class SendTweetAction extends AbstractAction implements Caller {
 
 	private static final long serialVersionUID = 4008418980341407814L;
-	private static final Logger logger = LogManager.getLogger();
+	private static final TmaLogger logger = TmaLogger.getLogger();
 	
 	private JFrame frame;
 	private JTextArea tweet;
