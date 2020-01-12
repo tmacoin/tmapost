@@ -258,7 +258,7 @@ public class TableColumnAdjuster implements PropertyChangeListener, TableModelLi
 	//
 	// Implement the TableModelListener
 	//
-	public void tableChanged(TableModelEvent e) {
+	public void tableChanged(final TableModelEvent e) {
 		if (!isColumnDataIncluded)
 			return;
 

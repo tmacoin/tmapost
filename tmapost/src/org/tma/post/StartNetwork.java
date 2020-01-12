@@ -24,7 +24,7 @@ public class StartNetwork {
 		return instance;
 	}
 	
-	public void start(Caller caller) {
+	public void start(final Caller caller) {
 		ThreadExecutor.getInstance().execute(new TmaRunnable("StartNetwork") {
 			public void doRun() {
 				Wallet wallet = Wallets.getInstance().getWallet(Wallets.TMA, Wallets.WALLET_NAME);

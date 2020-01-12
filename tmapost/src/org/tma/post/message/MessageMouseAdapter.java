@@ -59,7 +59,7 @@ public class MessageMouseAdapter extends MouseAdapter {
 	
 	private JPanel showBackButton() {
 		JPanel p = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		JButton btnSubmit = new JButton();
+		final JButton btnSubmit = new JButton();
 		btnSubmit.setAction(new ShowMessages(frame));
 		btnSubmit.setText("Back");
 		

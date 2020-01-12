@@ -11,11 +11,9 @@ import java.security.GeneralSecurityException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.TreeSet;
 
 import org.apache.commons.lang3.StringUtils;
 import org.tma.peer.Network;
@@ -319,16 +317,6 @@ public class Transaction implements Serializable {
 
 	public void setExpiringData(TransactionData expiringData) {
 		this.expiringData = expiringData;
-	}
-	
-	public void sortInputsOutputs() {
-		Comparator<TransactionOutput> compareByTransactionOutputId = (TransactionOutput o1, TransactionOutput o2) -> o1.getTransactionOutputId().compareTo( o2.getTransactionOutputId() );
-		Set<TransactionOutput> set = new TreeSet<TransactionOutput>(compareByTransactionOutputId);
-		set.addAll(inputs);
-		inputs = set;
-		set = new TreeSet<TransactionOutput>(compareByTransactionOutputId);
-		set.addAll(outputs);
-		outputs = set;
 	}
 
 	public String getApp() {

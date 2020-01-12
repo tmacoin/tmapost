@@ -102,13 +102,13 @@ public class SendTransactionAction extends AbstractAction implements Caller {
 			return;
 		}
 		Network network = Network.getInstance();
-		String tmaAddress = network.getTmaAddress();
-		Coin total = Coin.ONE.multiply(Double.parseDouble(amount)).add(new Coin(Long.parseLong(fee)));
-		Wallet wallet = Wallets.getInstance().getWallet(Wallets.TMA, Wallets.WALLET_NAME);
-		TransactionData expiringData = this.expiringData == null? null: new TransactionData(this.expiringData, Long.parseLong(expire));
+		final String tmaAddress = network.getTmaAddress();
+		final Coin total = Coin.ONE.multiply(Double.parseDouble(amount)).add(new Coin(Long.parseLong(fee)));
+		final Wallet wallet = Wallets.getInstance().getWallet(Wallets.TMA, Wallets.WALLET_NAME);
+		final TransactionData expiringData = this.expiringData == null? null: new TransactionData(this.expiringData, Long.parseLong(expire));
 
 
-		JLabel label = SwingUtil.showWait(frame);
+		final JLabel label = SwingUtil.showWait(frame);
 		
 		ThreadExecutor.getInstance().execute(new TmaRunnable("SendTransactionAction") {
 			public void doRun() {

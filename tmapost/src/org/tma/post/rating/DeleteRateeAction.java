@@ -63,7 +63,7 @@ public class DeleteRateeAction extends AbstractAction implements Caller {
 			return;
 		}
 		
-		JLabel label = SwingUtil.showWait(frame);
+		final JLabel label = SwingUtil.showWait(frame);
 
 		ThreadExecutor.getInstance().execute(new TmaRunnable("AddRatingAction") {
 			public void doRun() {

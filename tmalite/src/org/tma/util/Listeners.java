@@ -37,7 +37,7 @@ public class Listeners {
 		list.add(listener);
 	}
 	
-	public void sendEvent(Event event) {
+	public void sendEvent(final Event event) {
 		ThreadExecutor.getInstance().execute(new TmaRunnable("Process event " + event.getClass()) {
 			public void doRun() {
 				List<EventListener> list = listeners.get(event.getClass());

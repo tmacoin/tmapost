@@ -57,7 +57,7 @@ public class TwitterHelper {
 		panel.add(Box.createRigidArea(new Dimension(0, 10)), "span");
 	}
 
-	public void addTweet(JPanel panel, Tweet tweet) {
+	public void addTweet(JPanel panel, final Tweet tweet) {
 		String text = tweet.getFromTwitterAccount() + " · " + new Date(tweet.getTimeStamp()).toString() + "\n" + tweet.getText();
 		JTextArea area = new AutoResizingTextArea(1, 40, 55);
 		area.setLineWrap(true);
@@ -80,7 +80,7 @@ public class TwitterHelper {
 	
 	public JPanel showBackButton(Tweet tweet) {
 		JPanel panel = new JPanel(new MigLayout("wrap 2", "[right][fill]"));
-		JButton btnSubmit = new JButton();
+		final JButton btnSubmit = new JButton();
 		btnSubmit.setAction(new ShowMyTweets(frame, tweet.getRecipient()));
 		btnSubmit.setText("Back");
 		
@@ -103,8 +103,8 @@ public class TwitterHelper {
 		return panel;
 	}
 
-	public void displayTweet(Tweet tweet) {
-		JLabel label = SwingUtil.showWait(frame);
+	public void displayTweet(final Tweet tweet) {
+		final JLabel label = SwingUtil.showWait(frame);
 
 		ThreadExecutor.getInstance().execute(new TmaRunnable("ShowTweet") {
 			public void doRun() {
@@ -128,7 +128,14 @@ public class TwitterHelper {
 				
 				addTweet(panel, tweet);
 				
-				Comparator<Tweet> compareByTimestamp = (Tweet o1, Tweet o2) -> Long.valueOf(o2.getTimeStamp()).compareTo( o1.getTimeStamp() );
+				Comparator<Tweet> compareByTimestamp = new Comparator<Tweet>() {
+					
+					@Override
+					public int compare(Tweet o1, Tweet o2) {
+						return Long.valueOf(o2.getTimeStamp()).compareTo( o1.getTimeStamp() );
+					}
+				};
+				
 				Collections.sort(list, compareByTimestamp);
 				for(Tweet tweet: list) {
 					addTweet(panel, tweet);

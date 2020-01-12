@@ -108,11 +108,11 @@ public class SendMessageAction extends AbstractAction implements Caller {
 			log("Please verify inputs");
 			return;
 		}
-		String tmaAddress = Network.getInstance().getTmaAddress();
-		Coin total = Coin.SATOSHI.add(new Coin(Long.parseLong(fee)));
-		Wallet wallet = Wallets.getInstance().getWallet(Wallets.TMA, Wallets.WALLET_NAME);
+		final String tmaAddress = Network.getInstance().getTmaAddress();
+		final Coin total = Coin.SATOSHI.add(new Coin(Long.parseLong(fee)));
+		final Wallet wallet = Wallets.getInstance().getWallet(Wallets.TMA, Wallets.WALLET_NAME);
 		
-		JLabel label = SwingUtil.showWait(frame);
+		final JLabel label = SwingUtil.showWait(frame);
 		
 		ThreadExecutor.getInstance().execute(new TmaRunnable("SendTransactionAction") {
 			public void doRun() {

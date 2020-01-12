@@ -51,7 +51,7 @@ public class SearchTwitterAction extends AbstractAction implements Caller {
 
 	public void actionPerformed(ActionEvent e) {
 		
-		JLabel label = SwingUtil.showWait(frame);
+		final JLabel label = SwingUtil.showWait(frame);
 		
 		ThreadExecutor.getInstance().execute(new TmaRunnable("SearchTwitterAction") {
 			public void doRun() {

@@ -62,7 +62,7 @@ public class SendReplyAction extends AbstractAction implements Caller {
 	}
 
 	public void actionPerformed(ActionEvent e) {
-		JLabel jlabel = SwingUtil.showWait(frame);
+		final JLabel jlabel = SwingUtil.showWait(frame);
 
 		ThreadExecutor.getInstance().execute(new TmaRunnable("SendTweet") {
 			public void doRun() {

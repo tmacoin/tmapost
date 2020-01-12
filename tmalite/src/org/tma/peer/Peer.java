@@ -244,7 +244,7 @@ public class Peer implements Serializable {
 		return reader;
 	}
 	
-	public boolean startReceiver(Network network) {
+	public boolean startReceiver(final Network network) {
 		if (receiverStarted) {
 			return true;
 		}
@@ -299,7 +299,7 @@ public class Peer implements Serializable {
 		startSender(network, firstRequest);
 	}
 	
-	private void startSender(Network network, Request firstRequest) {
+	private void startSender(final Network network, Request firstRequest) {
 		if(senderStarted) {
 			return;
 		}

@@ -12,6 +12,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -48,8 +49,8 @@ public class TwitterAccountMouseAdapter extends MouseAdapter {
         }
     }
 
-	private void doit(TwitterAccount twitterAccount) {
-		JLabel label = SwingUtil.showWait(frame);
+	private void doit(final TwitterAccount twitterAccount) {
+		final JLabel label = SwingUtil.showWait(frame);
 
 		ThreadExecutor.getInstance().execute(new TmaRunnable("TwitterAccountMouseAdapter") {
 			public void doRun() {
@@ -95,14 +96,28 @@ public class TwitterAccountMouseAdapter extends MouseAdapter {
 
 					twitterHelper.print(panel, title.getText());
 				}
-				
-				list.removeIf(t -> t.getKeywords() != null && (t.getKeywords().getMap().get("create") != null || t.getKeywords().getMap().get("transactionId") != null));
+
+				Iterator<Tweet> i = list.iterator();
+				 
+				while(i.hasNext()) {
+					Tweet t = i.next();
+				    if (t.getKeywords() != null && (t.getKeywords().getMap().get("create") != null || t.getKeywords().getMap().get("transactionId") != null)) {
+				        i.remove();
+				    }
+				}
 				
 				twitterHelper.print(panel, "Retrieved number of tweets " + list.size());
 				
 				panel.add(new JSeparator(), "growx, span");
 				
-				Comparator<Tweet> compareByTimestamp = (Tweet o1, Tweet o2) -> Long.valueOf(o2.getTimeStamp()).compareTo( o1.getTimeStamp() );
+				Comparator<Tweet> compareByTimestamp = new Comparator<Tweet>() {
+					
+					@Override
+					public int compare(Tweet o1, Tweet o2) {
+						return Long.valueOf(o2.getTimeStamp()).compareTo( o1.getTimeStamp() );
+					}
+				};
+						
 				Collections.sort(list, compareByTimestamp);
 				
 				for(Tweet tweet: list) {

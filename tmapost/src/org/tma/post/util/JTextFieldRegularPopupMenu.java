@@ -18,10 +18,10 @@ import javax.swing.undo.UndoManager;
 
 
 public class JTextFieldRegularPopupMenu {
-    public static void addTo(JTextComponent txtField) 
+    public static void addTo(final JTextComponent txtField) 
     {
         JPopupMenu popup = new JPopupMenu();
-        UndoManager undoManager = new UndoManager();
+        final UndoManager undoManager = new UndoManager();
         txtField.getDocument().addUndoableEditListener(undoManager);
 
         Action undoAction = new AbstractAction("Undo") {

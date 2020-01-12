@@ -43,8 +43,8 @@ public class RateeMouseAdapter extends MouseAdapter {
         }
     }
 
-	private void doit(Ratee ratee) {
-		JLabel label = SwingUtil.showWait(frame);
+	private void doit(final Ratee ratee) {
+		final JLabel label = SwingUtil.showWait(frame);
 
 		ThreadExecutor.getInstance().execute(new TmaRunnable("RateeMouseAdapter") {
 			public void doRun() {

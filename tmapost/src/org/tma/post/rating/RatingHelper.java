@@ -64,8 +64,8 @@ public class RatingHelper {
 		this.frame = frame;
 	}
 	
-	public void showRatee(String ratee, String transactionId) {
-		JLabel label = SwingUtil.showWait(frame);
+	public void showRatee(final String ratee, final String transactionId) {
+		final JLabel label = SwingUtil.showWait(frame);
 
 		ThreadExecutor.getInstance().execute(new TmaRunnable("showRater") {
 			public void doRun() {
@@ -93,7 +93,7 @@ public class RatingHelper {
 		
 	}
 	
-	public void show(Ratee ratee) {
+	public void show(final Ratee ratee) {
 		
 		frame.getContentPane().removeAll();
 
@@ -245,7 +245,7 @@ public class RatingHelper {
 	}
 	
 	private void showRatings(List<Rating> list, JPanel form) {
-		for(Rating rating: list) {
+		for(final Rating rating: list) {
 			
 			form.add(new JSeparator(), "growx, span");
 			
@@ -326,8 +326,8 @@ public class RatingHelper {
 		}
 	}
 	
-	public void showRater(String rater) {
-		JLabel label = SwingUtil.showWait(frame);
+	public void showRater(final String rater) {
+		final JLabel label = SwingUtil.showWait(frame);
 
 		ThreadExecutor.getInstance().execute(new TmaRunnable("showRater") {
 			public void doRun() {
@@ -337,7 +337,7 @@ public class RatingHelper {
 		
 	}
 
-	private void displayRaterComments(String rater, JLabel label) {
+	private void displayRaterComments(final String rater, final JLabel label) {
 		Network network = Network.getInstance();
 		if(!network.isPeerSetComplete()) {
 			new BootstrapRequest(network).start();
@@ -367,8 +367,8 @@ public class RatingHelper {
 		frame.getContentPane().repaint();
 	}
 
-	public void showPosts(String tmaAddress) {
-		JLabel label = SwingUtil.showWait(frame);
+	public void showPosts(final String tmaAddress) {
+		final JLabel label = SwingUtil.showWait(frame);
 
 		ThreadExecutor.getInstance().execute(new TmaRunnable("showRater") {
 			public void doRun() {
