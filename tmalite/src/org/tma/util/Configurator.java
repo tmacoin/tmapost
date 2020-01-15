@@ -8,10 +8,10 @@
 package org.tma.util;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileInputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.io.FileWriter;
+import java.io.PrintWriter;
 import java.util.Properties;
 
 public class Configurator {
@@ -25,11 +25,14 @@ public class Configurator {
 	private Configurator() {
 		props = new Properties();
 		try {
-			Path filePath = Paths.get(Constants.FILES_DIRECTORY + "config/tma.properties");
-			if (!Files.exists(filePath)) {
-				try (BufferedWriter writer = Files.newBufferedWriter(filePath)) {
-					writer.newLine();
+			File file = new File(Constants.FILES_DIRECTORY + "config/tma.properties");
+			if (!file.exists()) {
+				try {
+					PrintWriter writer = new PrintWriter(new BufferedWriter(new FileWriter(file)));
+					writer.println();
 					writer.close();
+				} catch (Exception e) {
+					logger.error(e.getMessage(), e);
 				}
 			}
 			props.load(new FileInputStream(Constants.FILES_DIRECTORY + "config/tma.properties"));
