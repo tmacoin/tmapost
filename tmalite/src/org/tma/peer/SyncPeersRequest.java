@@ -21,7 +21,7 @@ public class SyncPeersRequest  extends Request {
 
 	private static final long serialVersionUID = -3794625141357183838L;
 	private static final TmaLogger logger = TmaLogger.getLogger();
-	private static final int SYNC_PERIOD = 1000 * 60 * 5;
+	private static final int SYNC_PERIOD = 1000 * 60;
 	private static final Bootstrap bootstrap = new Bootstrap();
 	
 	private transient Network clientNetwork;
