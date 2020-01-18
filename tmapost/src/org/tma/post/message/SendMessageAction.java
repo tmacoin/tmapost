@@ -163,10 +163,9 @@ public class SendMessageAction extends AbstractAction implements Caller {
 						return;
 					}
 				}
-				TransactionData expiringData = data;
 				
 				Transaction transaction = new Transaction(wallet.getPublicKey(), StringUtil.getStringFromKey(recipient), Coin.SATOSHI, 
-						new Coin(Integer.parseInt(fee)), inputs, wallet.getPrivateKey(), null, expiringData, null);
+						new Coin(Integer.parseInt(fee)), inputs, wallet.getPrivateKey(), null, data, null);
 				transaction.setApp(Applications.MESSAGING);
 				logger.debug("sent {}", transaction);
 				new SendTransactionRequest(network, transaction).start();
