@@ -400,6 +400,22 @@ public class Network implements Serializable {
 		return result;
 	}
 	
+	public Map<Integer, Integer> getPeerCount() {
+		List<Integer> mateIds = getMateShardsId();
+		Map<Integer, Integer> peerCount = new HashMap<Integer, Integer>();
+		for(int i: mateIds) {
+			int count = 0;
+			List<Peer> peers = getPeersByShardId(i);
+			for(Peer peer: peers) {
+				if(peer.isConnected()) {
+					count++;
+				}
+			}
+			peerCount.put(i, count);
+		}
+		return peerCount;
+	}
+	
 	private static int getPeerSetCompleteMinSize() {
 		return Configurator.getInstance().getIntProperty("org.tma.peer.peers.complete.minsize", 1);
 	}
