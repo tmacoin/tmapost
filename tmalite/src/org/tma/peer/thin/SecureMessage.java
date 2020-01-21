@@ -8,10 +8,14 @@
 package org.tma.peer.thin;
 
 import java.io.Serializable;
+import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
+import java.security.PrivateKey;
 import java.security.PublicKey;
 
+import org.tma.util.Base58;
 import org.tma.util.Coin;
+import org.tma.util.Encryptor;
 import org.tma.util.StringUtil;
 import org.tma.util.TmaLogger;
 
@@ -19,6 +23,7 @@ public class SecureMessage implements Serializable {
 
 	private static final long serialVersionUID = 3594175706393924245L;
 	private static final TmaLogger logger = TmaLogger.getLogger();
+	private static final Encryptor encryptor = new Encryptor();
 	
 	private PublicKey sender;
 	private String text;
@@ -96,6 +101,36 @@ public class SecureMessage implements Serializable {
 	public void setExpire(long expire) {
 		this.expire = expire;
 	}
+	
+	public String getSubject(PrivateKey privateKey) {
+        try {
+            String str = StringUtil.trimToNull(getText());
+            if(str != null) {
+                str = new String(encryptor.decryptAsymm(Base58.decode(str), privateKey), StandardCharsets.UTF_8);
+                int index = str.indexOf("\n");
+                index = index == -1? str.length(): index;
+                return str.substring(0, index);
+            }
+        } catch (GeneralSecurityException e) {
+            logger.error(e.getMessage(), e);
+        }
+        return "";
+    }
+
+    public String getBody(PrivateKey privateKey) {
+        try {
+            String str = StringUtil.trimToNull(getText());
+            if(str != null) {
+                str = new String(encryptor.decryptAsymm(Base58.decode(str), privateKey), StandardCharsets.UTF_8);
+                int index = str.indexOf("\n");
+                index = index == -1? str.length(): index;
+                return  str.substring(index + 1);
+            }
+        } catch (GeneralSecurityException e) {
+            logger.error(e.getMessage(), e);
+        }
+        return "";
+    }
 
 	
 	

@@ -75,26 +75,6 @@ public class Network implements Serializable {
 		setNetworkStarted(true);
 		logger.info("Network started");
 	}
-
-	public Network(int port, String tmaAddress) throws UnknownHostException {
-		instance = this;
-		this.tmaAddress = tmaAddress;
-		byte[] bytes = ArrayUtils.addAll(StringUtil.BLOCKCHAIN_TYPE, random.generateSeed(16));
-		setNetworkIdentifier(Base58.encode(bytes));
-		local = Peer.getInstance(new InetSocketAddress(InetAddress.getLocalHost(), port));
-		local.setNetworkIdentifier(getNetworkIdentifier());
-		logger.info("local peer {}", local);
-		init();
-	}
-
-	private void init() {
-		new GetBootstrapPowerRequest(this).start();
-		logger.info("Your shard id is {}", getBootstrapBlockchainId());
-		new BootstrapRequest(this).start();
-		new SyncPeersRequest(this).start();
-		setNetworkStarted(true);
-		printConnectedPeers();
-	}
 	
 	public static Network getInstance() {
 		return instance;
@@ -344,14 +324,6 @@ public class Network implements Serializable {
 
 	public synchronized void addFromPeer(Peer fromPeer) {
 		getFromPeers().add(fromPeer);
-	}
-	
-	private void printConnectedPeers() {
-		List<Peer> list = getConnectedPeers();
-		System.out.println("Connected to: ");
-		for(Peer peer: list) {
-			System.out.println(String.format("%s %s", peer.getBlockchainId(), peer));
-		}
 	}
 	
 	public List<Peer> getConnectedPeers() {
