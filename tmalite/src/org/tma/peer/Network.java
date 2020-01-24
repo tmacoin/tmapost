@@ -71,7 +71,7 @@ public class Network implements Serializable {
 		new GetBootstrapPowerRequest(this).start();
 		logger.info("Your shard id is {}", getBootstrapBlockchainId());
 		new BootstrapRequest(this).start();
-		new SyncPeersRequest(this).start();
+		//new SyncPeersRequest(this).start();
 		setNetworkStarted(true);
 		logger.info("Network started");
 	}
