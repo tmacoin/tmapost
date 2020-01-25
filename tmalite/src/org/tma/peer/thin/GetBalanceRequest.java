@@ -15,8 +15,6 @@ import org.tma.peer.PeerLock;
 import org.tma.peer.Request;
 import org.tma.peer.Response;
 import org.tma.util.Constants;
-import org.tma.util.ShardUtil;
-import org.tma.util.StringUtil;
 import org.tma.util.TmaLogger;
 
 public class GetBalanceRequest extends Request {
@@ -39,9 +37,7 @@ public class GetBalanceRequest extends Request {
 	}
 	
 	public void start() {
-		int shardId = StringUtil.getShard(tmaAddress, clientNetwork.getBootstrapShardingPower());
-		int nextShardId = ShardUtil.getNext(clientNetwork.getBootstrapBlockchainId(), shardId, clientNetwork.getBootstrapShardingPower());
-		List<Peer> peers = clientNetwork.getPeersByShardId(nextShardId);
+		List<Peer> peers = clientNetwork.getPeersByShardId(clientNetwork.getBootstrapBlockchainId());
 		for (Peer peer : peers) {
 			if(!peer.isConnected()) {
 				continue;
@@ -50,7 +46,7 @@ public class GetBalanceRequest extends Request {
 			synchronized (peerLock) {
 				peer.send(clientNetwork, this);
 				try {
-					peerLock.wait(Constants.ONE_MINUTE);
+					peerLock.wait(Constants.ONE_SECOND * 30);
 				} catch (InterruptedException e) {
 					logger.error(e.getMessage(), e);
 				}
@@ -69,6 +65,10 @@ public class GetBalanceRequest extends Request {
 		synchronized (peerLock) {
 			peerLock.notify();
 		}
+	}
+
+	public String getTmaAddress() {
+		return tmaAddress;
 	}
 	
 }

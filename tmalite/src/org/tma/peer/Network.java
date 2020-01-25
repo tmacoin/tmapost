@@ -372,6 +372,29 @@ public class Network implements Serializable {
 		return result;
 	}
 	
+	public boolean isPeerSetCompleteForMyShard() {
+		int myShard = getBootstrapBlockchainId();
+		
+		List<Integer> mateIds= getMateShardsId();
+		Map<Integer, Integer> peerCount = new HashMap<Integer, Integer>();
+		for(int i: mateIds) {
+			int count = 0;
+			List<Peer> peers = getPeersByShardId(i);
+			for(Peer peer: peers) {
+				if(peer.isConnected()) {
+					count++;
+				}
+			}
+			peerCount.put(i, count);
+		}
+		logger.debug("{} peerCount={}", getBlockchainId(), peerCount);
+		boolean result = peerCount.get(myShard) >= getPeerSetCompleteMinSize();
+		if(!result) {
+			ThreadExecutor.sleep(1000);
+		}
+		return result;
+	}
+	
 	public Map<Integer, Integer> getPeerCount() {
 		List<Integer> mateIds = getMateShardsId();
 		Map<Integer, Integer> peerCount = new HashMap<Integer, Integer>();
@@ -389,7 +412,7 @@ public class Network implements Serializable {
 	}
 	
 	private static int getPeerSetCompleteMinSize() {
-		return Configurator.getInstance().getIntProperty("org.tma.peer.peers.complete.minsize", 1);
+		return Configurator.getInstance().getIntProperty("org.tma.peer.peers.complete.minsize", 3);
 	}
 	
 	public boolean isPeerSetFull() {

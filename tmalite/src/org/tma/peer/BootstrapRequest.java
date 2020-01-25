@@ -62,7 +62,7 @@ public class BootstrapRequest extends Request {
 				} catch (InterruptedException e) {
 					logger.error(e.getMessage(), e);
 				}
-				if(clientNetwork.isPeerSetComplete()) {
+				if(clientNetwork.isPeerSetCompleteForMyShard()) {
 					return;
 				}
 			}

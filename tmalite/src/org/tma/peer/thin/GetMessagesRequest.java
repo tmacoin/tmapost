@@ -52,7 +52,7 @@ public class GetMessagesRequest extends Request {
 			synchronized (peerLock) {
 				peer.send(clientNetwork, this);
 				try {
-					peerLock.wait(Constants.ONE_MINUTE);
+					peerLock.wait(Constants.ONE_SECOND * 30);
 				} catch (InterruptedException e) {
 					logger.error(e.getMessage(), e);
 				}

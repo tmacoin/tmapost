@@ -56,7 +56,7 @@ public class GetBalanceAction extends AbstractAction implements Caller {
 		ThreadExecutor.getInstance().execute(new TmaRunnable("GetBalanceAction") {
 			public void doRun() {
 				Network network = Network.getInstance();
-				if(!network.isPeerSetComplete()) {
+				if(!network.isPeerSetCompleteForMyShard()) {
 					new BootstrapRequest(network).start();
 				}
 				
