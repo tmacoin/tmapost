@@ -37,7 +37,7 @@ public class GetBalanceRequest extends Request {
 	}
 	
 	public void start() {
-		List<Peer> peers = clientNetwork.getPeersByShardId(clientNetwork.getBootstrapBlockchainId());
+		List<Peer> peers = clientNetwork.getMyPeers();
 		for (Peer peer : peers) {
 			if(!peer.isConnected()) {
 				continue;
