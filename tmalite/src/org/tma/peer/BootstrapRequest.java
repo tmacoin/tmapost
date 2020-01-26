@@ -37,15 +37,17 @@ public class BootstrapRequest extends Request {
 	
 	public void start() {
 		if (clientNetwork.isPeerSetCompleteForMyShard()) {
-			return;
-		}
-		if(clientNetwork.getAllPeers().isEmpty()) {
-			logger.debug("myPeers.size()={}", myPeers.size());
-			clientNetwork.add(myPeers);
+			myPeers.addAll(clientNetwork.getMyPeers());
 			return;
 		}
 		
+		
 		while (true) {
+			if(clientNetwork.getMyPeers().isEmpty()) {
+				logger.debug("myPeers.size()={}", myPeers.size());
+				clientNetwork.add(myPeers);
+				return;
+			}
 			try {
 				synchronized (lock) {
 					Set<Peer> peers = clientNetwork.getAllPeers();
@@ -54,7 +56,7 @@ public class BootstrapRequest extends Request {
 						BootstrapRequest request = new BootstrapRequest(clientNetwork);
 						peer.send(clientNetwork, request);
 					}
-					lock.wait(Constants.ONE_MINUTE);
+					lock.wait(Constants.ONE_SECOND * 10);
 				}
 				if (clientNetwork.isPeerSetCompleteForMyShard()) {
 					clientNetwork.removeNonMyPeers();
