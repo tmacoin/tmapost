@@ -27,6 +27,8 @@ import java.util.Set;
 import org.apache.commons.lang3.ArrayUtils;
 import org.tma.util.Base58;
 import org.tma.util.Configurator;
+import org.tma.util.Constants;
+import org.tma.util.ExpiringMap;
 import org.tma.util.ShardUtil;
 import org.tma.util.StringUtil;
 import org.tma.util.ThreadExecutor;
@@ -36,6 +38,7 @@ public class Network implements Serializable {
 
 	private static final long serialVersionUID = -6546699938045894752L;
 	private static final TmaLogger logger = TmaLogger.getLogger();
+	private static final ExpiringMap<String, Peer> removedPeers =  new ExpiringMap<String, Peer>(Constants.ONE_MINUTE * 60, Constants.MAX_SIZE);
 	
 	private static final SecureRandom random = new SecureRandom();
 	private static Network instance;
@@ -85,6 +88,9 @@ public class Network implements Serializable {
 	}
 	
 	public synchronized boolean add(Peer peer) {
+		if(removedPeers.containsKey(peer.toString()) && !peer.isConnected()) {
+			return false;
+		}
 		if(getSkipPeers().contains(peer)) {
 			return false;
 		}
@@ -137,13 +143,25 @@ public class Network implements Serializable {
 	}
 	
 	public synchronized boolean removePeer(Peer peer) {
-		
-		boolean result = getToPeers().remove(peer) || getFromPeers().remove(peer) || getLocals().remove(peer);
+		removedPeers.put(peer.toString(), peer);
+		boolean result = getToPeers().remove(peer) || getFromPeers().remove(peer) || getLocals().remove(peer) || thinPeers.remove(peer);
 		if(result) {
 			peer.reset();
 		}
 		peer.seenNow();
 		return result;
+	}
+	
+	public synchronized void removedUnconnectedPeers() {
+		Set<Peer> peers = getAllPeers();
+		for(Peer peer: peers) {
+			if(!peer.isConnected()) {
+				getToPeers().remove(peer); 
+				getFromPeers().remove(peer);
+				getLocals().remove(peer);
+				thinPeers.remove(peer);
+			}
+		}
 	}
 	
 	public synchronized void addToThinPeers(Peer peer) {

@@ -9,7 +9,6 @@ package org.tma.peer;
 
 import java.util.Set;
 
-import org.tma.util.Bootstrap;
 import org.tma.util.Configurator;
 import org.tma.util.Constants;
 import org.tma.util.TmaLogger;
@@ -18,7 +17,6 @@ public class BootstrapRequest extends Request {
 
 	private static final long serialVersionUID = -3701748162180479992L;
 	private static final TmaLogger logger = TmaLogger.getLogger();
-	private static final Bootstrap bootstrap = new Bootstrap();
 	public static final Object lock = new Object();
 	
 	private transient Network clientNetwork;
@@ -36,8 +34,11 @@ public class BootstrapRequest extends Request {
 	}
 	
 	public void start() {
+		if (clientNetwork.isPeerSetCompleteForMyShard()) {
+			return;
+		}
+		
 		while (true) {
-			bootstrap.addPeers(clientNetwork);
 			try {
 				synchronized (lock) {
 					Set<Peer> peers = clientNetwork.getAllPeers();
@@ -49,6 +50,7 @@ public class BootstrapRequest extends Request {
 					lock.wait(Constants.ONE_MINUTE);
 				}
 				if (clientNetwork.isPeerSetCompleteForMyShard()) {
+					clientNetwork.removedUnconnectedPeers();
 					return;
 				}
 			} catch (InterruptedException e) {
