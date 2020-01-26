@@ -17,6 +17,11 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import org.tma.peer.BootstrapRequest;
+import org.tma.peer.Network;
+import org.tma.util.ThreadExecutor;
+import org.tma.util.TmaRunnable;
+
 public class SwingUtil {
 	
 	public static JLabel showWait(JFrame frame) {
@@ -42,6 +47,23 @@ public class SwingUtil {
         }
 
         return null;
+    }
+	
+	public static void checkNetwork() {
+
+        final Network network = Network.getInstance();
+        if (!network.isPeerSetCompleteForMyShard()) {
+            if (network.getMyPeers().isEmpty()) {
+                new BootstrapRequest(network).start();
+            } else {
+                ThreadExecutor.getInstance().execute(new TmaRunnable("checkNetwork") {
+                    public void doRun() {
+                        new BootstrapRequest(network).start();
+                    }
+                });
+            }
+        }
+
     }
 
 }

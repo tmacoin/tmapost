@@ -21,11 +21,11 @@ import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
 import org.tma.blockchain.Wallet;
-import org.tma.peer.BootstrapRequest;
 import org.tma.peer.Network;
 import org.tma.peer.thin.GetBalanceRequest;
 import org.tma.peer.thin.ResponseHolder;
 import org.tma.post.util.JTextFieldRegularPopupMenu;
+import org.tma.post.util.SwingUtil;
 
 public class ShowAddress extends AbstractAction implements Caller {
 
@@ -68,10 +68,7 @@ public class ShowAddress extends AbstractAction implements Caller {
 		p.add(textField);
 		fieldPanel.add(p);
 		
-		Network network = Network.getInstance();
-		if(!network.isPeerSetComplete()) {
-			new BootstrapRequest(network).start();
-		}
+		SwingUtil.checkNetwork();
 		
 		GetBalanceRequest request = new GetBalanceRequest(Network.getInstance(), wallet.getTmaAddress());
 		request.start();
