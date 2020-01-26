@@ -7,6 +7,8 @@
  *******************************************************************************/
 package org.tma.peer;
 
+import java.util.Set;
+
 import org.tma.util.Bootstrap;
 import org.tma.util.Configurator;
 import org.tma.util.Constants;
@@ -38,6 +40,8 @@ public class BootstrapRequest extends Request {
 			bootstrap.addPeers(clientNetwork);
 			try {
 				synchronized (lock) {
+					Set<Peer> peers = clientNetwork.getAllPeers();
+					logger.debug("peers.size()={}", peers.size());
 					for (Peer peer : clientNetwork.getAllPeers()) {
 						BootstrapRequest request = new BootstrapRequest(clientNetwork);
 						peer.send(clientNetwork, request);
