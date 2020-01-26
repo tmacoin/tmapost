@@ -39,6 +39,8 @@ public class BootstrapRequest extends Request {
 	
 	public void start() {
 		if (clientNetwork.isPeerSetCompleteForMyShard()) {
+			clientNetwork.removeNonMyPeers();
+			clientNetwork.removedUnconnectedPeers();
 			return;
 		}
 		
