@@ -18,7 +18,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import org.tma.peer.BootstrapRequest;
 import org.tma.peer.Network;
 import org.tma.peer.thin.GetBalanceRequest;
 import org.tma.peer.thin.ResponseHolder;
@@ -55,14 +54,16 @@ public class GetBalanceAction extends AbstractAction implements Caller {
 		
 		ThreadExecutor.getInstance().execute(new TmaRunnable("GetBalanceAction") {
 			public void doRun() {
-				Network network = Network.getInstance();
-				if(!network.isPeerSetCompleteForMyShard()) {
-					new BootstrapRequest(network).start();
-				}
 				
-				GetBalanceRequest request = new GetBalanceRequest(Network.getInstance(), address);
-				request.start();
-				String balance = (String)ResponseHolder.getInstance().getObject(request.getCorrelationId()); 
+				String balance = null;
+				int i = 5;
+				while(balance == null && i-- > 0) {
+					SwingUtil.checkNetwork();
+					
+					GetBalanceRequest request = new GetBalanceRequest(Network.getInstance(), address);
+					request.start();
+					balance = (String)ResponseHolder.getInstance().getObject(request.getCorrelationId()); 
+				}
 				
 				logger.debug("balance: {} for {}", balance, address);
 				

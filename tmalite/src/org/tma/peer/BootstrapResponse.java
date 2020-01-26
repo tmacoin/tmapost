@@ -7,6 +7,7 @@
  *******************************************************************************/
 package org.tma.peer;
 
+import java.util.HashSet;
 import java.util.List;
 
 public class BootstrapResponse extends Response {
@@ -20,15 +21,7 @@ public class BootstrapResponse extends Response {
 	}
 	
 	public Request getRequest(Network clientNetwork, Peer peer) {
-		for(Peer p: peers) {
-			if(p.getBlockchainId() != clientNetwork.getBootstrapBlockchainId()) {
-				continue;
-			}
-			if(clientNetwork.getMyPeers().size() > 10) {
-				break;
-			}
-			clientNetwork.add(p);
-		}
+		clientNetwork.add(new HashSet<Peer>(peers));
 		Object lock = BootstrapRequest.lock;
 		synchronized (lock) {
 			lock.notify();

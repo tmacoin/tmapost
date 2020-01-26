@@ -10,6 +10,7 @@ package org.tma.peer;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.tma.util.Bootstrap;
 import org.tma.util.Configurator;
 import org.tma.util.Constants;
 import org.tma.util.TmaLogger;
@@ -19,6 +20,7 @@ public class BootstrapRequest extends Request {
 	private static final long serialVersionUID = -3701748162180479992L;
 	private static final TmaLogger logger = TmaLogger.getLogger();
 	public static final Object lock = new Object();
+	private static final Bootstrap bootstrap = new Bootstrap();
 	private static final Set<Peer> myPeers = new HashSet<Peer>();
 	
 	private transient Network clientNetwork;
@@ -37,20 +39,17 @@ public class BootstrapRequest extends Request {
 	
 	public void start() {
 		if (clientNetwork.isPeerSetCompleteForMyShard()) {
-			myPeers.addAll(clientNetwork.getMyPeers());
 			return;
 		}
 		
-		
 		while (true) {
-			if(clientNetwork.getMyPeers().isEmpty()) {
-				logger.debug("myPeers.size()={}", myPeers.size());
-				clientNetwork.add(myPeers);
-				return;
+			if(myPeers.isEmpty()) {
+				bootstrap.addPeers(clientNetwork);
 			}
+			clientNetwork.add(myPeers);
 			try {
 				synchronized (lock) {
-					Set<Peer> peers = clientNetwork.getAllPeers();
+					Set<Peer> peers = clientNetwork.getClosestPeers();
 					logger.debug("peers.size()={}", peers.size());
 					for (Peer peer : peers) {
 						BootstrapRequest request = new BootstrapRequest(clientNetwork);

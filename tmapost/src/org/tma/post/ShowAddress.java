@@ -68,11 +68,17 @@ public class ShowAddress extends AbstractAction implements Caller {
 		p.add(textField);
 		fieldPanel.add(p);
 		
-		SwingUtil.checkNetwork();
 		
-		GetBalanceRequest request = new GetBalanceRequest(Network.getInstance(), wallet.getTmaAddress());
-		request.start();
-		String balance = (String)ResponseHolder.getInstance().getObject(request.getCorrelationId()); 
+		String balance = null;
+		int i = 5;
+		while(balance == null && i-- > 0) {
+			SwingUtil.checkNetwork();
+			
+			GetBalanceRequest request = new GetBalanceRequest(Network.getInstance(), wallet.getTmaAddress());
+			request.start();
+			balance = (String)ResponseHolder.getInstance().getObject(request.getCorrelationId()); 
+		}
+		
 		
 		label = new JLabel("Balance:", JLabel.RIGHT);
 		label.setBorder(new EmptyBorder(5,5,5,5));

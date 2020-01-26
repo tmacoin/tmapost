@@ -523,6 +523,20 @@ public class Network implements Serializable {
 		return thin;
 	}
 
+	public Set<Peer> getClosestPeers() {
+		Set<Peer> peers = getAllPeers();
+		List<Peer> list = new ArrayList<Peer>(peers);
+		final int myShardId = getBootstrapBlockchainId();
+		Collections.sort(list, new Comparator<Peer>() {
+	        @Override
+	        public int compare(Peer peer1, Peer peer2) {
+	            return Integer.compare(peer1.getBlockchainId() ^ myShardId, peer2.getBlockchainId() ^ myShardId);
+	        }
+	    });
+		
+		return new HashSet<Peer>(list.subList(0, Math.min(10, list.size())));
+	}
+
 	
 
 	
