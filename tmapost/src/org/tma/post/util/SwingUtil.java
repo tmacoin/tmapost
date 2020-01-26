@@ -23,47 +23,45 @@ import org.tma.util.ThreadExecutor;
 import org.tma.util.TmaRunnable;
 
 public class SwingUtil {
-	
+
 	public static JLabel showWait(JFrame frame) {
 		frame.getContentPane().removeAll();
 		JPanel form = new JPanel(new BorderLayout());
 		JLabel label = new JLabel("Please wait, processing.");
 		label.setAlignmentX(JLabel.LEFT_ALIGNMENT);
-		label.setBorder(new EmptyBorder(5,5,5,5));
+		label.setBorder(new EmptyBorder(5, 5, 5, 5));
 		form.add(label);
 		frame.getContentPane().add(form, BorderLayout.NORTH);
 		frame.revalidate();
 		frame.getContentPane().repaint();
 		return label;
 	}
-	
+
 	public static String getSelectedButtonText(ButtonGroup buttonGroup) {
-        for (Enumeration<AbstractButton> buttons = buttonGroup.getElements(); buttons.hasMoreElements();) {
-            AbstractButton button = buttons.nextElement();
+		for (Enumeration<AbstractButton> buttons = buttonGroup.getElements(); buttons.hasMoreElements();) {
+			AbstractButton button = buttons.nextElement();
 
-            if (button.isSelected()) {
-                return button.getText();
-            }
-        }
+			if (button.isSelected()) {
+				return button.getText();
+			}
+		}
 
-        return null;
-    }
-	
+		return null;
+	}
+
 	public static void checkNetwork() {
 
-        final Network network = Network.getInstance();
-        if (!network.isPeerSetCompleteForMyShard()) {
-            if (network.getMyPeers().isEmpty()) {
-                new BootstrapRequest(network).start();
-            } else {
-                ThreadExecutor.getInstance().execute(new TmaRunnable("checkNetwork") {
-                    public void doRun() {
-                        new BootstrapRequest(network).start();
-                    }
-                });
-            }
-        }
+		final Network network = Network.getInstance();
+		if (network.getMyPeers().isEmpty()) {
+			new BootstrapRequest(network).start();
+		} else {
+			ThreadExecutor.getInstance().execute(new TmaRunnable("checkNetwork") {
+				public void doRun() {
+					new BootstrapRequest(network).start();
+				}
+			});
+		}
 
-    }
+	}
 
 }

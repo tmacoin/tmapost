@@ -251,7 +251,7 @@ public class Network implements Serializable {
 	
 	public List<Peer> getMyPeers() {
 		int shardId = getBootstrapBlockchainId();
-		List<Peer> list = new ArrayList<Peer>(getAllPeers());
+		List<Peer> list = new ArrayList<Peer>(getConnectedPeers());
 		Iterator<Peer> i = list.iterator();
 		 
 		while(i.hasNext()) {
