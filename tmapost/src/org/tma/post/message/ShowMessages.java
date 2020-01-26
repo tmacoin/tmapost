@@ -62,7 +62,7 @@ public class ShowMessages extends AbstractAction implements Caller {
 		ThreadExecutor.getInstance().execute(new TmaRunnable("ShowMessages") {
 			public void doRun() {
 				Network network = Network.getInstance();
-				if(!network.isPeerSetComplete()) {
+				if(!network.isPeerSetCompleteForMyShard()) {
 					new BootstrapRequest(network).start();
 				}
 				GetMessagesRequest request = new GetMessagesRequest(network, publicKey);

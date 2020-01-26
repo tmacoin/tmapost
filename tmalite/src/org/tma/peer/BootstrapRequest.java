@@ -50,6 +50,7 @@ public class BootstrapRequest extends Request {
 					lock.wait(Constants.ONE_MINUTE);
 				}
 				if (clientNetwork.isPeerSetCompleteForMyShard()) {
+					clientNetwork.removeNonMyPeers();
 					clientNetwork.removedUnconnectedPeers();
 					return;
 				}
