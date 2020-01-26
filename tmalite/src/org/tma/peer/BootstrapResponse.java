@@ -22,11 +22,9 @@ public class BootstrapResponse extends Response {
 	
 	public Request getRequest(Network clientNetwork, Peer peer) {
 		clientNetwork.add(new HashSet<Peer>(peers));
-		if (clientNetwork.isPeerSetCompleteForMyShard()) {
-			Object lock = BootstrapRequest.lock;
-			synchronized (lock) {
-				lock.notify();
-			}
+		Object lock = BootstrapRequest.lock;
+		synchronized (lock) {
+			lock.notify();
 		}
 		return new EmptyRequest();
 	}
