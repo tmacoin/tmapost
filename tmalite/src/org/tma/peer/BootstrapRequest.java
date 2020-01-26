@@ -43,7 +43,7 @@ public class BootstrapRequest extends Request {
 	
 	public void start() {
 		while(true) {
-			if(clientNetwork.isPeerSetComplete()) {
+			if(clientNetwork.isPeerSetCompleteForMyShard()) {
 				return;
 			}
 			
