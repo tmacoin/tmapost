@@ -7,7 +7,6 @@
  *******************************************************************************/
 package org.tma.peer;
 
-import java.util.ArrayList;
 import java.util.Set;
 
 import org.tma.util.Bootstrap;
@@ -32,13 +31,7 @@ public class BootstrapRequest extends Request {
 
 
 	public Response getResponse(Network serverNetwork, Peer peer) throws Exception {
-		if(!serverNetwork.isNetworkStarted()) {
-			return new Response();
-		}
-		Set<Peer> toPeers = serverNetwork.getToPeersCopy();
-		Response response = new BootstrapResponse(new ArrayList<Peer>(toPeers));
-		response.setDoDisconnect(serverNetwork.isPeerSetFull(clientBlockchainId));
-		return response;
+		return new Response();
 	}
 	
 	public void start() {
@@ -80,6 +73,11 @@ public class BootstrapRequest extends Request {
 		synchronized (peerLock) {
 			peerLock.notify();
 		}
+	}
+
+
+	public int getClientBlockchainId() {
+		return clientBlockchainId;
 	}
 
 }
