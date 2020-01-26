@@ -7,6 +7,7 @@
  *******************************************************************************/
 package org.tma.peer;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import org.tma.util.Configurator;
@@ -18,6 +19,7 @@ public class BootstrapRequest extends Request {
 	private static final long serialVersionUID = -3701748162180479992L;
 	private static final TmaLogger logger = TmaLogger.getLogger();
 	public static final Object lock = new Object();
+	private static final Set<Peer> myPeers = new HashSet<Peer>();
 	
 	private transient Network clientNetwork;
 	
@@ -37,13 +39,18 @@ public class BootstrapRequest extends Request {
 		if (clientNetwork.isPeerSetCompleteForMyShard()) {
 			return;
 		}
+		if(clientNetwork.getAllPeers().isEmpty()) {
+			logger.debug("myPeers.size()={}", myPeers.size());
+			clientNetwork.add(myPeers);
+			return;
+		}
 		
 		while (true) {
 			try {
 				synchronized (lock) {
 					Set<Peer> peers = clientNetwork.getAllPeers();
 					logger.debug("peers.size()={}", peers.size());
-					for (Peer peer : clientNetwork.getAllPeers()) {
+					for (Peer peer : peers) {
 						BootstrapRequest request = new BootstrapRequest(clientNetwork);
 						peer.send(clientNetwork, request);
 					}
@@ -52,6 +59,7 @@ public class BootstrapRequest extends Request {
 				if (clientNetwork.isPeerSetCompleteForMyShard()) {
 					clientNetwork.removeNonMyPeers();
 					clientNetwork.removedUnconnectedPeers();
+					myPeers.addAll(clientNetwork.getMyPeers());
 					return;
 				}
 			} catch (InterruptedException e) {
