@@ -18,51 +18,35 @@ public class GetBootstrapPowerRequest extends Request {
 	private static final Bootstrap bootstrap = new Bootstrap();
 
 	private transient Network clientNetwork;
-	private transient PeerLock peerLock;
 	
 	public GetBootstrapPowerRequest(Network clientNetwork) {
 		this.clientNetwork = clientNetwork;
 	}
 
 	public Response getResponse(Network serverNetwork, Peer peer) throws Exception {
-		if(!serverNetwork.isNetworkStarted()) {
-			return new Response();
-		}
-		return new GetBootstrapPowerResponse(serverNetwork.getShardingPower());
+		return new Response();
 	}
 	
 	public void start() {
 		while (true) {
 			bootstrap.addPeers(clientNetwork);
-			for (Peer peer : clientNetwork.getAllPeers()) {
-				try {
-					peerLock = new PeerLock(peer);
-					synchronized (peerLock) {
-						peer.send(clientNetwork, this);
-						peerLock.wait(Peer.CONNECT_TIMEOUT);
+			try {
+				synchronized (clientNetwork) {
+					for (Peer peer : clientNetwork.getAllPeers()) {
+						GetBootstrapPowerRequest request = new GetBootstrapPowerRequest(clientNetwork);
+						peer.send(clientNetwork, request);
 					}
-				} catch (InterruptedException e) {
-					logger.error(e.getMessage(), e);
+					clientNetwork.wait(Peer.CONNECT_TIMEOUT);
 				}
-				if(clientNetwork.isBootstrapShardingPowerUpdated()) {
+				if (clientNetwork.isBootstrapShardingPowerUpdated()) {
 					return;
 				}
+			} catch (InterruptedException e) {
+				logger.error(e.getMessage(), e);
 			}
-			if(Configurator.getInstance().getBooleanProperty("org.tma.network.bootstrap.nowait")) {
+			if (Configurator.getInstance().getBooleanProperty("org.tma.network.bootstrap.nowait")) {
 				break;
 			}
-			
-		}
-
-	}
-	
-	public void onSendComplete(Peer peer) {
-		PeerLock peerLock = this.peerLock;
-		if(!peerLock.isForPeer(peer)) {
-			return;
-		}
-		synchronized (peerLock) {
-			peerLock.notify();
 		}
 	}
 	

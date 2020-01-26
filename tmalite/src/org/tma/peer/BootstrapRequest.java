@@ -7,8 +7,6 @@
  *******************************************************************************/
 package org.tma.peer;
 
-import java.util.Set;
-
 import org.tma.util.Bootstrap;
 import org.tma.util.Configurator;
 import org.tma.util.TmaLogger;
@@ -20,7 +18,6 @@ public class BootstrapRequest extends Request {
 	private static final Bootstrap bootstrap = new Bootstrap();
 	
 	private transient Network clientNetwork;
-	private transient PeerLock peerLock;
 	
 	private int clientBlockchainId;
 
@@ -35,47 +32,28 @@ public class BootstrapRequest extends Request {
 	}
 	
 	public void start() {
-		while(true) {
-			if(clientNetwork.isPeerSetCompleteForMyShard()) {
-				return;
-			}
-			
-			bootstrap.addListedPeers(clientNetwork);
-			Set<Peer> peers = clientNetwork.getAllPeers();
-			
-			for (Peer peer : peers) {
-				try {
-					peerLock = new PeerLock(peer);
-					synchronized (peerLock) {
+		while (true) {
+			bootstrap.addPeers(clientNetwork);
+			try {
+				synchronized (clientNetwork) {
+					for (Peer peer : clientNetwork.getAllPeers()) {
 						BootstrapRequest request = new BootstrapRequest(clientNetwork);
-						request.peerLock = peerLock;
 						peer.send(clientNetwork, request);
-						peerLock.wait(Peer.CONNECT_TIMEOUT);
 					}
-				} catch (InterruptedException e) {
-					logger.error(e.getMessage(), e);
+					clientNetwork.wait(Peer.CONNECT_TIMEOUT);
 				}
-				if(clientNetwork.isPeerSetCompleteForMyShard()) {
+				if (clientNetwork.isPeerSetCompleteForMyShard()) {
 					return;
 				}
+			} catch (InterruptedException e) {
+				logger.error(e.getMessage(), e);
 			}
-			if(Configurator.getInstance().getBooleanProperty("org.tma.network.bootstrap.nowait")) {
+			if (Configurator.getInstance().getBooleanProperty("org.tma.network.bootstrap.nowait")) {
 				break;
 			}
 		}
 	}
 	
-	public void onSendComplete(Peer peer) {
-		PeerLock peerLock = this.peerLock;
-		if(peerLock == null || !peerLock.isForPeer(peer)) {
-			return;
-		}
-		synchronized (peerLock) {
-			peerLock.notify();
-		}
-	}
-
-
 	public int getClientBlockchainId() {
 		return clientBlockchainId;
 	}

@@ -21,6 +21,9 @@ public class GetBootstrapPowerResponse extends Response {
 	public Request getRequest(Network clientNetwork, Peer peer) throws Exception {
 		clientNetwork.setBootstrapShardingPower(shardingPower);
 		clientNetwork.setBootstrapShardingPowerUpdated(true);
+		synchronized (clientNetwork) {
+			clientNetwork.notify();
+		}
 		return new EmptyRequest();
 	}
 }

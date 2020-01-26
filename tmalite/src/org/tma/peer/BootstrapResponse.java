@@ -7,7 +7,7 @@
  *******************************************************************************/
 package org.tma.peer;
 
-import java.util.Iterator;
+import java.util.HashSet;
 import java.util.List;
 
 public class BootstrapResponse extends Response {
@@ -21,19 +21,13 @@ public class BootstrapResponse extends Response {
 	}
 	
 	public Request getRequest(Network clientNetwork, Peer peer) {
-		
-		Iterator<Peer> i = peers.iterator();
-		 
-		while(i.hasNext()) {
-			Peer p = i.next();
-		    if (p.getiNetAddress().getAddress() == null) {
-		        i.remove();
-		    }
+		clientNetwork.add(new HashSet<Peer>(peers));
+		if (clientNetwork.isPeerSetCompleteForMyShard()) {
+			synchronized (clientNetwork) {
+				clientNetwork.notify();
+			}
 		}
-
-		ConnectRequest request = new ConnectRequest(clientNetwork, peers);
-		request.start();
-		return request;
+		return new EmptyRequest();
 	}
 
 }
