@@ -48,12 +48,27 @@ public class ShowAddress extends AbstractAction implements Caller {
 
 	public void actionPerformed(ActionEvent actionEvent) {
 		
-		SwingUtil.showWait(frame);
+		final JLabel label = SwingUtil.showWait(frame);
 		
 		ThreadExecutor.getInstance().execute(new TmaRunnable("ShowMessages") {
 			public void doRun() {
 
 				Wallet wallet = Wallets.getInstance().getWallet(Wallets.TMA, Wallets.WALLET_NAME);
+				
+				String balance = null;
+				int i = 5;
+				while (balance == null && i-- > 0) {
+					SwingUtil.checkNetwork();
+
+					GetBalanceRequest request = new GetBalanceRequest(Network.getInstance(), wallet.getTmaAddress());
+					request.start();
+					balance = (String) ResponseHolder.getInstance().getObject(request.getCorrelationId());
+				}
+				
+				if(balance == null) {
+					label.setText("Failed to retrieve balance. Please try again");
+					return;
+				}
 
 				frame.getContentPane().removeAll();
 
@@ -77,15 +92,7 @@ public class ShowAddress extends AbstractAction implements Caller {
 				p.add(textField);
 				fieldPanel.add(p);
 
-				String balance = null;
-				int i = 5;
-				while (balance == null && i-- > 0) {
-					SwingUtil.checkNetwork();
-
-					GetBalanceRequest request = new GetBalanceRequest(Network.getInstance(), wallet.getTmaAddress());
-					request.start();
-					balance = (String) ResponseHolder.getInstance().getObject(request.getCorrelationId());
-				}
+				
 
 				label = new JLabel("Balance:", JLabel.RIGHT);
 				label.setBorder(new EmptyBorder(5, 5, 5, 5));
