@@ -27,6 +27,8 @@ import java.util.Set;
 import org.apache.commons.lang3.ArrayUtils;
 import org.tma.util.Base58;
 import org.tma.util.Configurator;
+import org.tma.util.Constants;
+import org.tma.util.ExpiringMap;
 import org.tma.util.ShardUtil;
 import org.tma.util.StringUtil;
 import org.tma.util.ThreadExecutor;
@@ -59,6 +61,8 @@ public class Network implements Serializable {
 	private transient boolean bootstrapShardingPowerUpdated;
 	
 	private boolean thin;
+	
+	private transient ExpiringMap<Peer, Peer> removedPeers = new ExpiringMap<>(Constants.ONE_MINUTE, Constants.MAX_SIZE);
 	
 	public Network(String tmaAddress) throws UnknownHostException {
 		instance = this;
@@ -137,6 +141,7 @@ public class Network implements Serializable {
 	}
 	
 	public synchronized boolean removePeer(Peer peer) {
+		removedPeers.put(peer, peer);
 		boolean result = getToPeers().remove(peer) || getFromPeers().remove(peer) || getLocals().remove(peer) || thinPeers.remove(peer);
 		if(result) {
 			peer.reset();
@@ -415,6 +420,7 @@ public class Network implements Serializable {
 		for(int i: mateIds) {
 			int count = 0;
 			List<Peer> peers = getPeersByShardId(i);
+			peers.removeAll(removedPeers.values());
 			for(Peer peer: peers) {
 				if(peer.isConnected()) {
 					count++;
@@ -424,9 +430,6 @@ public class Network implements Serializable {
 		}
 		logger.debug("{} peerCount={}", getBlockchainId(), peerCount);
 		boolean result = peerCount.get(myShard) >= getPeerSetCompleteMinSize();
-		if(!result) {
-			ThreadExecutor.sleep(1000);
-		}
 		return result;
 	}
 	

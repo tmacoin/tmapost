@@ -26,6 +26,8 @@ import org.tma.peer.thin.GetBalanceRequest;
 import org.tma.peer.thin.ResponseHolder;
 import org.tma.post.util.JTextFieldRegularPopupMenu;
 import org.tma.post.util.SwingUtil;
+import org.tma.util.ThreadExecutor;
+import org.tma.util.TmaRunnable;
 
 public class ShowAddress extends AbstractAction implements Caller {
 
@@ -46,54 +48,62 @@ public class ShowAddress extends AbstractAction implements Caller {
 
 	public void actionPerformed(ActionEvent actionEvent) {
 		
-		Wallet wallet = Wallets.getInstance().getWallet(Wallets.TMA, Wallets.WALLET_NAME);
+		SwingUtil.showWait(frame);
 		
-		frame.getContentPane().removeAll();
-		
-		JPanel form = new JPanel(new BorderLayout());
-		
-		JPanel labelPanel = new JPanel(new GridLayout(2, 1));
-		JPanel fieldPanel = new JPanel(new GridLayout(2, 1));
-		form.add(labelPanel, BorderLayout.WEST);
-		form.add(fieldPanel, BorderLayout.CENTER);
-		
-		JLabel label = new JLabel("Your TMA Address on shard " + Network.getInstance().getBootstrapBlockchainId() + ":", JLabel.RIGHT);
-		label.setBorder(new EmptyBorder(5,5,5,5));
-		labelPanel.add(label);
-		
-		JPanel p = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		JTextField textField = new JTextField(30);
-		textField.setText(wallet.getTmaAddress());
-		JTextFieldRegularPopupMenu.addTo(textField);
-		p.add(textField);
-		fieldPanel.add(p);
-		
-		
-		String balance = null;
-		int i = 5;
-		while(balance == null && i-- > 0) {
-			SwingUtil.checkNetwork();
-			
-			GetBalanceRequest request = new GetBalanceRequest(Network.getInstance(), wallet.getTmaAddress());
-			request.start();
-			balance = (String)ResponseHolder.getInstance().getObject(request.getCorrelationId()); 
-		}
-		
-		
-		label = new JLabel("Balance:", JLabel.RIGHT);
-		label.setBorder(new EmptyBorder(5,5,5,5));
-		labelPanel.add(label);
-		
-		p = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		textField = new JTextField(30);
-		textField.setText(balance + " coins");
-		JTextFieldRegularPopupMenu.addTo(textField);
-		p.add(textField);
-		fieldPanel.add(p);
-		
-		frame.getContentPane().add(form, BorderLayout.NORTH);
-		frame.getContentPane().revalidate();
-		frame.getContentPane().repaint();
+		ThreadExecutor.getInstance().execute(new TmaRunnable("ShowMessages") {
+			public void doRun() {
+
+				Wallet wallet = Wallets.getInstance().getWallet(Wallets.TMA, Wallets.WALLET_NAME);
+
+				frame.getContentPane().removeAll();
+
+				JPanel form = new JPanel(new BorderLayout());
+
+				JPanel labelPanel = new JPanel(new GridLayout(2, 1));
+				JPanel fieldPanel = new JPanel(new GridLayout(2, 1));
+				form.add(labelPanel, BorderLayout.WEST);
+				form.add(fieldPanel, BorderLayout.CENTER);
+
+				JLabel label = new JLabel(
+						"Your TMA Address on shard " + Network.getInstance().getBootstrapBlockchainId() + ":",
+						JLabel.RIGHT);
+				label.setBorder(new EmptyBorder(5, 5, 5, 5));
+				labelPanel.add(label);
+
+				JPanel p = new JPanel(new FlowLayout(FlowLayout.LEFT));
+				JTextField textField = new JTextField(30);
+				textField.setText(wallet.getTmaAddress());
+				JTextFieldRegularPopupMenu.addTo(textField);
+				p.add(textField);
+				fieldPanel.add(p);
+
+				String balance = null;
+				int i = 5;
+				while (balance == null && i-- > 0) {
+					SwingUtil.checkNetwork();
+
+					GetBalanceRequest request = new GetBalanceRequest(Network.getInstance(), wallet.getTmaAddress());
+					request.start();
+					balance = (String) ResponseHolder.getInstance().getObject(request.getCorrelationId());
+				}
+
+				label = new JLabel("Balance:", JLabel.RIGHT);
+				label.setBorder(new EmptyBorder(5, 5, 5, 5));
+				labelPanel.add(label);
+
+				p = new JPanel(new FlowLayout(FlowLayout.LEFT));
+				textField = new JTextField(30);
+				textField.setText(balance + " coins");
+				JTextFieldRegularPopupMenu.addTo(textField);
+				p.add(textField);
+				fieldPanel.add(p);
+
+				frame.getContentPane().add(form, BorderLayout.NORTH);
+				frame.getContentPane().revalidate();
+				frame.getContentPane().repaint();
+
+			}
+		});
 	}
 
 	
