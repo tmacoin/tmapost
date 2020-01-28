@@ -45,6 +45,7 @@ public class GetBalanceRequest extends Request {
 			peerLock = new PeerLock(peer);
 			synchronized (peerLock) {
 				peer.send(clientNetwork, this);
+				logger.debug("peer={}", peer);
 				try {
 					peerLock.wait(Constants.ONE_SECOND * 30);
 				} catch (InterruptedException e) {

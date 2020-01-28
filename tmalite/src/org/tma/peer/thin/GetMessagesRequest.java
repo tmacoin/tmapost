@@ -16,8 +16,6 @@ import org.tma.peer.PeerLock;
 import org.tma.peer.Request;
 import org.tma.peer.Response;
 import org.tma.util.Constants;
-import org.tma.util.ShardUtil;
-import org.tma.util.StringUtil;
 import org.tma.util.TmaLogger;
 
 public class GetMessagesRequest extends Request {
@@ -40,10 +38,7 @@ public class GetMessagesRequest extends Request {
 	}
 	
 	public void start() {
-		String tmaAddress  = StringUtil.getStringFromKey(publicKey);
-		int shardId = StringUtil.getShard(tmaAddress, clientNetwork.getBootstrapShardingPower());
-		int nextShardId = ShardUtil.getNext(clientNetwork.getBootstrapBlockchainId(), shardId, clientNetwork.getBootstrapShardingPower());
-		List<Peer> peers = clientNetwork.getPeersByShardId(nextShardId);
+		List<Peer> peers = clientNetwork.getMyPeers();
 		for (Peer peer : peers) {
 			if(!peer.isConnected()) {
 				continue;
@@ -51,6 +46,7 @@ public class GetMessagesRequest extends Request {
 			peerLock = new PeerLock(peer);
 			synchronized (peerLock) {
 				peer.send(clientNetwork, this);
+				logger.debug("peer={}", peer);
 				try {
 					peerLock.wait(Constants.ONE_SECOND * 30);
 				} catch (InterruptedException e) {
@@ -71,6 +67,10 @@ public class GetMessagesRequest extends Request {
 		synchronized (peerLock) {
 			peerLock.notify();
 		}
+	}
+
+	public PublicKey getPublicKey() {
+		return publicKey;
 	}
 	
 }
