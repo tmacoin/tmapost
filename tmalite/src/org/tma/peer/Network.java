@@ -422,7 +422,7 @@ public class Network implements Serializable {
 			List<Peer> peers = getPeersByShardId(i);
 			peers.removeAll(removedPeers.values());
 			for(Peer peer: peers) {
-				if(peer.isConnected()) {
+				if(peer.isConnected() && i == peer.getBlockchainId()) {
 					count++;
 				}
 			}
