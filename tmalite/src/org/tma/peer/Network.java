@@ -115,10 +115,12 @@ public class Network implements Serializable {
 		return toPeers.add(peer);
 	}
 	
-	public void add(Set<Peer> peers) {
+	public boolean add(Set<Peer> peers) {
+		boolean result = false;
 		for(Peer peer: peers) {
-			add(peer);
+			result = result || add(peer);
 		}
+		return result;
 	}
 	
 	public synchronized void addBootstrap(Set<Peer> set) {
