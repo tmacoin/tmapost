@@ -12,19 +12,19 @@ import java.util.Set;
 
 import org.tma.util.Bootstrap;
 import org.tma.util.Configurator;
-import org.tma.util.Constants;
+import org.tma.util.ThreadExecutor;
 import org.tma.util.TmaLogger;
+import org.tma.util.TmaRunnable;
 
 public class BootstrapRequest extends Request {
 
 	private static final long serialVersionUID = -3701748162180479992L;
 	private static final TmaLogger logger = TmaLogger.getLogger();
-	public static final Object lock = new Object();
 	private static final Bootstrap bootstrap = new Bootstrap();
 	private static final Set<Peer> myPeers = new HashSet<Peer>();
-	
+
 	private transient Network clientNetwork;
-	
+
 	private int clientBlockchainId;
 
 	public BootstrapRequest(Network clientNetwork) {
@@ -32,48 +32,89 @@ public class BootstrapRequest extends Request {
 		this.clientBlockchainId = clientNetwork.getBootstrapBlockchainId();
 	}
 
-
 	public Response getResponse(Network serverNetwork, Peer peer) throws Exception {
 		return new Response();
 	}
-	
+
 	public void start() {
+		init();
+		ThreadExecutor.getInstance().execute(new TmaRunnable("BootstrapRequest") {
+			public void doRun() {
+				process();
+			}
+		});
+	}
+	
+	private void init() {
 		if (clientNetwork.isPeerSetCompleteForMyShard()) {
 			clientNetwork.removeNonMyPeers();
 			clientNetwork.removedUnconnectedPeers();
 			return;
 		}
-		
+
 		while (true) {
-			if(myPeers.isEmpty()) {
+			if (myPeers.isEmpty()) {
 				bootstrap.addPeers(clientNetwork);
 			}
 			clientNetwork.add(myPeers);
-			try {
-				synchronized (lock) {
-					Set<Peer> peers = clientNetwork.getClosestPeers();
-					logger.debug("peers.size()={}", peers.size());
-					for (Peer peer : peers) {
-						BootstrapRequest request = new BootstrapRequest(clientNetwork);
-						peer.send(clientNetwork, request);
-					}
-					lock.wait(Constants.ONE_SECOND * 10);
-				}
-				if (clientNetwork.isPeerSetCompleteForMyShard()) {
-					clientNetwork.removeNonMyPeers();
-					clientNetwork.removedUnconnectedPeers();
-					myPeers.addAll(clientNetwork.getMyPeers());
-					return;
-				}
-			} catch (InterruptedException e) {
-				logger.error(e.getMessage(), e);
+
+			Set<Peer> peers = clientNetwork.getAllPeers();
+			logger.debug("peers.size()={}", peers.size());
+			for (Peer peer : peers) {
+				BootstrapRequest request = new BootstrapRequest(clientNetwork);
+				peer.send(clientNetwork, request);
 			}
+			
+			ThreadExecutor.sleep(200);
+
+			if (clientNetwork.getMyPeers().size() > 0) {
+				myPeers.addAll(clientNetwork.getMyPeers());
+				return;
+			}
+
+			if (Configurator.getInstance().getBooleanProperty("org.tma.network.bootstrap.nowait")) {
+				break;
+			}
+		}
+	}
+
+	private void process() {
+		if (clientNetwork.isPeerSetCompleteForMyShard()) {
+			clientNetwork.removeNonMyPeers();
+			clientNetwork.removedUnconnectedPeers();
+			return;
+		}
+
+		while (true) {
+			if (myPeers.isEmpty()) {
+				bootstrap.addPeers(clientNetwork);
+			}
+			clientNetwork.add(myPeers);
+
+			Set<Peer> peers = clientNetwork.getAllPeers();
+			logger.debug("peers.size()={}", peers.size());
+			for (Peer peer : peers) {
+				BootstrapRequest request = new BootstrapRequest(clientNetwork);
+				peer.send(clientNetwork, request);
+			}
+			
+			ThreadExecutor.sleep(200);
+
+			if (clientNetwork.isPeerSetCompleteForMyShard()) {
+				clientNetwork.removeNonMyPeers();
+				clientNetwork.removedUnconnectedPeers();
+				myPeers.addAll(clientNetwork.getMyPeers());
+				return;
+			}
+
 			if (Configurator.getInstance().getBooleanProperty("org.tma.network.bootstrap.nowait")) {
 				break;
 			}
 		}
 	}
 	
+	
+
 	public int getClientBlockchainId() {
 		return clientBlockchainId;
 	}
