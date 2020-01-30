@@ -97,8 +97,8 @@ public class SendMessageAction extends AbstractAction implements Caller {
 	private void load() {
 		fee = StringUtil.trim(jfee.getText());
 		expire = StringUtil.trim(((KeyValue) jexpire.getSelectedItem()).getValue());
-		subject = StringUtil.trimToNull(jsubject.getText());
-		expiringData = StringUtil.trimToNull(jexpiringData.getText());
+		subject = StringUtil.trim(jsubject.getText());
+		expiringData = StringUtil.trim(jexpiringData.getText());
 	}
 
 	public void actionPerformed(ActionEvent ae) {
