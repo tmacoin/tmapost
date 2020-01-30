@@ -81,6 +81,7 @@ public class Peer implements Serializable {
 	private transient long responseCounter;
 	private boolean saved;
 	private boolean thin;
+	private transient boolean doDisconnect;
 	
 	public boolean isConnected() {
 		boolean result = socket != null && socket.isConnected() && !socket.isClosed();
@@ -420,6 +421,7 @@ public class Peer implements Serializable {
 					setBlockchainId(response.getBlockchainId());
 
 					if(response.isDoDisconnect()) {
+						doDisconnect = true;
 						network.removePeer(this);
 						return new Response();
 					}
@@ -573,6 +575,7 @@ public class Peer implements Serializable {
 		}
 		gsonUtil.write(response, writer);
 		if(response.isDoDisconnect()) {
+			doDisconnect = true;
 			reset();
 			network.removePeer(this);
 			return false;
@@ -711,6 +714,10 @@ public class Peer implements Serializable {
 
 	public boolean isThin() {
 		return thin;
+	}
+	
+	public boolean isDoDisconnect() {
+		return doDisconnect;
 	}
 
 }
