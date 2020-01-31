@@ -47,10 +47,10 @@ public class SubscribeToMessagesRequest extends Request {
 	}
 	
 	private void doPerPeer(Peer peer) {
-		logger.debug("Sending subscription request to {}", peer);
 		if(subscribedPeers.containsKey(peer)) {
 			return;
 		}
+		logger.debug("Sending subscription request to {}", peer);
 		subscribedPeers.put(peer, peer);
 		peer.send(clientNetwork, this);
 	}
