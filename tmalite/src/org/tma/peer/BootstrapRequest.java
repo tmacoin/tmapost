@@ -10,6 +10,7 @@ package org.tma.peer;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.tma.peer.thin.SubscribeToMessagesRequest;
 import org.tma.util.Bootstrap;
 import org.tma.util.Configurator;
 import org.tma.util.ThreadExecutor;
@@ -40,7 +41,11 @@ public class BootstrapRequest extends Request {
 		init();
 		ThreadExecutor.getInstance().execute(new TmaRunnable("BootstrapRequest") {
 			public void doRun() {
-				process();
+				try {
+					process();
+				} finally {
+					new SubscribeToMessagesRequest(clientNetwork, clientNetwork.getTmaAddress()).start();
+				}
 			}
 		});
 	}

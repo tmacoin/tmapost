@@ -32,6 +32,7 @@ public class SecureMessage implements Serializable {
 	private Coin fee;
 	private long timeStamp;
 	private long expire;
+	private String transactionId;
 	
 	public SecureMessage() {
 		
@@ -131,6 +132,14 @@ public class SecureMessage implements Serializable {
         }
         return "";
     }
+
+	public String getTransactionId() {
+		return transactionId;
+	}
+
+	public void setTransactionId(String transactionId) {
+		this.transactionId = transactionId;
+	}
 
 	
 	

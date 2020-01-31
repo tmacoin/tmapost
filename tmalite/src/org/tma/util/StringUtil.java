@@ -41,6 +41,13 @@ public class StringUtil {
 		return str.trim();
 	}
 	
+	public static String trimToBlank(String str) {
+		if(str == null) {
+			return "";
+		}
+		return str.trim();
+	}
+	
 	public static String trimToNull(String str) {
 		String result = str;
 		if(result == null) {
