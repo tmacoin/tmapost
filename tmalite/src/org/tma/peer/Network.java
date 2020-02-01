@@ -441,7 +441,7 @@ public class Network implements Serializable {
 			int count = 0;
 			List<Peer> peers = getPeersByShardId(i);
 			for(Peer peer: peers) {
-				if(peer.isConnected()) {
+				if(peer.isConnected() && i == peer.getBlockchainId() && !peer.isDoDisconnect() && peer.isBlockchainIdSet()) {
 					count++;
 				}
 			}
