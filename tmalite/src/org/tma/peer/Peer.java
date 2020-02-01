@@ -85,6 +85,7 @@ public class Peer implements Serializable {
 	private transient boolean doDisconnect;
 	
 	public boolean isConnected() {
+		Socket socket = this.socket;
 		boolean result = socket != null && socket.isConnected() && !socket.isClosed();
 		return result;
 	}
