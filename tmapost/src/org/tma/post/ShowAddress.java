@@ -50,7 +50,7 @@ public class ShowAddress extends AbstractAction implements Caller {
 		
 		final JLabel label = SwingUtil.showWait(frame);
 		
-		ThreadExecutor.getInstance().execute(new TmaRunnable("ShowMessages") {
+		ThreadExecutor.getInstance().execute(new TmaRunnable("ShowAddress") {
 			public void doRun() {
 
 				Wallet wallet = Wallets.getInstance().getWallet(Wallets.TMA, Wallets.WALLET_NAME);
