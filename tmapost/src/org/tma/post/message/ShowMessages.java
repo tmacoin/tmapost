@@ -63,7 +63,7 @@ public class ShowMessages extends AbstractAction implements Caller {
 			public void doRun() {
 				Network network = Network.getInstance();
 				if(!network.isPeerSetCompleteForMyShard()) {
-					new BootstrapRequest(network).start();
+					BootstrapRequest.getInstance().start();
 				}
 				GetMessagesRequest request = new GetMessagesRequest(network, publicKey);
 				request.start();

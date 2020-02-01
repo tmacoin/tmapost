@@ -59,7 +59,7 @@ public class FindRateeAction extends AbstractAction implements Caller {
 		Set<String> words = new RatingHelper(frame).getKeywords(jkeywords);
 		Network network = Network.getInstance();
 		if(!network.isPeerSetComplete()) {
-			new BootstrapRequest(network).start();
+			BootstrapRequest.getInstance().start();
 		}
 		
 		String accountName = StringUtil.trim(account.getText());

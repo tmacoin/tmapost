@@ -95,7 +95,7 @@ public class CreateRateeAction extends AbstractAction implements Caller {
 		String ratee = StringUtil.getTmaAddressFromString(accountName);
 		Network network = Network.getInstance();
 		if(!network.isPeerSetComplete()) {
-			new BootstrapRequest(network).start();
+			BootstrapRequest.getInstance().start();
 		}
 		String tmaAddress = network.getTmaAddress();
 		Wallet wallet = Wallets.getInstance().getWallet(Wallets.TMA, Wallets.WALLET_NAME);

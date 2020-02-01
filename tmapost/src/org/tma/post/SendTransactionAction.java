@@ -114,7 +114,7 @@ public class SendTransactionAction extends AbstractAction implements Caller {
 			public void doRun() {
 				Network network = Network.getInstance();
 				if(!network.isPeerSetComplete()) {
-					new BootstrapRequest(network).start();
+					BootstrapRequest.getInstance().start();
 				}
 				List<Coin> totals = new ArrayList<Coin>();
 				totals.add(total);

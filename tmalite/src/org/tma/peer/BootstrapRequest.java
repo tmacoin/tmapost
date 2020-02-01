@@ -13,6 +13,7 @@ import java.util.Set;
 import org.tma.peer.thin.SubscribeToMessagesRequest;
 import org.tma.util.Bootstrap;
 import org.tma.util.Configurator;
+import org.tma.util.Constants;
 import org.tma.util.ThreadExecutor;
 import org.tma.util.TmaLogger;
 import org.tma.util.TmaRunnable;
@@ -23,13 +24,22 @@ public class BootstrapRequest extends Request {
 	private static final TmaLogger logger = TmaLogger.getLogger();
 	private static final Bootstrap bootstrap = new Bootstrap();
 	private static final Set<Peer> myPeers = new HashSet<Peer>();
+	private static BootstrapRequest instance;
 
 	private transient Network clientNetwork;
-
 	private int clientBlockchainId;
+	private transient Set<Peer> sentPeers;
+	private transient boolean active;
+	
+	public static synchronized BootstrapRequest getInstance() {
+		if(instance == null) {
+			instance = new BootstrapRequest();
+		}
+		return instance;
+	}
 
-	public BootstrapRequest(Network clientNetwork) {
-		this.clientNetwork = clientNetwork;
+	private BootstrapRequest() {
+		this.clientNetwork = Network.getInstance();
 		this.clientBlockchainId = clientNetwork.getBootstrapBlockchainId();
 	}
 
@@ -37,7 +47,13 @@ public class BootstrapRequest extends Request {
 		return new Response();
 	}
 
-	public void start() {
+	public synchronized void start() {
+		logger.debug("Network status: {}", clientNetwork.getPeerCount());
+		if(active) {
+			return;
+		}
+		active = true;
+		sentPeers = new HashSet<>();
 		init();
 		ThreadExecutor.getInstance().execute(new TmaRunnable("BootstrapRequest") {
 			public void doRun() {
@@ -45,9 +61,20 @@ public class BootstrapRequest extends Request {
 					process();
 				} finally {
 					new SubscribeToMessagesRequest(clientNetwork, clientNetwork.getTmaAddress()).start();
+					sentPeers.clear();
+					active = false;
 				}
 			}
 		});
+	}
+	
+	public void onSendComplete(Peer peer) {
+		synchronized(sentPeers) {
+			sentPeers.remove(peer);
+			//logger.debug("removed {}", peer);
+			sentPeers.notify();
+		}
+		
 	}
 	
 	private void init() {
@@ -64,17 +91,29 @@ public class BootstrapRequest extends Request {
 			clientNetwork.add(myPeers);
 
 			Set<Peer> peers = clientNetwork.getAllPeers();
-			logger.debug("peers.size()={}", peers.size());
-			for (Peer peer : peers) {
-				BootstrapRequest request = new BootstrapRequest(clientNetwork);
-				peer.send(clientNetwork, request);
+			synchronized(sentPeers) {
+				peers.removeAll(sentPeers);
 			}
-			
-			ThreadExecutor.sleep(200);
+			//logger.debug("peers.size()={}", peers.size());
+			for (Peer peer : peers) {
+				
+				if (clientNetwork.getMyPeers().size() > 0) {
+					myPeers.addAll(clientNetwork.getMyPeers());
+					return;
+				}
 
-			if (clientNetwork.getMyPeers().size() > 0) {
-				myPeers.addAll(clientNetwork.getMyPeers());
-				return;
+				synchronized(sentPeers) {
+					try {
+						if(sentPeers.size() > 10) {
+							sentPeers.wait(Constants.TIMEOUT);
+						}
+						
+						peer.send(clientNetwork, this);
+						sentPeers.add(peer);
+					} catch (InterruptedException e) {
+						logger.error(e.getMessage(), e);
+					}
+				}
 			}
 
 			if (Configurator.getInstance().getBooleanProperty("org.tma.network.bootstrap.nowait")) {
@@ -97,19 +136,33 @@ public class BootstrapRequest extends Request {
 			clientNetwork.add(myPeers);
 
 			Set<Peer> peers = clientNetwork.getAllPeers();
-			logger.debug("peers.size()={}", peers.size());
-			for (Peer peer : peers) {
-				BootstrapRequest request = new BootstrapRequest(clientNetwork);
-				peer.send(clientNetwork, request);
+			synchronized(sentPeers) {
+				peers.removeAll(sentPeers);
 			}
 			
-			ThreadExecutor.sleep(200);
-
-			if (clientNetwork.isPeerSetCompleteForMyShard()) {
-				clientNetwork.removeNonMyPeers();
-				clientNetwork.removedUnconnectedPeers();
-				myPeers.addAll(clientNetwork.getMyPeers());
-				return;
+			//logger.debug("peers.size()={}", peers.size());
+			for (Peer peer : peers) {
+				
+				if (clientNetwork.isPeerSetCompleteForMyShard()) {
+					clientNetwork.removeNonMyPeers();
+					clientNetwork.removedUnconnectedPeers();
+					myPeers.addAll(clientNetwork.getMyPeers());
+					return;
+				}
+				
+				synchronized(sentPeers) {
+					try {
+						if(sentPeers.size() > 10) {
+							sentPeers.wait(Constants.TIMEOUT);
+						}
+						
+						peer.send(clientNetwork, this);
+						sentPeers.add(peer);
+					} catch (InterruptedException e) {
+						logger.error(e.getMessage(), e);
+					}
+				}
+				
 			}
 
 			if (Configurator.getInstance().getBooleanProperty("org.tma.network.bootstrap.nowait")) {

@@ -57,7 +57,7 @@ public class SearchTwitterAction extends AbstractAction implements Caller {
 			public void doRun() {
 				Network network = Network.getInstance();
 				if(!network.isPeerSetComplete()) {
-					new BootstrapRequest(network).start();
+					BootstrapRequest.getInstance().start();
 				}
 				String accountName = StringUtil.trim(account.getText());
 				SearchTwitterRequest request = new SearchTwitterRequest(network, accountName);

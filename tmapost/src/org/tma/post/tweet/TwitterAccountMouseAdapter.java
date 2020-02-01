@@ -56,7 +56,7 @@ public class TwitterAccountMouseAdapter extends MouseAdapter {
 			public void doRun() {
 				Network network = Network.getInstance();
 				if(!network.isPeerSetComplete()) {
-					new BootstrapRequest(network).start();
+					BootstrapRequest.getInstance().start();
 				}
 				GetMyTweetsRequest request = new GetMyTweetsRequest(network, twitterAccount.getTmaAddress());
 				request.start();

@@ -76,7 +76,7 @@ public class SendReplyAction extends AbstractAction implements Caller {
 	private void sendTweetReplyTransaction(JLabel label) {
 		Network network = Network.getInstance();
 		if(!network.isPeerSetComplete()) {
-			new BootstrapRequest(network).start();
+			BootstrapRequest.getInstance().start();
 		}
 		String twitterTmaAddress = tweet.getRecipient();
 		String tmaAddress = network.getTmaAddress();

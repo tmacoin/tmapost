@@ -159,7 +159,7 @@ public class AddRatingAction extends AbstractAction implements Caller {
 		String ratee = StringUtil.getTmaAddressFromString(accountName);
 		Network network = Network.getInstance();
 		if(!network.isPeerSetComplete()) {
-			new BootstrapRequest(network).start();
+			BootstrapRequest.getInstance().start();
 		}
 		
 		GetKeywordsRequest getKeywordsRequest = new GetKeywordsRequest(network, ratee, transactionId.getText());

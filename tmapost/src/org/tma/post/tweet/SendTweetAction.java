@@ -83,7 +83,7 @@ public class SendTweetAction extends AbstractAction implements Caller {
 	private void sendTweetTransaction(String twitterTmaAddress, JLabel label) {
 		Network network = Network.getInstance();
 		if(!network.isPeerSetComplete()) {
-			new BootstrapRequest(network).start();
+			BootstrapRequest.getInstance().start();
 		}
 		String tmaAddress = network.getTmaAddress();
 		Wallets wallets = Wallets.getInstance();

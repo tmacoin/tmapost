@@ -110,7 +110,7 @@ public class TwitterHelper {
 			public void doRun() {
 				Network network = Network.getInstance();
 				if(!network.isPeerSetComplete()) {
-					new BootstrapRequest(network).start();
+					BootstrapRequest.getInstance().start();
 				}
 				GetRepliesRequest request = new GetRepliesRequest(network, tweet.getTransactionId(), tweet.getRecipient());
 				request.start();

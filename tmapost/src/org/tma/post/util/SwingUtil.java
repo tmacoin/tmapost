@@ -53,11 +53,11 @@ public class SwingUtil {
 
 		final Network network = Network.getInstance();
 		if (network.getMyPeers().isEmpty()) {
-			new BootstrapRequest(network).start();
+			BootstrapRequest.getInstance().start();
 		} else {
 			ThreadExecutor.getInstance().execute(new TmaRunnable("checkNetwork") {
 				public void doRun() {
-					new BootstrapRequest(network).start();
+					BootstrapRequest.getInstance().start();
 				}
 			});
 		}

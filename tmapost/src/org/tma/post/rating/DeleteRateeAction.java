@@ -83,7 +83,7 @@ public class DeleteRateeAction extends AbstractAction implements Caller {
 	private void sendDeleteRateeTransaction(JLabel label) {
 		Network network = Network.getInstance();
 		if(!network.isPeerSetComplete()) {
-			new BootstrapRequest(network).start();
+			BootstrapRequest.getInstance().start();
 		}
 		
 		GetKeywordsRequest getKeywordsRequest = new GetKeywordsRequest(network, rateeTmaAddress, transactionId);

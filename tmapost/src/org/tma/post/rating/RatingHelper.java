@@ -78,7 +78,7 @@ public class RatingHelper {
 	private void doShowRatee(String account, String transactionId, JLabel label) {
 		Network network = Network.getInstance();
 		if(!network.isPeerSetComplete()) {
-			new BootstrapRequest(network).start();
+			BootstrapRequest.getInstance().start();
 		}
 
 		SearchRateeRequest request = new SearchRateeRequest(network, account, transactionId);
@@ -222,7 +222,7 @@ public class RatingHelper {
 		
 		Network network = Network.getInstance();
 		if(!network.isPeerSetComplete()) {
-			new BootstrapRequest(network).start();
+			BootstrapRequest.getInstance().start();
 		}
 		String accountName = StringUtil.trim(ratee.getName());
 		SearchRatingRequest request = new SearchRatingRequest(network, accountName, ratee.getTransactionId());
@@ -340,7 +340,7 @@ public class RatingHelper {
 	private void displayRaterComments(final String rater, final JLabel label) {
 		Network network = Network.getInstance();
 		if(!network.isPeerSetComplete()) {
-			new BootstrapRequest(network).start();
+			BootstrapRequest.getInstance().start();
 		}
 
 		SearchRatingForRaterRequest request = new SearchRatingForRaterRequest(network, rater);
@@ -381,7 +381,7 @@ public class RatingHelper {
 	private void doShowPosts(String tmaAddress, JLabel label) {
 		Network network = Network.getInstance();
 		if(!network.isPeerSetComplete()) {
-			new BootstrapRequest(network).start();
+			BootstrapRequest.getInstance().start();
 		}
 		
 		SearchPostsRequest request = new SearchPostsRequest(network, tmaAddress);

@@ -74,7 +74,7 @@ public class Network implements Serializable {
 		local.setNetworkIdentifier(getNetworkIdentifier());
 		new GetBootstrapPowerRequest(this).start();
 		logger.info("Your shard id is {}", getBootstrapBlockchainId());
-		new BootstrapRequest(this).start();
+		BootstrapRequest.getInstance().start();
 		setNetworkStarted(true);
 		logger.info("Network started");
 	}
@@ -429,7 +429,7 @@ public class Network implements Serializable {
 			}
 			peerCount.put(i, count);
 		}
-		logger.debug("{} peerCount={}", getBlockchainId(), peerCount);
+		//logger.debug("{} peerCount={}", getBlockchainId(), peerCount);
 		boolean result = peerCount.get(myShard) >= getPeerSetCompleteMinSize();
 		return result;
 	}

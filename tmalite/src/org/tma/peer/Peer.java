@@ -25,6 +25,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
@@ -57,7 +58,7 @@ public class Peer implements Serializable {
 
 	private static final long serialVersionUID = -2552131269155138846L;
 	private static final Map<String, Peer> peers = new WeakHashMap<String, Peer>();
-	private static final int WAIT_PERIOD_MINUTES = 5;
+	private static final int WAIT_PERIOD_MINUTES = 1;
 	private static final int REQUESTS_QUEUE_SIZE = 100;
 	public static final int CONNECT_TIMEOUT = 10000;
 	
@@ -177,6 +178,7 @@ public class Peer implements Serializable {
 		localSocket = new Socket();
 		
 		localSocket.connect(iNetAddress, CONNECT_TIMEOUT);
+
 		//logger.debug("Opened socket {}", localSocket);
 		socket = localSocket;
 		return localSocket;
@@ -291,6 +293,7 @@ public class Peer implements Serializable {
 		try {
 			if(REQUESTS_QUEUE_SIZE == getRequests().size() ) {
 				network.removeIfStale(this);
+				firstRequest.onSendComplete(this);
 				return;
 			}
 			getRequests().put(firstRequest);
@@ -309,7 +312,7 @@ public class Peer implements Serializable {
 				return;
 			}
 			try {
-				getRequests().clear();
+				clearRequests();
 				getRequests().put(firstRequest);
 			} catch (InterruptedException e) {
 				logger.error(e.getMessage(), e);
@@ -320,6 +323,15 @@ public class Peer implements Serializable {
 				}
 			});
 			senderStarted = true;
+		}
+	}
+	
+	private void clearRequests() {
+		BlockingQueue<Request> requests = getRequests();
+		List<Request> list = new ArrayList<>();
+		requests.drainTo(list);
+		for(Request request: list) {
+			request.onSendComplete(this);
 		}
 	}
 	
@@ -349,7 +361,7 @@ public class Peer implements Serializable {
 			}
 		} while(isConnected());
 		senderStarted = false;
-		getRequests().clear();
+		clearRequests();
 	}
 	
 	private void clearResponses() {

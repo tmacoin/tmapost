@@ -36,7 +36,6 @@ public class SubscribeToMessagesRequest extends Request {
 	}
 	
 	public void start() {
-		logger.debug("SubscribeToMessagesRequest START");
 		ThreadExecutor.getInstance().execute(new TmaRunnable("SubscribeToMessagesRequest") {
 			public void doRun() {
 				for (Peer peer : clientNetwork.getMyPeers()) {
