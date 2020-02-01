@@ -25,6 +25,7 @@ public class BootstrapRequest extends Request {
 	private static final Bootstrap bootstrap = new Bootstrap();
 	private static final Set<Peer> myPeers = new HashSet<Peer>();
 	private static BootstrapRequest instance;
+	private static final int SEND_PEERS_MAX_NUMBER = 20;
 
 	private transient Network clientNetwork;
 	private int clientBlockchainId;
@@ -104,7 +105,7 @@ public class BootstrapRequest extends Request {
 
 				synchronized(sentPeers) {
 					try {
-						if(sentPeers.size() > 10) {
+						if(sentPeers.size() > SEND_PEERS_MAX_NUMBER) {
 							sentPeers.wait(Constants.TIMEOUT);
 						}
 						
@@ -152,7 +153,7 @@ public class BootstrapRequest extends Request {
 				
 				synchronized(sentPeers) {
 					try {
-						if(sentPeers.size() > 10) {
+						if(sentPeers.size() > SEND_PEERS_MAX_NUMBER) {
 							sentPeers.wait(Constants.TIMEOUT);
 						}
 						
