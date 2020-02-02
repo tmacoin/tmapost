@@ -191,6 +191,11 @@ public class Peer implements Serializable {
 	}
 	
 	public void reset() {
+		
+		if(socket == null && writer == null && reader == null && !receiverStarted && !senderStarted && responseCounter == 0) {
+			return;
+		}
+		
 		try {
 			Socket localSocket = socket;
 			if (localSocket != null) {
