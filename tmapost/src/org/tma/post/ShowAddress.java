@@ -23,7 +23,6 @@ import javax.swing.border.EmptyBorder;
 import org.tma.blockchain.Wallet;
 import org.tma.peer.Network;
 import org.tma.peer.thin.GetBalanceRequest;
-import org.tma.peer.thin.ResponseHolder;
 import org.tma.post.util.JTextFieldRegularPopupMenu;
 import org.tma.post.util.SwingUtil;
 import org.tma.util.ThreadExecutor;
@@ -61,8 +60,7 @@ public class ShowAddress extends AbstractAction implements Caller {
 					SwingUtil.checkNetwork();
 
 					GetBalanceRequest request = new GetBalanceRequest(Network.getInstance(), wallet.getTmaAddress());
-					request.start();
-					balance = (String) ResponseHolder.getInstance().getObject(request.getCorrelationId());
+					balance = request.start();
 				}
 				
 				if(balance == null) {

@@ -28,7 +28,6 @@ import org.tma.peer.Network;
 import org.tma.peer.SendTransactionRequest;
 import org.tma.peer.thin.GetBalanceRequest;
 import org.tma.peer.thin.GetInputsRequest;
-import org.tma.peer.thin.ResponseHolder;
 import org.tma.post.Caller;
 import org.tma.post.Wallets;
 import org.tma.post.key.PasswordUtil;
@@ -86,8 +85,7 @@ public class CreateTwitterAction extends AbstractAction implements Caller {
 		Network network = Network.getInstance();
 		
 		GetBalanceRequest request = new GetBalanceRequest(network, network.getTmaAddress());
-		request.start();
-		String balance = (String)ResponseHolder.getInstance().getObject(request.getCorrelationId());
+		String balance = request.start();
 		if("0".equals(balance)) {
 			label.setText("Your balance is zero. You cannot create Twitter account.");
 			return false;

@@ -20,7 +20,6 @@ import javax.swing.JTextField;
 
 import org.tma.peer.Network;
 import org.tma.peer.thin.GetBalanceRequest;
-import org.tma.peer.thin.ResponseHolder;
 import org.tma.post.util.SwingUtil;
 import org.tma.util.StringUtil;
 import org.tma.util.ThreadExecutor;
@@ -61,8 +60,7 @@ public class GetBalanceAction extends AbstractAction implements Caller {
 					SwingUtil.checkNetwork();
 					
 					GetBalanceRequest request = new GetBalanceRequest(Network.getInstance(), address);
-					request.start();
-					balance = (String)ResponseHolder.getInstance().getObject(request.getCorrelationId()); 
+					balance = request.start();
 				}
 				
 				logger.debug("balance: {} for {}", balance, address);

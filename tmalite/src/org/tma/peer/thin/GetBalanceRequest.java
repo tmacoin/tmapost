@@ -21,7 +21,6 @@ public class GetBalanceRequest extends Request {
 
 	private static final long serialVersionUID = 7852014295465690974L;
 	private static final TmaLogger logger = TmaLogger.getLogger();
-	private static final ResponseHolder responseHolder = ResponseHolder.getInstance();
 
 	private transient Network clientNetwork;
 	private transient PeerLock peerLock;
@@ -36,7 +35,7 @@ public class GetBalanceRequest extends Request {
 		return new Response();
 	}
 	
-	public void start() {
+	public String start() {
 		List<Peer> peers = clientNetwork.getMyPeers();
 		for (Peer peer : peers) {
 			if(!peer.isConnected()) {
@@ -52,10 +51,13 @@ public class GetBalanceRequest extends Request {
 					logger.error(e.getMessage(), e);
 				}
 			}
-			if (responseHolder.getObject(getCorrelationId()) != null) {
-				break;
+			String balance = (String)ResponseHolder.getInstance().getObject(getCorrelationId()); 
+			if (balance != null) {
+				logger.debug("balance={}", balance);
+				return balance;
 			}
 		}
+		return null;
 	}
 	
 	public void onSendComplete(Peer peer) {

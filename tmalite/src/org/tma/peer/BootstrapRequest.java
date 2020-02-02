@@ -25,7 +25,7 @@ public class BootstrapRequest extends Request {
 	private static final Bootstrap bootstrap = new Bootstrap();
 	private static final Set<Peer> myPeers = new HashSet<Peer>();
 	private static BootstrapRequest instance;
-	private static final int SEND_PEERS_MAX_NUMBER = 10;
+	private static final int SEND_PEERS_MAX_NUMBER = 30;
 
 	private transient Network clientNetwork;
 	private int clientBlockchainId;
