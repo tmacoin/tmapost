@@ -7,7 +7,12 @@
  *******************************************************************************/
 package org.tma.peer;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.tma.peer.thin.SubscribeToMessagesRequest;
@@ -98,7 +103,7 @@ public class BootstrapRequest extends Request implements PeerResetListener {
 			synchronized(sentPeers) {
 				peers.removeAll(sentPeers);
 			}
-			//logger.debug("peers.size()={}", peers.size());
+			peers = sortByClosest(peers);
 			for (Peer peer : peers) {
 				
 				if (clientNetwork.getMyPeers().size() > 0) {
@@ -124,6 +129,20 @@ public class BootstrapRequest extends Request implements PeerResetListener {
 				break;
 			}
 		}
+	}
+	
+	private Set<Peer> sortByClosest(Set<Peer> peers) {
+
+		List<Peer> list = new ArrayList<Peer>(peers);
+		final int myShardId = clientNetwork.getBootstrapBlockchainId();
+		Collections.sort(list, new Comparator<Peer>() {
+			@Override
+			public int compare(Peer peer1, Peer peer2) {
+				return Integer.compare(peer1.getBlockchainId() ^ myShardId, peer2.getBlockchainId() ^ myShardId);
+			}
+		});
+		return new LinkedHashSet<Peer>(list);
+
 	}
 
 	private void process() {
