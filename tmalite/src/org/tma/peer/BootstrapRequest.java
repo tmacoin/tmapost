@@ -18,7 +18,7 @@ import org.tma.util.ThreadExecutor;
 import org.tma.util.TmaLogger;
 import org.tma.util.TmaRunnable;
 
-public class BootstrapRequest extends Request {
+public class BootstrapRequest extends Request implements PeerResetListener {
 
 	private static final long serialVersionUID = -3701748162180479992L;
 	private static final TmaLogger logger = TmaLogger.getLogger();
@@ -64,6 +64,9 @@ public class BootstrapRequest extends Request {
 					new SubscribeToMessagesRequest(clientNetwork, clientNetwork.getTmaAddress()).start();
 					sentPeers.clear();
 					active = false;
+					for (Peer peer : clientNetwork.getMyPeers()) {
+						peer.addResetListener(BootstrapRequest.this);
+					}
 				}
 			}
 		});
@@ -176,6 +179,16 @@ public class BootstrapRequest extends Request {
 
 	public int getClientBlockchainId() {
 		return clientBlockchainId;
+	}
+
+	@Override
+	public void onPeerReset(Peer peer) {
+		logger.debug("Peer removed {}", peer);
+		ThreadExecutor.getInstance().execute(new TmaRunnable("BootstrapRequest.onPeerReset()") {
+			public void doRun() {
+				start();
+			}
+		});
 	}
 
 }

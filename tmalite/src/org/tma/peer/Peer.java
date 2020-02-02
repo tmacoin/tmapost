@@ -83,6 +83,7 @@ public class Peer implements Serializable {
 	private boolean saved;
 	private boolean thin;
 	private transient boolean doDisconnect;
+	private transient Set<PeerResetListener> resetListeners = new HashSet<>();
 	
 	public boolean isConnected() {
 		Socket socket = this.socket;
@@ -214,6 +215,13 @@ public class Peer implements Serializable {
 		}
 		clearResponses();
 		responseCounter = 0;
+		for(PeerResetListener listener: getResetListeners()) {
+			try {
+				listener.onPeerReset(this);
+			} catch (Exception e) {
+				logger.error(e.getMessage(), e);
+			}
+		}
 	}
 	
 	private void save() {
@@ -731,6 +739,17 @@ public class Peer implements Serializable {
 	
 	public boolean isDoDisconnect() {
 		return doDisconnect;
+	}
+	
+	public void addResetListener(PeerResetListener listener) {
+		getResetListeners().add(listener);
+	}
+
+	private Set<PeerResetListener> getResetListeners() {
+		if(resetListeners == null) {
+			resetListeners = new HashSet<>();
+		}
+		return resetListeners;
 	}
 
 }
