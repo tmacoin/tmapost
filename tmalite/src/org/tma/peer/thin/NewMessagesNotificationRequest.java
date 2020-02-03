@@ -23,19 +23,20 @@ public class NewMessagesNotificationRequest extends Request {
 	private static final TmaLogger logger = TmaLogger.getLogger();
 	private static final Listeners listeners = Listeners.getInstance();
 	private static final ExpiringMap<String, String> receivedMessages = new ExpiringMap<>(Constants.TIMEOUT, Constants.MAX_SIZE);
-	
+
 	private SecureMessage secureMessage;
 
 	public Response getResponse(Network serverNetwork, Peer peer) throws Exception {
 		String key = StringUtil.trimToBlank(secureMessage.getTransactionId()) + secureMessage.getText();
-		if(receivedMessages.containsKey(key)) {
-			return new Response();
+		synchronized (receivedMessages) {
+			if (receivedMessages.containsKey(key)) {
+				return new Response();
+			}
+			receivedMessages.put(key, key);
 		}
-		receivedMessages.put(key, key);
 		logger.debug("There are new messages");
 		listeners.sendEvent(new NewMessageEvent(secureMessage));
 		return new Response();
 	}
 
-	
 }
