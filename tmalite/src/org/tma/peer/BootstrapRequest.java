@@ -34,7 +34,7 @@ public class BootstrapRequest extends Request implements PeerResetListener {
 
 	private transient Network clientNetwork;
 	private int clientBlockchainId;
-	private transient Set<Peer> sentPeers;
+	private transient Set<Peer> sentPeers = new HashSet<>();
 	private transient boolean active;
 	private transient long startTime;
 	
@@ -55,15 +55,20 @@ public class BootstrapRequest extends Request implements PeerResetListener {
 	}
 
 	public void start() {
+		if (clientNetwork.isPeerSetCompleteForMyShard()) {
+			synchronized(sentPeers) {
+				sentPeers.notify();
+			}
+			return;
+		}
 		synchronized(this) {
-			logger.debug("Network status: {}", clientNetwork.getPeerCount());
 			if(active) {
 				return;
 			}
 			active = true;
 		}
+		logger.debug("Network status: {}", clientNetwork.getPeerCount());
 		startTime = System.currentTimeMillis();
-		sentPeers = new HashSet<>();
 		if(!init()) {
 			return;
 		}
@@ -78,8 +83,7 @@ public class BootstrapRequest extends Request implements PeerResetListener {
 					for (Peer peer : clientNetwork.getMyPeers()) {
 						peer.addResetListener(BootstrapRequest.this);
 					}
-					logger.debug("Network status: {}", clientNetwork.getPeerCount());
-					logger.debug("Bootstrap took: {} ms", System.currentTimeMillis() - startTime);
+					logger.debug("Network status: {}, bootstrap took: {} ms", clientNetwork.getPeerCount(), System.currentTimeMillis() - startTime);
 				}
 			}
 		});
@@ -117,13 +121,11 @@ public class BootstrapRequest extends Request implements PeerResetListener {
 			}
 			peers = sortByClosest(peers);
 			for (Peer peer : peers) {
-				
-				if (clientNetwork.getMyPeers().size() > 0) {
-					myPeers.addAll(clientNetwork.getMyPeers());
-					return true;
-				}
-
 				synchronized(sentPeers) {
+					if (clientNetwork.getMyPeers().size() > 0) {
+						myPeers.addAll(clientNetwork.getMyPeers());
+						return true;
+					}
 					try {
 						if(sentPeers.size() > SEND_PEERS_MAX_NUMBER) {
 							sentPeers.wait(Constants.TIMEOUT);
@@ -182,15 +184,13 @@ public class BootstrapRequest extends Request implements PeerResetListener {
 			
 			//logger.debug("peers.size()={}", peers.size());
 			for (Peer peer : peers) {
-				
-				if (clientNetwork.isPeerSetCompleteForMyShard()) {
-					clientNetwork.removeNonMyPeers();
-					clientNetwork.removedUnconnectedPeers();
-					myPeers.addAll(clientNetwork.getMyPeers());
-					return;
-				}
-				
 				synchronized(sentPeers) {
+					if (clientNetwork.isPeerSetCompleteForMyShard()) {
+						clientNetwork.removeNonMyPeers();
+						clientNetwork.removedUnconnectedPeers();
+						myPeers.addAll(clientNetwork.getMyPeers());
+						return;
+					}
 					try {
 						if(sentPeers.size() > SEND_PEERS_MAX_NUMBER) {
 							sentPeers.wait(Constants.TIMEOUT);

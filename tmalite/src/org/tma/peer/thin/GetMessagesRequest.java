@@ -44,9 +44,9 @@ public class GetMessagesRequest extends Request {
 				continue;
 			}
 			peerLock = new PeerLock(peer);
+			long startTime = System.currentTimeMillis();
 			synchronized (peerLock) {
 				peer.send(clientNetwork, this);
-				logger.debug("peer={}", peer);
 				try {
 					peerLock.wait(Constants.ONE_SECOND * 30);
 				} catch (InterruptedException e) {
@@ -54,6 +54,7 @@ public class GetMessagesRequest extends Request {
 				}
 			}
 			if (responseHolder.getObject(getCorrelationId()) != null) {
+				logger.debug("peer={}, took {} ms", peer, System.currentTimeMillis() - startTime);
 				break;
 			}
 		}

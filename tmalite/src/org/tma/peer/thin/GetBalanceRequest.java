@@ -42,9 +42,9 @@ public class GetBalanceRequest extends Request {
 				continue;
 			}
 			peerLock = new PeerLock(peer);
+			long startTime = System.currentTimeMillis();
 			synchronized (peerLock) {
 				peer.send(clientNetwork, this);
-				logger.debug("peer={}", peer);
 				try {
 					peerLock.wait(Constants.ONE_SECOND * 30);
 				} catch (InterruptedException e) {
@@ -53,7 +53,7 @@ public class GetBalanceRequest extends Request {
 			}
 			String balance = (String)ResponseHolder.getInstance().getObject(getCorrelationId()); 
 			if (balance != null) {
-				logger.debug("balance={}", balance);
+				logger.debug("balance={}, peer={}, took {} ms", balance, peer, System.currentTimeMillis() - startTime);
 				return balance;
 			}
 		}
