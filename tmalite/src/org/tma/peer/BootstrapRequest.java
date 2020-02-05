@@ -79,6 +79,7 @@ public class BootstrapRequest extends Request implements PeerResetListener {
 						peer.addResetListener(BootstrapRequest.this);
 					}
 					logger.debug("Network status: {}", clientNetwork.getPeerCount());
+					logger.debug("Bootstrap took: {} ms", System.currentTimeMillis() - startTime);
 				}
 			}
 		});
