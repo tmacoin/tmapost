@@ -53,12 +53,15 @@ public class BootstrapRequest extends Request implements PeerResetListener {
 		return new Response();
 	}
 
-	public synchronized void start() {
-		logger.debug("Network status: {}", clientNetwork.getPeerCount());
-		if(active) {
-			return;
+	public void start() {
+		synchronized(this) {
+			logger.debug("Network status: {}", clientNetwork.getPeerCount());
+			if(active) {
+				return;
+			}
+			active = true;
 		}
-		active = true;
+		
 		sentPeers = new HashSet<>();
 		init();
 		ThreadExecutor.getInstance().execute(new TmaRunnable("BootstrapRequest") {

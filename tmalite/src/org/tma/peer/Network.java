@@ -8,8 +8,6 @@
 package org.tma.peer;
 
 import java.io.Serializable;
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 import java.security.SecureRandom;
 import java.util.ArrayList;
@@ -47,12 +45,8 @@ public class Network implements Serializable {
      **/
     public static final int STALE = 5;
 	
-	
-	private Set<Peer> fromPeers = new LinkedHashSet<Peer>();
 	private Set<Peer> toPeers = Collections.synchronizedSet(new LinkedHashSet<Peer>());
 	private Set<Peer> locals = new LinkedHashSet<Peer>();
-	private Set<Peer> thinPeers = new LinkedHashSet<Peer>();
-	private Peer local;
 	
 	private transient String networkIdentifier;
 	private transient boolean networkStarted;
@@ -60,18 +54,17 @@ public class Network implements Serializable {
 	private transient int bootstrapShardingPower;
 	private transient boolean bootstrapShardingPowerUpdated;
 	
-	private boolean thin;
-	
 	private transient ExpiringMap<Peer, Peer> removedPeers = new ExpiringMap<>(Constants.ONE_MINUTE, Constants.MAX_SIZE);
+	
+	public void resetAll() {
+		
+	}
 	
 	public Network(String tmaAddress) throws UnknownHostException {
 		instance = this;
-		thin = true;
 		this.tmaAddress = tmaAddress;
 		byte[] bytes = ArrayUtils.addAll(StringUtil.BLOCKCHAIN_TYPE, random.generateSeed(16));
 		setNetworkIdentifier(Base58.encode(bytes));
-		local = Peer.getInstance(new InetSocketAddress(InetAddress.getLocalHost(), 0));
-		local.setNetworkIdentifier(getNetworkIdentifier());
 		new GetBootstrapPowerRequest(this).start();
 		logger.info("Your shard id is {}", getBootstrapBlockchainId());
 		BootstrapRequest.getInstance().start();
@@ -82,10 +75,6 @@ public class Network implements Serializable {
 	public static Network getInstance() {
 		return instance;
 	}
-
-	public Peer getLocal() {
-		return local;
-	}
 	
 	public synchronized boolean add(Peer peer) {
 		if(getSkipPeers().contains(peer)) {
@@ -94,7 +83,7 @@ public class Network implements Serializable {
 		if(peer.getiNetAddress().getAddress() == null) {
 			return false;
 		}
-		if(local.equals(peer) || local.getNetworkIdentifier().equals(peer.getNetworkIdentifier()) || toPeers.contains(peer) || locals.contains(peer)) {
+		if(toPeers.contains(peer) || locals.contains(peer)) {
 			return false;
 		}
 		for(Peer toPeer: toPeers) {
@@ -143,7 +132,7 @@ public class Network implements Serializable {
 	
 	public synchronized boolean removePeer(Peer peer) {
 		removedPeers.put(peer, peer);
-		boolean result = getToPeers().remove(peer) || getFromPeers().remove(peer) || getLocals().remove(peer) || thinPeers.remove(peer);
+		boolean result = getToPeers().remove(peer) || getLocals().remove(peer);
 		if(result) {
 			peer.reset();
 		}
@@ -156,9 +145,7 @@ public class Network implements Serializable {
 		for(Peer peer: peers) {
 			if(!peer.isConnected()) {
 				getToPeers().remove(peer); 
-				getFromPeers().remove(peer);
 				getLocals().remove(peer);
-				thinPeers.remove(peer);
 			}
 		}
 	}
@@ -170,17 +157,6 @@ public class Network implements Serializable {
 				removePeer(peer);
 			}
 		}
-	}
-	
-	public synchronized void addToThinPeers(Peer peer) {
-		getToPeers().remove(peer);
-		getFromPeers().remove(peer);
-		getLocals().remove(peer);
-		thinPeers.add(peer);
-	}
-
-	public Set<Peer> getFromPeers() {
-		return fromPeers;
 	}
 
 	private Set<Peer> getToPeers() {
@@ -194,7 +170,6 @@ public class Network implements Serializable {
 	public synchronized Set<Peer> getAllPeers() {
 		Set<Peer> peers = new LinkedHashSet<Peer>();
 		peers.addAll(getLocals());
-		peers.addAll(getFromPeers());
 		peers.addAll(getToPeers());
 		
 		Iterator<Peer> i = peers.iterator();
@@ -355,16 +330,10 @@ public class Network implements Serializable {
 
 	public synchronized void addLocals(Set<Peer> locals) {
 		locals.removeAll(getSkipPeers());
-		Peer loopbackPeer = Peer.getInstance(new InetSocketAddress(InetAddress.getLoopbackAddress(), local.getiNetAddress().getPort()));
-		locals.remove(loopbackPeer);
 		for(Peer peer: locals) {
 			peer.setLocalPeer(true);
 		}
 		getLocals().addAll(locals);
-	}
-
-	public synchronized void addFromPeer(Peer fromPeer) {
-		getFromPeers().add(fromPeer);
 	}
 	
 	public List<Peer> getConnectedPeers() {
@@ -511,9 +480,6 @@ public class Network implements Serializable {
 		return getToPeersMaxSize() * 2;
 	}
 
-	public boolean areMoreFromPeersAllowed() {
-		return getFromPeers().size() < getFromPeersMaxSize() * (getBootstrapShardingPower() + 1) + 5;
-	}
 
 	public boolean isBootstrapShardingPowerUpdated() {
 		return bootstrapShardingPowerUpdated;
@@ -523,8 +489,5 @@ public class Network implements Serializable {
 		this.bootstrapShardingPowerUpdated = bootstrapShardingPowerUpdated;
 	}
 
-	public boolean isThin() {
-		return thin;
-	}
 
 }

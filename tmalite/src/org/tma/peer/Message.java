@@ -20,7 +20,7 @@ public abstract class Message implements Serializable {
 	private String version = VERSION;
 	private int blockchainId = retrieveBlockchainId();
 	private long timestamp;
-	private boolean thin;
+	private boolean thin = true;
 	
 	public String getVersion() {
 		return version;
@@ -29,7 +29,7 @@ public abstract class Message implements Serializable {
 	protected int retrieveBlockchainId() {
 		Network network = Network.getInstance();
 		if(network != null) {
-			thin = network.isThin();
+			thin = true;
 			return network.getBootstrapBlockchainId();
 		}
 		return 0;

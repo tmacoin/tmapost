@@ -440,9 +440,7 @@ public class Peer implements Serializable {
 						network.removePeer(this);
 						return new Response();
 					}
-					if(response.isThin()) {
-						network.addToThinPeers(this);
-					}
+
 					request = response.getRequest(network, this);
 					setBlockchainId(response.getBlockchainId());
 
@@ -531,9 +529,6 @@ public class Peer implements Serializable {
 			if(!isConnected()) {
 				return false;
 			}
-			if(response.isThin()) {
-				network.addToThinPeers(this);
-			}
 			
 			boolean offerSuccess = responseQueue.offer(response, WAIT_PERIOD_MINUTES, TimeUnit.MINUTES);
 			if(!offerSuccess) {
@@ -580,9 +575,7 @@ public class Peer implements Serializable {
 		setVersion(request.getVersion());
 		setBlockchainId(request.getBlockchainId());
 		save();
-		if(request.isThin()) {
-			network.addToThinPeers(this);
-		}
+
 		response = request.getResponse(network, this);
 		if(!response.isNotCounted()) {
 			responseCounter++;
