@@ -54,10 +54,19 @@ public class Network implements Serializable {
 	private transient int bootstrapShardingPower;
 	private transient boolean bootstrapShardingPowerUpdated;
 	
-	private transient ExpiringMap<Peer, Peer> removedPeers = new ExpiringMap<>(Constants.ONE_MINUTE, Constants.MAX_SIZE);
+	private transient ExpiringMap<Peer, Peer> removedPeers = new ExpiringMap<>(Constants.TIMEOUT, Constants.MAX_SIZE);
 	
 	public void resetAll() {
-		
+		setNetworkStarted(false);
+		for(Peer peer: getAllPeers()) {
+			removePeer(peer);
+		}
+		removedPeers.clear();
+		new GetBootstrapPowerRequest(this).start();
+		logger.info("Your shard id is {}", getBootstrapBlockchainId());
+		BootstrapRequest.getInstance().start();
+		setNetworkStarted(true);
+		logger.info("Network started");
 	}
 	
 	public Network(String tmaAddress) throws UnknownHostException {
@@ -65,11 +74,7 @@ public class Network implements Serializable {
 		this.tmaAddress = tmaAddress;
 		byte[] bytes = ArrayUtils.addAll(StringUtil.BLOCKCHAIN_TYPE, random.generateSeed(16));
 		setNetworkIdentifier(Base58.encode(bytes));
-		new GetBootstrapPowerRequest(this).start();
-		logger.info("Your shard id is {}", getBootstrapBlockchainId());
-		BootstrapRequest.getInstance().start();
-		setNetworkStarted(true);
-		logger.info("Network started");
+		resetAll();
 	}
 	
 	public static Network getInstance() {
