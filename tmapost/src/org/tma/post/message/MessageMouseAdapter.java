@@ -101,12 +101,24 @@ public class MessageMouseAdapter extends MouseAdapter {
 		
 		form.add(p, BorderLayout.NORTH);
 		
-		JPanel labelPanel = new JPanel(new GridLayout(8, 1));
-		JPanel fieldPanel = new JPanel(new GridLayout(8, 1));
+		JPanel labelPanel = new JPanel(new GridLayout(9, 1));
+		JPanel fieldPanel = new JPanel(new GridLayout(9, 1));
 		form.add(labelPanel, BorderLayout.WEST);
 		form.add(fieldPanel, BorderLayout.CENTER);
 		
-		JLabel label = new JLabel("Sender:", JLabel.RIGHT);
+		JLabel label = new JLabel("Identifier:", JLabel.RIGHT);
+		labelPanel.add(label);
+
+		p = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		JTextField identifier = new JTextField(36);
+		identifier.setText(secureMessage.getTransactionId());
+		identifier.setBorder( null );
+		identifier.setOpaque( false );
+		identifier.setEditable( false );
+		p.add(identifier);
+		fieldPanel.add(p);
+		
+		label = new JLabel("Sender:", JLabel.RIGHT);
 		labelPanel.add(label);
 
 		p = new JPanel(new FlowLayout(FlowLayout.LEFT));
