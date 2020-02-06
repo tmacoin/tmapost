@@ -55,12 +55,6 @@ public class BootstrapRequest extends Request implements PeerResetListener {
 	}
 
 	public void start() {
-		if (clientNetwork.isPeerSetCompleteForMyShard()) {
-			synchronized(sentPeers) {
-				sentPeers.notify();
-			}
-			return;
-		}
 		synchronized(this) {
 			if(active) {
 				return;
@@ -78,7 +72,7 @@ public class BootstrapRequest extends Request implements PeerResetListener {
 					process();
 				} finally {
 					new SubscribeToMessagesRequest(clientNetwork, clientNetwork.getTmaAddress()).start();
-					sentPeers.clear();
+					getSentPeers().clear();
 					active = false;
 					for (Peer peer : clientNetwork.getMyPeers()) {
 						peer.addResetListener(BootstrapRequest.this);
@@ -90,10 +84,10 @@ public class BootstrapRequest extends Request implements PeerResetListener {
 	}
 	
 	public void onSendComplete(Peer peer) {
-		synchronized(sentPeers) {
-			sentPeers.remove(peer);
+		synchronized(getSentPeers()) {
+			getSentPeers().remove(peer);
 			//logger.debug("removed {}", peer);
-			sentPeers.notify();
+			getSentPeers().notify();
 		}
 		
 	}
@@ -116,23 +110,23 @@ public class BootstrapRequest extends Request implements PeerResetListener {
 			clientNetwork.add(myPeers);
 
 			Set<Peer> peers = clientNetwork.getAllPeers();
-			synchronized(sentPeers) {
-				peers.removeAll(sentPeers);
+			synchronized(getSentPeers()) {
+				peers.removeAll(getSentPeers());
 			}
 			peers = sortByClosest(peers);
 			for (Peer peer : peers) {
-				synchronized(sentPeers) {
+				synchronized(getSentPeers()) {
 					if (clientNetwork.getMyPeers().size() > 0) {
 						myPeers.addAll(clientNetwork.getMyPeers());
 						return true;
 					}
 					try {
-						if(sentPeers.size() > SEND_PEERS_MAX_NUMBER) {
-							sentPeers.wait(Constants.TIMEOUT);
+						if(getSentPeers().size() > SEND_PEERS_MAX_NUMBER) {
+							getSentPeers().wait(Constants.ONE_MINUTE);
 						}
 						
 						peer.send(clientNetwork, this);
-						sentPeers.add(peer);
+						getSentPeers().add(peer);
 					} catch (InterruptedException e) {
 						logger.error(e.getMessage(), e);
 					}
@@ -178,13 +172,13 @@ public class BootstrapRequest extends Request implements PeerResetListener {
 			clientNetwork.add(myPeers);
 
 			Set<Peer> peers = clientNetwork.getAllPeers();
-			synchronized(sentPeers) {
-				peers.removeAll(sentPeers);
+			synchronized(getSentPeers()) {
+				peers.removeAll(getSentPeers());
 			}
 			
 			//logger.debug("peers.size()={}", peers.size());
 			for (Peer peer : peers) {
-				synchronized(sentPeers) {
+				synchronized(getSentPeers()) {
 					if (clientNetwork.isPeerSetCompleteForMyShard()) {
 						clientNetwork.removeNonMyPeers();
 						clientNetwork.removedUnconnectedPeers();
@@ -192,12 +186,12 @@ public class BootstrapRequest extends Request implements PeerResetListener {
 						return;
 					}
 					try {
-						if(sentPeers.size() > SEND_PEERS_MAX_NUMBER) {
-							sentPeers.wait(Constants.TIMEOUT);
+						if(getSentPeers().size() > SEND_PEERS_MAX_NUMBER) {
+							getSentPeers().wait(Constants.ONE_MINUTE);
 						}
 						
 						peer.send(clientNetwork, this);
-						sentPeers.add(peer);
+						getSentPeers().add(peer);
 					} catch (InterruptedException e) {
 						logger.error(e.getMessage(), e);
 					}
@@ -225,6 +219,10 @@ public class BootstrapRequest extends Request implements PeerResetListener {
 				start();
 			}
 		});
+	}
+
+	public Set<Peer> getSentPeers() {
+		return sentPeers;
 	}
 
 }
