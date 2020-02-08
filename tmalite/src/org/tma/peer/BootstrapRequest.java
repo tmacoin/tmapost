@@ -30,7 +30,7 @@ public class BootstrapRequest extends Request implements PeerResetListener {
 	private static final Bootstrap bootstrap = new Bootstrap();
 	private static final Set<Peer> myPeers = new HashSet<Peer>();
 	private static BootstrapRequest instance = new BootstrapRequest();
-	private static final int SEND_PEERS_MAX_NUMBER = 30;
+	private static final int SEND_PEERS_MAX_NUMBER = 20;
 
 	private transient Network clientNetwork;
 	private int clientBlockchainId;
@@ -83,7 +83,6 @@ public class BootstrapRequest extends Request implements PeerResetListener {
 	public void onSendComplete(Peer peer) {
 		synchronized(this) {
 			getSentPeers().remove(peer);
-			//logger.debug("removed {}", peer);
 			notify();
 		}
 		
@@ -172,8 +171,7 @@ public class BootstrapRequest extends Request implements PeerResetListener {
 			synchronized(this) {
 				peers.removeAll(getSentPeers());
 			}
-			
-			//logger.debug("peers.size()={}", peers.size());
+
 			for (Peer peer : peers) {
 				synchronized(this) {
 					if (clientNetwork.isPeerSetCompleteForMyShard()) {
