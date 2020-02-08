@@ -22,7 +22,7 @@ public class NewMessagesNotificationRequest extends Request {
 	private static final long serialVersionUID = 7852014295465690974L;
 	private static final TmaLogger logger = TmaLogger.getLogger();
 	private static final Listeners listeners = Listeners.getInstance();
-	private static final ExpiringMap<String, String> receivedMessages = new ExpiringMap<>(Constants.TIMEOUT, Constants.MAX_SIZE);
+	private static final ExpiringMap<String, String> receivedMessages = new ExpiringMap<>(Constants.TIMEOUT * 2, Constants.MAX_SIZE);
 
 	private SecureMessage secureMessage;
 

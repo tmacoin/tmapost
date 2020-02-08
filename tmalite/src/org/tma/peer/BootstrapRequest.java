@@ -96,10 +96,6 @@ public class BootstrapRequest extends Request implements PeerResetListener {
 		}
 
 		while (true) {
-			if(System.currentTimeMillis() - startTime > Constants.TIMEOUT) {
-				clientNetwork.resetAll();
-				return false;
-			}
 			if (myPeers.isEmpty()) {
 				bootstrap.addPeers(clientNetwork);
 			}
@@ -158,10 +154,6 @@ public class BootstrapRequest extends Request implements PeerResetListener {
 		}
 
 		while (true) {
-			if(System.currentTimeMillis() - startTime > Constants.TIMEOUT) {
-				clientNetwork.resetAll();
-				return;
-			}
 			if (myPeers.isEmpty()) {
 				bootstrap.addPeers(clientNetwork);
 			}

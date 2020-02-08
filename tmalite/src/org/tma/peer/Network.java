@@ -54,7 +54,7 @@ public class Network implements Serializable {
 	private transient int bootstrapShardingPower;
 	private transient boolean bootstrapShardingPowerUpdated;
 	
-	private transient ExpiringMap<Peer, Peer> removedPeers = new ExpiringMap<>(Constants.TIMEOUT, Constants.MAX_SIZE);
+	private transient ExpiringMap<Peer, Peer> removedPeers = new ExpiringMap<>(Constants.ONE_MINUTE, Constants.MAX_SIZE);
 	
 	public void resetAll() {
 		setNetworkStarted(false);
