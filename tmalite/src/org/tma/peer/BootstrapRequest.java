@@ -14,6 +14,7 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.tma.peer.thin.SubscribeToMessagesRequest;
 import org.tma.util.Bootstrap;
@@ -35,7 +36,7 @@ public class BootstrapRequest extends Request implements PeerResetListener {
 	private transient Network clientNetwork;
 	private int clientBlockchainId;
 	private transient Set<Peer> sentPeers = new HashSet<>();
-	private transient boolean active;
+	private transient final ReentrantLock lock = new ReentrantLock();
 	private transient long startTime;
 	
 	public static BootstrapRequest getInstance() {
@@ -50,19 +51,33 @@ public class BootstrapRequest extends Request implements PeerResetListener {
 	public Response getResponse(Network serverNetwork, Peer peer) throws Exception {
 		return new Response();
 	}
-
-	public void start() {
-		synchronized(this) {
-			if(active) {
+	
+	public void startAndWait() {
+		boolean gotLock = lock.tryLock();
+		if(!gotLock) {
+			if(!clientNetwork.getMyPeers().isEmpty()) {
 				return;
 			}
-			active = true;
+			lock.lock();
+			lock.unlock();
+			return;
+		}
+		lock.unlock();
+		start();
+	}
+
+	public void start() {
+		boolean gotLock = lock.tryLock();
+		if(!gotLock) {
+			return;
 		}
 		logger.debug("Network status: {}", clientNetwork.getPeerCount());
 		startTime = System.currentTimeMillis();
 		init();
+		lock.unlock();
 		ThreadExecutor.getInstance().execute(new TmaRunnable("BootstrapRequest") {
 			public void doRun() {
+				lock.lock();
 				try {
 					process();
 				} finally {
@@ -72,7 +87,7 @@ public class BootstrapRequest extends Request implements PeerResetListener {
 						peer.addResetListener(BootstrapRequest.this);
 					}
 					logger.debug("Network status: {}, bootstrap took: {} ms", clientNetwork.getPeerCount(), System.currentTimeMillis() - startTime);
-					active = false;
+					lock.unlock();
 				}
 			}
 		});
