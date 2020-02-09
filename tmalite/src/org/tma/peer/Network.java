@@ -25,8 +25,6 @@ import java.util.Set;
 import org.apache.commons.lang3.ArrayUtils;
 import org.tma.util.Base58;
 import org.tma.util.Configurator;
-import org.tma.util.Constants;
-import org.tma.util.ExpiringMap;
 import org.tma.util.ShardUtil;
 import org.tma.util.StringUtil;
 import org.tma.util.ThreadExecutor;
@@ -53,15 +51,12 @@ public class Network implements Serializable {
 	private transient String tmaAddress;
 	private transient int bootstrapShardingPower;
 	private transient boolean bootstrapShardingPowerUpdated;
-	
-	private transient ExpiringMap<Peer, Peer> removedPeers = new ExpiringMap<>(Constants.ONE_MINUTE, Constants.MAX_SIZE);
-	
-	public void resetAll() {
+
+	private void resetAll() {
 		setNetworkStarted(false);
 		for(Peer peer: getAllPeers()) {
 			removePeer(peer);
 		}
-		removedPeers.clear();
 		new GetBootstrapPowerRequest(this).start();
 		logger.info("Your shard id is {}", getBootstrapBlockchainId());
 		BootstrapRequest.getInstance().start();
@@ -136,7 +131,6 @@ public class Network implements Serializable {
 	}
 	
 	public synchronized boolean removePeer(Peer peer) {
-		removedPeers.put(peer, peer);
 		boolean result = getToPeers().remove(peer) || getLocals().remove(peer);
 		if(result) {
 			peer.reset();
@@ -395,7 +389,6 @@ public class Network implements Serializable {
 		for(int i: mateIds) {
 			int count = 0;
 			List<Peer> peers = getPeersByShardId(i);
-			peers.removeAll(removedPeers.values());
 			for(Peer peer: peers) {
 				if(peer.isConnected() && i == peer.getBlockchainId() && !peer.isDoDisconnect() && peer.isBlockchainIdSet()) {
 					count++;
