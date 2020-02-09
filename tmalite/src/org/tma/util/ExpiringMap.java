@@ -72,4 +72,10 @@ public class ExpiringMap<K, V> {
 		map.clear();
 	}
 
+	public synchronized V remove(K key) {
+		WaitObject<K> waitObject = new WaitObject<K>(key);
+		queue.remove(waitObject);
+		return map.remove(key);
+	}
+
 }

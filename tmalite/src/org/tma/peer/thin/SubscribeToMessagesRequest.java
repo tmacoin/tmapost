@@ -55,8 +55,13 @@ public class SubscribeToMessagesRequest extends Request {
 	}
 
 	public String getTmaAddress() {
-		
 		return tmaAddress;
 	}
+
+	public static void removeSubscribedPeer(Peer peer) {
+		subscribedPeers.remove(peer);
+	}
+	
+	
 	
 }
