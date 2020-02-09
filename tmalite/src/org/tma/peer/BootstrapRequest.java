@@ -60,9 +60,7 @@ public class BootstrapRequest extends Request implements PeerResetListener {
 		}
 		logger.debug("Network status: {}", clientNetwork.getPeerCount());
 		startTime = System.currentTimeMillis();
-		if(!init()) {
-			return;
-		}
+		init();
 		ThreadExecutor.getInstance().execute(new TmaRunnable("BootstrapRequest") {
 			public void doRun() {
 				try {
@@ -88,11 +86,11 @@ public class BootstrapRequest extends Request implements PeerResetListener {
 		
 	}
 	
-	private boolean init() {
+	private void init() {
 		if (clientNetwork.isPeerSetCompleteForMyShard()) {
 			clientNetwork.removeNonMyPeers();
 			clientNetwork.removedUnconnectedPeers();
-			return true;
+			return;
 		}
 
 		while (true) {
@@ -110,7 +108,7 @@ public class BootstrapRequest extends Request implements PeerResetListener {
 				synchronized(this) {
 					if (clientNetwork.getMyPeers().size() > 0) {
 						myPeers.addAll(clientNetwork.getMyPeers());
-						return true;
+						return;
 					}
 					try {
 						if(getSentPeers().size() > SEND_PEERS_MAX_NUMBER) {
@@ -129,7 +127,7 @@ public class BootstrapRequest extends Request implements PeerResetListener {
 				break;
 			}
 		}
-		return true;
+		return;
 	}
 	
 	private Set<Peer> sortByClosest(Set<Peer> peers) {
