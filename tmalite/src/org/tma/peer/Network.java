@@ -236,7 +236,7 @@ public class Network implements Serializable {
 		 
 		while(i.hasNext()) {
 			Peer peer = i.next();
-		    if (peer.getBlockchainId() != shardId || peer.isDoDisconnect() || !peer.isBlockchainIdSet()) {
+		    if (peer.getBlockchainId() != shardId || peer.isDoDisconnect() || !peer.isBlockchainIdSet() || !peer.isConnected()) {
 		        i.remove();
 		    }
 		}

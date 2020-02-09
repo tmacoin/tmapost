@@ -37,10 +37,10 @@ public class GetBalanceRequest extends Request {
 	
 	public String start() {
 		List<Peer> peers = clientNetwork.getMyPeers();
+		if(clientNetwork.getMyPeers().isEmpty()) {
+			logger.debug("clientNetwork.getMyPeers() is empty");
+		}
 		for (Peer peer : peers) {
-			if(!peer.isConnected()) {
-				continue;
-			}
 			peerLock = new PeerLock(peer);
 			long startTime = System.currentTimeMillis();
 			synchronized (peerLock) {
