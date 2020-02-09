@@ -140,6 +140,10 @@ public class SecureMessage implements Serializable {
 	public void setTransactionId(String transactionId) {
 		this.transactionId = transactionId;
 	}
+	
+	public String getSenderTmaAddress() {
+		return StringUtil.getStringFromKey(getSender());
+	}
 
 	
 	

@@ -90,7 +90,7 @@ public class MessageMouseAdapter extends MouseAdapter {
 		Wallet wallet = Wallets.getInstance().getWallet(Wallets.TMA, Wallets.WALLET_NAME);
 		
 		JButton btnReply = new JButton();
-		String replyTo = StringUtil.getStringFromKey(secureMessage.getSender());
+		String replyTo = secureMessage.getSenderTmaAddress();
 		if(wallet.getTmaAddress().equals(replyTo)) {
 			replyTo = secureMessage.getRecipient();
 		}
@@ -123,7 +123,7 @@ public class MessageMouseAdapter extends MouseAdapter {
 
 		p = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		JTextField address = new JTextField(36);
-		address.setText(StringUtil.getStringFromKey(secureMessage.getSender()));
+		address.setText(secureMessage.getSenderTmaAddress());
 		address.setBorder( null );
 		address.setOpaque( false );
 		address.setEditable( false );
