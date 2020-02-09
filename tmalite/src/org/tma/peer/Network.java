@@ -142,7 +142,7 @@ public class Network implements Serializable {
 	public synchronized void removedUnconnectedPeers() {
 		Set<Peer> peers = getAllPeers();
 		for(Peer peer: peers) {
-			if(!peer.isConnected()) {
+			if(!peer.isConnected() || !peer.isBlockchainIdSet() || peer.isDoDisconnect()) {
 				getToPeers().remove(peer); 
 				getLocals().remove(peer);
 			}
@@ -342,7 +342,7 @@ public class Network implements Serializable {
 		 
 		while(i.hasNext()) {
 			Peer peer = i.next();
-		    if (!peer.isConnected() || !peer.isBlockchainIdSet()) {
+		    if (!peer.isConnected() || !peer.isBlockchainIdSet() || peer.isDoDisconnect()) {
 		        i.remove();
 		    }
 		}
