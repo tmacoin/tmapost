@@ -44,7 +44,6 @@ import org.tma.util.TmaLogger;
 import org.tma.util.TmaRunnable;
 
 import com.google.gson.JsonIOException;
-import com.google.gson.JsonSyntaxException;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 
@@ -500,6 +499,11 @@ public class Peer implements Serializable {
 		}
 		message = gsonUtil.read(reader);
 		if (message == null) {
+			gsonUtil.write(new Response(), writer);
+			return true;
+		}
+		if (message instanceof DisconnectResponse) {
+			network.removePeer(this);
 			return false;
 		}
 		if (message instanceof PoisonPillResponse) {
@@ -606,7 +610,6 @@ public class Peer implements Serializable {
 		if(socket == null || socket.isClosed()) {
 			return;
 		}
-		String reason = "";
 		try (
 				JsonWriter writer = getWriter(); 
 				JsonReader reader = getReader();
@@ -614,21 +617,9 @@ public class Peer implements Serializable {
 			
 			do {
 				if (!receiveLoop(network)) {
-					reason = "!receiveLoop(network)";
 					break;
 				}
 			} while (isConnected());
-			reason = reason + " isConnected()=" + isConnected();
-		} catch (JsonSyntaxException e) {
-			reason = e.getMessage();
-		} catch (SocketException e) {
-			reason = e.getMessage();
-		} catch (IOException e) {
-			reason = e.getMessage();
-		} catch (JsonIOException e) {
-			reason = e.getMessage();
-		} catch (IllegalStateException e) {
-			reason = e.getMessage();
 		} catch (Throwable e) {
 			logger.error(e.getMessage(), e);
 		}

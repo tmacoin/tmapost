@@ -11,12 +11,13 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.security.PublicKey;
 import java.util.BitSet;
-import java.util.ConcurrentModificationException;
 
+import org.tma.peer.DisconnectResponse;
 import org.tma.peer.Message;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 
@@ -45,18 +46,12 @@ public class GsonUtil {
 	}
 	
 	public void write(Message message, JsonWriter writer) throws IOException {
-		try {
-			synchronized (writer) {
-				JsonClassMarker marker = new JsonClassMarker(message.getClass());
-				getGson().toJson(marker, JsonClassMarker.class, writer);
-				message.setTimestamp(System.currentTimeMillis());
-				getGson().toJson(message, message.getClass(), writer);
-				writer.flush();
-				//logger.debug("GsonUtil.write message.getBlockchainId()={}, message.getClass()={}, message.isDoDisconnect()={}", message.getBlockchainId(), message.getClass(), message.isDoDisconnect());
-			}
-		} catch (ConcurrentModificationException e) {
-			logger.debug("message.getClass()={} message={}", message.getClass(), message);
-			throw e;
+		synchronized (writer) {
+			JsonClassMarker marker = new JsonClassMarker(message.getClass());
+			getGson().toJson(marker, JsonClassMarker.class, writer);
+			message.setTimestamp(System.currentTimeMillis());
+			getGson().toJson(message, message.getClass(), writer);
+			writer.flush();
 		}
 	}
 
@@ -64,14 +59,34 @@ public class GsonUtil {
 		if(reader == null) {
 			return null;
 		}
-		synchronized (reader) {
-			JsonClassMarker marker = getGson().fromJson(reader, JsonClassMarker.class);
-			if(marker == null || marker.getType() == null) {
-				return null;
+		try {
+			synchronized (reader) {
+				JsonClassMarker marker = getGson().fromJson(reader, JsonClassMarker.class);
+				if(marker == null || marker.getType() == null) {
+					return null;
+				}
+				Message message = getGson().fromJson(reader, marker.getType());
+				return message;
 			}
-			Message message = getGson().fromJson(reader, marker.getType());
-			//logger.debug("GsonUtil.read message.getBlockchainId()={}, message.getClass()={}, message.isDoDisconnect()={}", message.getBlockchainId(), message.getClass(), message.isDoDisconnect());
-			return message;
+		} catch (IllegalStateException e) {
+			if(e.getMessage().startsWith("Expected BEGIN_OBJECT but was END_DOCUMENT")) {
+				return new DisconnectResponse();
+			}
+			logger.error(e.getMessage(), e);
+			throw e;
+		} catch(JsonSyntaxException e) {
+			if(e.getCause().getMessage().startsWith("Expected BEGIN_OBJECT but was END_DOCUMENT")) {
+				return new DisconnectResponse();
+			}
+			if(e.getCause().getMessage().equals("Socket closed")) {
+				return new DisconnectResponse();
+			}
+			logger.error(e.getMessage(), e);
+			throw e;
+			
+		} catch (Throwable e) {
+			logger.error(e.getMessage(), e);
+			throw e;
 		}
 	}
 
