@@ -610,11 +610,11 @@ public class Peer implements Serializable {
 		if(socket == null || socket.isClosed()) {
 			return;
 		}
-		try (
-				JsonWriter writer = getWriter(); 
-				JsonReader reader = getReader();
-			) {
-			
+		JsonWriter writer = null;
+		JsonReader reader = null;
+		try {
+			writer = getWriter(); 
+			reader = getReader();
 			do {
 				if (!receiveLoop(network)) {
 					break;
@@ -622,6 +622,19 @@ public class Peer implements Serializable {
 			} while (isConnected());
 		} catch (Throwable e) {
 			logger.error(e.getMessage(), e);
+		} finally {
+			if(writer != null) {
+				try {
+					writer.close();
+				} catch (IOException e) {
+				}
+			}
+			if(reader != null) {
+				try {
+					reader.close();
+				} catch (IOException e) {
+				}
+			}
 		}
 		network.removeIfStale(this);
 		poisonResponses();
