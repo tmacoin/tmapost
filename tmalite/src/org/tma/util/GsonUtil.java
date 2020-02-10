@@ -17,6 +17,7 @@ import org.tma.peer.Message;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonIOException;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
@@ -46,12 +47,17 @@ public class GsonUtil {
 	}
 	
 	public void write(Message message, JsonWriter writer) throws IOException {
-		synchronized (writer) {
-			JsonClassMarker marker = new JsonClassMarker(message.getClass());
-			getGson().toJson(marker, JsonClassMarker.class, writer);
-			message.setTimestamp(System.currentTimeMillis());
-			getGson().toJson(message, message.getClass(), writer);
-			writer.flush();
+		try {
+			synchronized (writer) {
+				JsonClassMarker marker = new JsonClassMarker(message.getClass());
+				getGson().toJson(marker, JsonClassMarker.class, writer);
+				message.setTimestamp(System.currentTimeMillis());
+				getGson().toJson(message, message.getClass(), writer);
+				writer.flush();
+			}
+		} catch (Throwable e) {
+			logger.error(e.getMessage(), e);
+			throw e;
 		}
 	}
 
@@ -74,7 +80,7 @@ public class GsonUtil {
 			}
 			logger.error(e.getMessage(), e);
 			throw e;
-		} catch(JsonSyntaxException e) {
+		} catch(JsonSyntaxException | JsonIOException e) {
 			if(e.getCause().getMessage().startsWith("Expected BEGIN_OBJECT but was END_DOCUMENT")) {
 				return new DisconnectResponse();
 			}
@@ -83,7 +89,6 @@ public class GsonUtil {
 			}
 			logger.error(e.getMessage(), e);
 			throw e;
-			
 		} catch (Throwable e) {
 			logger.error(e.getMessage(), e);
 			throw e;

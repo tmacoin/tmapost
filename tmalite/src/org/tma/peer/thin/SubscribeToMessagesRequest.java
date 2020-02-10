@@ -21,7 +21,7 @@ public class SubscribeToMessagesRequest extends Request {
 
 	private static final long serialVersionUID = 7852014295465690974L;
 	private static final TmaLogger logger = TmaLogger.getLogger();
-	private static final ExpiringMap<Peer, Peer> subscribedPeers = new ExpiringMap<>(Constants.TIMEOUT * 2, Constants.MAX_SIZE);
+	private static final ExpiringMap<Peer, Peer> subscribedPeers = new ExpiringMap<>(Constants.TIMEOUT, Constants.MAX_SIZE);
 
 	private transient Network clientNetwork;
 	private String tmaAddress;
