@@ -78,7 +78,7 @@ public class GsonUtil {
 			if(e.getCause().getMessage().startsWith("Expected BEGIN_OBJECT but was END_DOCUMENT")) {
 				return new DisconnectResponse();
 			}
-			if(e.getCause().getMessage().equals("Socket closed") || e.getCause().getMessage().equals("Connection reset")) {
+			if(e.getCause().getMessage().equalsIgnoreCase("Socket closed") || e.getCause().getMessage().equalsIgnoreCase("Connection reset")) {
 				return new DisconnectResponse();
 			}
 			logger.error(e.getMessage(), e);
