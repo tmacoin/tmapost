@@ -20,7 +20,6 @@ import org.tma.peer.thin.SubscribeToMessagesRequest;
 import org.tma.util.Bootstrap;
 import org.tma.util.Configurator;
 import org.tma.util.Constants;
-import org.tma.util.ExpiringMap;
 import org.tma.util.ThreadExecutor;
 import org.tma.util.TmaLogger;
 import org.tma.util.TmaRunnable;
@@ -39,7 +38,6 @@ public class BootstrapRequest extends Request implements PeerResetListener {
 	private transient Set<Peer> sentPeers = new HashSet<>();
 	private transient final ReentrantLock lock = new ReentrantLock();
 	private transient long startTime;
-	private transient final ExpiringMap<Peer, Peer> removedPeers = new ExpiringMap<>(Constants.ONE_SECOND * 30, Constants.MAX_SIZE);
 	
 	public static BootstrapRequest getInstance() {
 		return instance;
@@ -119,7 +117,6 @@ public class BootstrapRequest extends Request implements PeerResetListener {
 			Set<Peer> peers = clientNetwork.getAllPeers();
 			synchronized(this) {
 				peers.removeAll(getSentPeers());
-				peers.removeAll(removedPeers.keySet());
 			}
 			peers = sortByClosest(peers);
 			for (Peer peer : peers) {
@@ -178,7 +175,6 @@ public class BootstrapRequest extends Request implements PeerResetListener {
 			Set<Peer> peers = clientNetwork.getAllPeers();
 			synchronized(this) {
 				peers.removeAll(getSentPeers());
-				peers.removeAll(removedPeers.keySet());
 			}
 
 			for (Peer peer : peers) {
@@ -218,12 +214,8 @@ public class BootstrapRequest extends Request implements PeerResetListener {
 	@Override
 	public void onPeerReset(Peer peer) {
 		logger.debug("Peer removed {}", peer);
-		synchronized(this) {
-			removedPeers.put(peer, peer);
-		}
 		ThreadExecutor.getInstance().execute(new TmaRunnable("BootstrapRequest.onPeerReset()") {
 			public void doRun() {
-				SubscribeToMessagesRequest.removeSubscribedPeer(peer);
 				start();
 			}
 		});
