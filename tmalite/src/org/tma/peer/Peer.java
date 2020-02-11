@@ -180,7 +180,7 @@ public class Peer implements Serializable {
 		
 		localSocket.connect(iNetAddress, CONNECT_TIMEOUT);
 
-		//logger.debug("Opened socket {}", localSocket);
+		logger.debug("Opened socket {}", localSocket);
 		socket = localSocket;
 		return localSocket;
 	}
@@ -199,7 +199,7 @@ public class Peer implements Serializable {
 			Socket localSocket = socket;
 			if (localSocket != null) {
 				localSocket.close();
-				//logger.debug("Closed socket {} {} fromPeer={} localPeer={}", localSocket, networkIdentifier, fromPeer, localPeer);
+				logger.debug("Closed socket {} {} fromPeer={} localPeer={}", localSocket, networkIdentifier, fromPeer, localPeer);
 			}
 		} catch (IOException e) {
 			logger.error(e.getMessage(), e);

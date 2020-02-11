@@ -214,6 +214,7 @@ public class BootstrapRequest extends Request implements PeerResetListener {
 	@Override
 	public void onPeerReset(Peer peer) {
 		logger.debug("Peer removed {}", peer);
+		myPeers.remove(peer);
 		ThreadExecutor.getInstance().execute(new TmaRunnable("BootstrapRequest.onPeerReset()") {
 			public void doRun() {
 				start();
