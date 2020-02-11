@@ -462,10 +462,10 @@ public class Peer implements Serializable {
 			network.removeIfStale(this);
 			return new Response();
 		} catch (SocketException e) {
-			network.removeIfStale(this);
+			network.removePeer(this);
 			return new Response();
 		} catch (JsonIOException e) {
-			network.removeIfStale(this);
+			network.removePeer(this);
 			return new Response();
 		} catch (IOException e) {
 			network.removeIfStale(this);

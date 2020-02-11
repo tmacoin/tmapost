@@ -9,6 +9,7 @@ package org.tma.util;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.net.SocketException;
 import java.security.PublicKey;
 import java.util.BitSet;
 
@@ -55,6 +56,8 @@ public class GsonUtil {
 				getGson().toJson(message, message.getClass(), writer);
 				writer.flush();
 			}
+		} catch (JsonIOException | SocketException e) {
+			throw e;
 		} catch (Throwable e) {
 			logger.error(e.getMessage(), e);
 			throw e;
@@ -84,7 +87,7 @@ public class GsonUtil {
 			if(e.getCause().getMessage().startsWith("Expected BEGIN_OBJECT but was END_DOCUMENT")) {
 				return new DisconnectResponse();
 			}
-			if(e.getCause().getMessage().equalsIgnoreCase("Socket closed") || e.getCause().getMessage().equalsIgnoreCase("Connection reset")) {
+			if(e.getCause() instanceof SocketException) {
 				return new DisconnectResponse();
 			}
 			logger.error(e.getMessage(), e);
