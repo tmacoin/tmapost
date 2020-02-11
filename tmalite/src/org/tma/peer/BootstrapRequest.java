@@ -109,7 +109,7 @@ public class BootstrapRequest extends Request implements PeerResetListener {
 		}
 
 		while (true) {
-			if (myPeers.isEmpty()) {
+			if (myPeers.size() < Network.getPeerSetCompleteMinSize()) {
 				bootstrap.addPeers(clientNetwork);
 			}
 			clientNetwork.add(myPeers);
@@ -167,7 +167,7 @@ public class BootstrapRequest extends Request implements PeerResetListener {
 		}
 
 		while (true) {
-			if (myPeers.isEmpty()) {
+			if (myPeers.size() < Network.getPeerSetCompleteMinSize()) {
 				bootstrap.addPeers(clientNetwork);
 			}
 			clientNetwork.add(myPeers);

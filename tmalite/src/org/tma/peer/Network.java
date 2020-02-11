@@ -417,7 +417,7 @@ public class Network implements Serializable {
 		return peerCount;
 	}
 	
-	private static int getPeerSetCompleteMinSize() {
+	public static int getPeerSetCompleteMinSize() {
 		return Configurator.getInstance().getIntProperty("org.tma.peer.peers.complete.minsize", 3);
 	}
 	
