@@ -14,7 +14,7 @@ import org.tma.util.StringUtil;
 public abstract class Message implements Serializable {
 
 	private static final long serialVersionUID = 3798515363997911833L;
-	public static final String VERSION = "0.0.18";
+	public static final String VERSION = "0.0.19";
 	public static final long VALID_PERIOD = 1000 * 60 * 10;
 	
 	private String version = VERSION;
