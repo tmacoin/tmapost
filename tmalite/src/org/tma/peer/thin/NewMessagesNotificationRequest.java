@@ -14,7 +14,6 @@ import org.tma.peer.Response;
 import org.tma.util.Constants;
 import org.tma.util.ExpiringMap;
 import org.tma.util.Listeners;
-import org.tma.util.StringUtil;
 import org.tma.util.TmaLogger;
 
 public class NewMessagesNotificationRequest extends Request {
@@ -27,7 +26,7 @@ public class NewMessagesNotificationRequest extends Request {
 	private SecureMessage secureMessage;
 
 	public Response getResponse(Network serverNetwork, Peer peer) throws Exception {
-		String key = StringUtil.trimToBlank(secureMessage.getTransactionId()) + secureMessage.getText();
+		String key = secureMessage.getTransactionId();
 		synchronized (receivedMessages) {
 			if (receivedMessages.containsKey(key)) {
 				return new Response();
