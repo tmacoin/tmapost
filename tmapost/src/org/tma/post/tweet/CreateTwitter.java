@@ -38,8 +38,8 @@ public class CreateTwitter extends AbstractAction implements Caller {
 	private JTextField account;
 	
 	public CreateTwitter(JFrame frame) {
-		putValue(NAME, "Create Twitter");
-		putValue(SHORT_DESCRIPTION, "Create Twitter");
+		putValue(NAME, "Create Tmitter");
+		putValue(SHORT_DESCRIPTION, "Create Tmitter");
 		this.frame = frame;
 	}
 	
@@ -56,7 +56,7 @@ public class CreateTwitter extends AbstractAction implements Caller {
 			JPanel form = new JPanel(new BorderLayout());
 
 			JTextArea message = new JTextArea();
-			message.setText("Twitter account was already created. Account name is " + accountName + " with tma address " + 
+			message.setText("Tmitter account was already created. Account name is " + accountName + " with tma address " + 
 					wallets.getWallet(Wallets.TWITTER, accountName).getTmaAddress());
 			message.setLineWrap(true);
 			message.setWrapStyleWord(true);

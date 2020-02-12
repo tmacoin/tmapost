@@ -51,8 +51,8 @@ public class CreateTwitterAction extends AbstractAction implements Caller {
 	private JTextField description;
 	
 	public CreateTwitterAction(JFrame frame, JTextField account, JTextField description, JPasswordField passwordField) {
-		putValue(NAME, "Create Twitter Account");
-		putValue(SHORT_DESCRIPTION, "Create Twitter Account");
+		putValue(NAME, "Create Tmitter Account");
+		putValue(SHORT_DESCRIPTION, "Create Tmitter Account");
 		this.frame = frame;
 		this.account = account;
 		this.passwordField = passwordField;
@@ -68,7 +68,7 @@ public class CreateTwitterAction extends AbstractAction implements Caller {
 			public void doRun() {
 				try {
 					if(generateKeyPair(label)) {
-						label.setText("Twitter account key pair created for " + account.getText());
+						label.setText("Tmitter account key pair created for " + account.getText());
 					}
 				} catch (Exception e) {
 					logger.error(e.getMessage(), e);
@@ -87,7 +87,7 @@ public class CreateTwitterAction extends AbstractAction implements Caller {
 		GetBalanceRequest request = new GetBalanceRequest(network, network.getTmaAddress());
 		String balance = request.start();
 		if("0".equals(balance)) {
-			label.setText("Your balance is zero. You cannot create Twitter account.");
+			label.setText("Your balance is zero. You cannot create Tmitter account.");
 			return false;
 		}
 		

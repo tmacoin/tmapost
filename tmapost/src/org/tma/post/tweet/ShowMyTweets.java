@@ -46,8 +46,8 @@ public class ShowMyTweets extends AbstractAction implements Caller {
 	private String tmaAddress;
 
 	public ShowMyTweets(JFrame frame) {
-		putValue(NAME, "Show my tweets");
-		putValue(SHORT_DESCRIPTION, "Show my tweets");
+		putValue(NAME, "Show my tmeets");
+		putValue(SHORT_DESCRIPTION, "Show my tmeets");
 		this.frame = frame;
 		Wallets wallets = Wallets.getInstance();
 		
@@ -60,8 +60,8 @@ public class ShowMyTweets extends AbstractAction implements Caller {
 	}
 
 	public ShowMyTweets(JFrame frame, String tmaAddress) {
-		putValue(NAME, "Show tweets");
-		putValue(SHORT_DESCRIPTION, "Show tweets");
+		putValue(NAME, "Show tmeets");
+		putValue(SHORT_DESCRIPTION, "Show tmeets");
 		this.frame = frame;
 		this.tmaAddress = tmaAddress;
 	}
@@ -84,7 +84,7 @@ public class ShowMyTweets extends AbstractAction implements Caller {
 			JPanel form = new JPanel(new BorderLayout());
 
 			JTextArea message = new JTextArea();
-			message.setText("You have not created you twitter account yet");
+			message.setText("You have not created you tmitter account yet");
 			message.setLineWrap(true);
 			message.setWrapStyleWord(true);
 			message.setOpaque(false);
@@ -149,7 +149,7 @@ public class ShowMyTweets extends AbstractAction implements Caller {
 				    }
 				}
 				
-				twitterHelper.print(panel, "Retrieved number of tweets " + list.size());
+				twitterHelper.print(panel, "Retrieved number of tmeets " + list.size());
 				
 				panel.add(new JSeparator(), "growx, span");
 				

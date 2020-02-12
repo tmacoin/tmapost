@@ -102,7 +102,7 @@ public class SendReplyAction extends AbstractAction implements Caller {
 			String accountName = names.iterator().next();
 			keywords.getMap().put("from", accountName);
 		} else {
-			label.setText("You have not created your twitter account yet.");
+			label.setText("You have not created your tmitter account yet.");
 			return;
 		}
 		

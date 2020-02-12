@@ -106,7 +106,7 @@ public class TwitterAccountMouseAdapter extends MouseAdapter {
 				    }
 				}
 				
-				twitterHelper.print(panel, "Retrieved number of tweets " + list.size());
+				twitterHelper.print(panel, "Retrieved number of tmeets " + list.size());
 				
 				panel.add(new JSeparator(), "growx, span");
 				

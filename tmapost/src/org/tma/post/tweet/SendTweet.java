@@ -32,8 +32,8 @@ public class SendTweet extends AbstractAction implements Caller {
 	private JFrame frame;
 	
 	public SendTweet(JFrame frame) {
-		putValue(NAME, "Send Tweet");
-		putValue(SHORT_DESCRIPTION, "Send Tweet");
+		putValue(NAME, "Send Tmeet");
+		putValue(SHORT_DESCRIPTION, "Send Tmeet");
 		this.frame = frame;
 	}
 	
@@ -60,7 +60,7 @@ public class SendTweet extends AbstractAction implements Caller {
 		form.add(fieldPanel, BorderLayout.CENTER);
 		
 		
-		JLabel label = new JLabel("Enter tweet:", JLabel.RIGHT);
+		JLabel label = new JLabel("Enter tmeet:", JLabel.RIGHT);
 		label.setBorder(new EmptyBorder(5,5,5,5));
 		labelPanel.add(label);
 		

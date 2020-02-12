@@ -32,8 +32,8 @@ public class SearchTwitter extends AbstractAction implements Caller {
 	private JTextField account;
 	
 	public SearchTwitter(JFrame frame) {
-		putValue(NAME, "Search Twitter");
-		putValue(SHORT_DESCRIPTION, "Search Twitter");
+		putValue(NAME, "Search Tmitter");
+		putValue(SHORT_DESCRIPTION, "Search Tmitter");
 		this.frame = frame;
 	}
 	

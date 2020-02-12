@@ -51,8 +51,8 @@ public class SendTweetAction extends AbstractAction implements Caller {
 	private JTextArea tweet;
 	
 	public SendTweetAction(JFrame frame, JTextArea tweet) {
-		putValue(NAME, "Send Tweet");
-		putValue(SHORT_DESCRIPTION, "Send Tweet");
+		putValue(NAME, "Send Tmeet");
+		putValue(SHORT_DESCRIPTION, "Send Tmeet");
 		this.frame = frame;
 		this.tweet = tweet;
 		
@@ -67,7 +67,7 @@ public class SendTweetAction extends AbstractAction implements Caller {
 				Wallets wallets = Wallets.getInstance();
 				Collection<String> names = wallets.getNames(Wallets.TWITTER);
 				if(names.isEmpty()) {
-					label.setText("Please create your twitter account first.");
+					label.setText("Please create your tmitter account first.");
 					return;
 				}
 				String accountName = names.iterator().next();
@@ -108,7 +108,7 @@ public class SendTweetAction extends AbstractAction implements Caller {
 			keywords = new Keywords();
 			keywords.getMap().put("from", accountName);
 		} else {
-			logger.error("Twitter account is not created yet");
+			logger.error("Tmitter account is not created yet");
 			return;
 		}
 		
@@ -129,7 +129,7 @@ public class SendTweetAction extends AbstractAction implements Caller {
 		JScrollPane scrollPane = new JScrollPane(form, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		frame.getContentPane().add(scrollPane);
 		
-		form.add(new JLabel("The tweet was successfully sent:"), "span, left");
+		form.add(new JLabel("The tmeet was successfully sent:"), "span, left");
 		
 		JTextArea description = new AutoResizingTextArea(5, 40, 55);
 		description.setText(tweet.getText());

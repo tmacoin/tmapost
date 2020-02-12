@@ -43,8 +43,8 @@ public class SearchTwitterAction extends AbstractAction implements Caller {
 	private JTextField account;
 	
 	public SearchTwitterAction(JFrame frame, JTextField account) {
-		putValue(NAME, "Search Twitter Accounts");
-		putValue(SHORT_DESCRIPTION, "Search Twitter Accounts");
+		putValue(NAME, "Search Tmitter Accounts");
+		putValue(SHORT_DESCRIPTION, "Search Tmitter Accounts");
 		this.frame = frame;
 		this.account = account;
 	}
@@ -66,7 +66,7 @@ public class SearchTwitterAction extends AbstractAction implements Caller {
 				List<TwitterAccount> list = (List<TwitterAccount>) ResponseHolder.getInstance().getObject(request.getCorrelationId());
 				
 				if(list == null) {
-					label.setText("Failed to retrieve twitter accounts. Please try again");
+					label.setText("Failed to retrieve tmitter accounts. Please try again");
 					return;
 				}
 				
@@ -75,7 +75,7 @@ public class SearchTwitterAction extends AbstractAction implements Caller {
 				JPanel form = new JPanel();
 				form.setLayout(new BoxLayout(form, BoxLayout.Y_AXIS));
 				
-				JLabel label = new JLabel("Twitter account(s) with name " + accountName);
+				JLabel label = new JLabel("Tmitter account(s) with name " + accountName);
 				label.setAlignmentX(JLabel.LEFT_ALIGNMENT);
 				label.setBorder(new EmptyBorder(5,5,5,5));
 				form.add(label);

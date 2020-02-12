@@ -56,7 +56,7 @@ public class TwitterAccountTableModel extends AbstractTableModel {
 		String value = null;
 		switch (columnIndex) {
 		case 0:
-			value = "Twitter Account Name";
+			value = "Tmitter Account Name";
 			break;
 		case 1:
 			value = "TMA Address";

@@ -105,22 +105,22 @@ public class MenuCreator {
 	}
 	
 	private static void addMenuTwitter(JMenuBar menuBar, JFrame frame) {
-		JMenu mnTwitter = new JMenu("Twitter");
+		JMenu mnTwitter = new JMenu("Tmitter");
 		menuBar.add(mnTwitter);
 		
-		JMenuItem mntmCreateTwitter = new JMenuItem("Create Twitter");
+		JMenuItem mntmCreateTwitter = new JMenuItem("Create Tmitter");
 		mntmCreateTwitter.setAction(new CreateTwitter(frame));
 		mnTwitter.add(mntmCreateTwitter);
 		
-		JMenuItem mntmShowMyTweets = new JMenuItem("My Tweets");
+		JMenuItem mntmShowMyTweets = new JMenuItem("My Tmeets");
 		mntmShowMyTweets.setAction(new ShowMyTweets(frame));
 		mnTwitter.add(mntmShowMyTweets);
 		
-		JMenuItem mntmSendTweet = new JMenuItem("Send Tweet");
+		JMenuItem mntmSendTweet = new JMenuItem("Send Tmeet");
 		mntmSendTweet.setAction(new SendTweet(frame));
 		mnTwitter.add(mntmSendTweet);
 		
-		JMenuItem mntmSearchTwitter = new JMenuItem("Search Twitter");
+		JMenuItem mntmSearchTwitter = new JMenuItem("Search Tmitter");
 		mntmSearchTwitter.setAction(new SearchTwitter(frame));
 		mnTwitter.add(mntmSearchTwitter);
 		
