@@ -7,6 +7,7 @@
  *******************************************************************************/
 package org.tma.util;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.SocketException;
@@ -89,6 +90,9 @@ public class GsonUtil {
 			}
 			if(e.getCause() instanceof SocketException) {
 				return new DisconnectResponse();
+			}
+			if(e.getCause() instanceof EOFException) {
+				return null;
 			}
 			logger.error(e.getMessage(), e);
 			throw e;

@@ -7,10 +7,10 @@
  *******************************************************************************/
 package org.tma.util;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 public class Listeners {
 	
@@ -18,7 +18,7 @@ public class Listeners {
 	private static final Listeners instance = new Listeners();
 	
 	private static final Map<String, Listener> map = new HashMap<String, Listener>();
-	private static final Map<Class<? extends Event>, List<EventListener>> listeners = new HashMap<Class<? extends Event>, List<EventListener>>();
+	private static final Map<Class<? extends Event>, Set<EventListener>> listeners = new HashMap<Class<? extends Event>, Set<EventListener>>();
 	
 	public static Listeners getInstance() {
 		return instance;
@@ -29,22 +29,22 @@ public class Listeners {
 	}
 	
 	public void addEventListener(Class<? extends Event> eventClass, EventListener listener) {
-		List<EventListener> list = listeners.get(eventClass);
-		if(list == null) {
-			list = new ArrayList<EventListener>();
-			listeners.put(eventClass, list);
+		Set<EventListener> set = listeners.get(eventClass);
+		if(set == null) {
+			set = new HashSet<EventListener>();
+			listeners.put(eventClass, set);
 		}
-		list.add(listener);
+		set.add(listener);
 	}
 	
 	public void sendEvent(final Event event) {
 		ThreadExecutor.getInstance().execute(new TmaRunnable("Process event " + event.getClass()) {
 			public void doRun() {
-				List<EventListener> list = listeners.get(event.getClass());
-				if (list == null) {
+				Set<EventListener> set = listeners.get(event.getClass());
+				if (set == null) {
 					return;
 				}
-				for (EventListener listener : list) {
+				for (EventListener listener : set) {
 					try {
 						listener.onEvent(event);
 					} catch (Exception e) {
