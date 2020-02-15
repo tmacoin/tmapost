@@ -7,16 +7,12 @@
  *******************************************************************************/
 package org.tma.peer.thin;
 
-import java.util.List;
-
 import org.tma.peer.Network;
 import org.tma.peer.Peer;
 import org.tma.peer.PeerLock;
 import org.tma.peer.Request;
 import org.tma.peer.Response;
 import org.tma.util.Constants;
-import org.tma.util.ShardUtil;
-import org.tma.util.StringUtil;
 import org.tma.util.TmaLogger;
 
 public class SearchRateeRequest extends Request {
@@ -42,15 +38,7 @@ public class SearchRateeRequest extends Request {
 	}
 	
 	public void start() {
-		//logger.debug("account={}, transactionId={}", account, transactionId);
-		String tmaAddress = StringUtil.getTmaAddressFromString(account);
-		int shardId = StringUtil.getShard(tmaAddress, clientNetwork.getBootstrapShardingPower());
-		int nextShardId = ShardUtil.getNext(clientNetwork.getBootstrapBlockchainId(), shardId, clientNetwork.getBootstrapShardingPower());
-		List<Peer> peers = clientNetwork.getPeersByShardId(nextShardId);
-		for (Peer peer : peers) {
-			if(!peer.isConnected()) {
-				continue;
-			}
+		for (Peer peer : clientNetwork.getMyPeers()) {
 			peerLock = new PeerLock(peer);
 			synchronized (peerLock) {
 				peer.send(clientNetwork, this);
@@ -78,6 +66,10 @@ public class SearchRateeRequest extends Request {
 
 	public String getTransactionId() {
 		return transactionId;
+	}
+
+	public String getAccount() {
+		return account;
 	}
 	
 }

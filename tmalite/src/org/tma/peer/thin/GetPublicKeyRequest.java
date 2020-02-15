@@ -39,9 +39,6 @@ public class GetPublicKeyRequest extends Request {
 	public void start() {
 		List<Peer> peers = clientNetwork.getMyPeers();
 		for (Peer peer : peers) {
-			if(!peer.isConnected()) {
-				continue;
-			}
 			peerLock = new PeerLock(peer);
 			synchronized (peerLock) {
 				peer.send(clientNetwork, this);

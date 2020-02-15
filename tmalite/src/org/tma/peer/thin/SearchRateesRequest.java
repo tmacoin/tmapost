@@ -7,7 +7,6 @@
  *******************************************************************************/
 package org.tma.peer.thin;
 
-import java.util.List;
 import java.util.Set;
 
 import org.tma.peer.Network;
@@ -16,8 +15,6 @@ import org.tma.peer.PeerLock;
 import org.tma.peer.Request;
 import org.tma.peer.Response;
 import org.tma.util.Constants;
-import org.tma.util.ShardUtil;
-import org.tma.util.StringUtil;
 import org.tma.util.TmaLogger;
 
 public class SearchRateesRequest extends Request {
@@ -51,14 +48,7 @@ public class SearchRateesRequest extends Request {
 		if(driver == null) {
 			return;
 		}
-		String tmaAddress = StringUtil.getTmaAddressFromString(driver);
-		int shardId = StringUtil.getShard(tmaAddress, clientNetwork.getBootstrapShardingPower());
-		int nextShardId = ShardUtil.getNext(clientNetwork.getBootstrapBlockchainId(), shardId, clientNetwork.getBootstrapShardingPower());
-		List<Peer> peers = clientNetwork.getPeersByShardId(nextShardId);
-		for (Peer peer : peers) {
-			if(!peer.isConnected()) {
-				continue;
-			}
+		for (Peer peer : clientNetwork.getMyPeers()) {
 			peerLock = new PeerLock(peer);
 			synchronized (peerLock) {
 				peer.send(clientNetwork, this);
