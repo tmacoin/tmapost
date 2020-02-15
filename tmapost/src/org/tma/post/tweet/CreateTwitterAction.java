@@ -43,7 +43,7 @@ public class CreateTwitterAction extends AbstractAction implements Caller {
 
 	private static final long serialVersionUID = 4008418980341407814L;
 	private static final TmaLogger logger = TmaLogger.getLogger();
-	private static final int POWER = 20;
+	private static final int POWER = 15;
 	
 	private JFrame frame;
 	private JTextField account;
