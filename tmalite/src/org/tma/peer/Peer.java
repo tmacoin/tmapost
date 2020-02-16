@@ -499,7 +499,11 @@ public class Peer implements Serializable {
 		}
 		message = gsonUtil.read(reader);
 		if (message == null) {
-			gsonUtil.write(new Response(), writer);
+			try {
+				gsonUtil.write(new Response(), writer);
+			} catch (Exception e) {
+				return false;
+			}
 			return true;
 		}
 		if (message instanceof DisconnectResponse) {
