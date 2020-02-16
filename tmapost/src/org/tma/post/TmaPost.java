@@ -58,7 +58,7 @@ public class TmaPost {
 					Wallets.WALLET_NAME = tmapost.walletId;
 					tmapost.frame.setVisible(true);
 					logger.debug("TMA Post Started");
-					logger.debug("Wallets.WALLET_NAME={}", Wallets.WALLET_NAME);
+					logger.trace("Wallets.WALLET_NAME={}", Wallets.WALLET_NAME);
 				} catch (Exception e) {
 					logger.error(e.getMessage(), e);
 				}

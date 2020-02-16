@@ -100,15 +100,16 @@ public class CreateTwitterAction extends AbstractAction implements Caller {
 
 		Wallet wallet = new Wallet();
 		int shardId = StringUtil.getShardForNonTmaAddress(account.getText(), POWER);
-		logger.debug("shardId: {}", shardId);
+		logger.debug("{} shardId: {} for power {}", account.getText(), shardId, POWER);
 		while (true) {
 			wallet.generateKeyPair();
 			if (StringUtil.getShard(wallet.getTmaAddress(), POWER) == shardId) {
 				break;
 			}
 		}
+		logger.debug("{} shardId: {} for power {}", wallet.getTmaAddress(), StringUtil.getShard(wallet.getTmaAddress(), POWER), POWER);
 		shardId = StringUtil.getShard(wallet.getTmaAddress(), network.getBootstrapShardingPower());
-		logger.debug("shardId: {}", shardId);
+		logger.debug("{} shardId: {} for power {}", wallet.getTmaAddress(), shardId, network.getBootstrapShardingPower());
 		Wallets wallets = Wallets.getInstance();
 		wallets.putWallet(Wallets.TWITTER, account.getText(), wallet);
 		passwordUtil.saveKeys(passphrase);
