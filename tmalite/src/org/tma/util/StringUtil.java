@@ -307,21 +307,8 @@ public class StringUtil {
 	}
 	
 	public static int getShardForNonTmaAddress(String input, int power) {
-		if(power == 0) {
-			return 0;
-		}
-		byte[] bytes = null;
-		try {
-			bytes = StringUtil.getBytesSha256(input);
-		} catch (NoSuchAlgorithmException e) {
-			logger.error(e.getMessage(), e);
-		}
-		String str = "";
-		for(byte b: bytes) {
-			str = str + Integer.toBinaryString((b & 0xFF) + 0x100).substring(1);
-		}
-		str = str.substring(0, power);
-		return Integer.valueOf(str, 2);
+		String tmaAddress = getTmaAddressFromString(input);
+		return getShard(tmaAddress, power);
 	}
 
 }
