@@ -134,7 +134,7 @@ public class SendMessageAction extends AbstractAction implements Caller {
 				Set<TransactionOutput> inputs = inputList.get(i++); 
 				logger.debug("number of inputs: {} for {}", inputs.size(), tmaAddress);
 				
-				String recipientTmaAddress = jaddress.getText();
+				String recipientTmaAddress = StringUtil.trim(jaddress.getText());
 				GetPublicKeyRequest getPublicKeyRequest = new GetPublicKeyRequest(network, recipientTmaAddress);
 				getPublicKeyRequest.start();
 				recipient = (PublicKey) ResponseHolder.getInstance().getObject(getPublicKeyRequest.getCorrelationId());
