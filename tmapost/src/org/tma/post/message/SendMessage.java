@@ -120,6 +120,7 @@ public class SendMessage extends AbstractAction implements Caller {
 		expire.addItem(new KeyValue("1 week", "10080"));
 		expire.addItem(new KeyValue("1 month", "43200"));
 		expire.addItem(new KeyValue("1 year", "525600"));
+		expire.setSelectedIndex(5);
 		p.add(expire);
 		fieldPanel.add(p);
 		
