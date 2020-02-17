@@ -47,7 +47,7 @@ public class FindRateeAction extends AbstractAction implements Caller {
 
 	public void actionPerformed(ActionEvent e) {
 		final JLabel label = SwingUtil.showWait(frame);
-		ThreadExecutor.getInstance().execute(new TmaRunnable("CreateRateeAction") {
+		ThreadExecutor.getInstance().execute(new TmaRunnable("FindRateeAction") {
 			public void doRun() {
 				findRatees(label);
 			}

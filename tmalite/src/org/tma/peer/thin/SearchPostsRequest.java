@@ -46,6 +46,7 @@ public class SearchPostsRequest extends Request {
 				}
 			}
 			if (responseHolder.getObject(getCorrelationId()) != null) {
+				logger.debug("SearchPostsRequest {}", peer);
 				break;
 			}
 		}

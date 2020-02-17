@@ -59,6 +59,7 @@ public class SearchRateesRequest extends Request {
 				}
 			}
 			if (responseHolder.getObject(getCorrelationId()) != null) {
+				logger.debug("SearchRateesRequest {}", peer);
 				break;
 			}
 		}

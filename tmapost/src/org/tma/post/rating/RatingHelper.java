@@ -414,8 +414,6 @@ public class RatingHelper {
 		
 		frame.getContentPane().add(form);
 		
-		logger.debug("list.size()={}", list.size());
-		
 		label = new JLabel("Found " + list.size() + " posts: ");
 		label.setAlignmentX(JLabel.LEFT_ALIGNMENT);
 		label.setBorder(new EmptyBorder(5,5,5,5));
