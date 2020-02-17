@@ -11,8 +11,6 @@ public interface Applications {
 
 	public static final String MESSAGING = "msg";
 	public static final String TWITTER = "twitt";
-	public static final String RATING = "ratee";
-	public static final String POST = "post";
-	
+	public static final String RATING = "ratee"; // this is for posting
 
 }
