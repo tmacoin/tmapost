@@ -49,7 +49,7 @@ public class SubscribeToMessagesRequest extends Request {
 		if(subscribedPeers.containsKey(peer)) {
 			return;
 		}
-		logger.debug("Sending subscription request to {}", peer);
+		logger.debug("{} to {} Sending subscription request to {}", clientNetwork.getBlockchainId(), peer.getBlockchainId(), peer);
 		subscribedPeers.put(peer, peer);
 		peer.send(clientNetwork, this);
 	}
