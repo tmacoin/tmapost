@@ -19,7 +19,7 @@ public class BootstrapResponse extends Response {
 
 	private static final long serialVersionUID = 9123534275344544318L;
 	private static final TmaLogger logger = TmaLogger.getLogger();
-	public static final ExpiringMap<Peer, Set<Peer>> toPeersMap = new ExpiringMap<>(Constants.TIMEOUT, Constants.MAX_SIZE);
+	public static final ExpiringMap<Peer, Set<Peer>> toPeersMap = new ExpiringMap<>(Constants.ONE_MINUTE, Constants.MAX_SIZE);
 	
 	
 	private List<Peer> peers;
