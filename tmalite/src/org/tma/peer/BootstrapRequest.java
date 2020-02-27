@@ -119,6 +119,8 @@ public class BootstrapRequest extends Request implements PeerResetListener {
 				peers.removeAll(getSentPeers());
 			}
 			peers = sortByClosest(peers);
+			
+			int sentCount = 0;
 			for (Peer peer : peers) {
 				synchronized(this) {
 					if (clientNetwork.getMyPeers().size() > 0) {
@@ -131,13 +133,19 @@ public class BootstrapRequest extends Request implements PeerResetListener {
 						}
 						if(!addCachedPeers(peer)) {
 							peer.send(clientNetwork, this);
+							getSentPeers().add(peer);
+							sentCount++;
 						}
 						
-						getSentPeers().add(peer);
+						
 					} catch (InterruptedException e) {
 						logger.error(e.getMessage(), e);
 					}
 				}
+			}
+			
+			if(sentCount == 0) {
+				ThreadExecutor.sleep(Constants.ONE_SECOND);
 			}
 
 			if (Configurator.getInstance().getBooleanProperty("org.tma.network.bootstrap.nowait")) {
@@ -151,7 +159,7 @@ public class BootstrapRequest extends Request implements PeerResetListener {
 		Set<Peer> set = BootstrapResponse.toPeersMap.get(peer);
 		if(set != null) {
 			clientNetwork.add(set);
-			logger.debug("BootstrapRequest peer={} set={}", peer, set);
+			//logger.debug("BootstrapRequest peer={} set={}", peer, set);
 			return true;
 		}
 		return false;
@@ -188,7 +196,8 @@ public class BootstrapRequest extends Request implements PeerResetListener {
 			synchronized(this) {
 				peers.removeAll(getSentPeers());
 			}
-
+			
+			int sentCount = 0;
 			for (Peer peer : peers) {
 				synchronized(this) {
 					if (clientNetwork.isPeerSetCompleteForMyShard()) {
@@ -204,14 +213,20 @@ public class BootstrapRequest extends Request implements PeerResetListener {
 						
 						if(!addCachedPeers(peer)) {
 							peer.send(clientNetwork, this);
+							getSentPeers().add(peer);
+							sentCount++;
 						}
 						
-						getSentPeers().add(peer);
+						
 					} catch (InterruptedException e) {
 						logger.error(e.getMessage(), e);
 					}
 				}
 				
+			}
+			
+			if(sentCount == 0) {
+				ThreadExecutor.sleep(Constants.ONE_SECOND);
 			}
 
 			if (Configurator.getInstance().getBooleanProperty("org.tma.network.bootstrap.nowait")) {
