@@ -129,8 +129,10 @@ public class BootstrapRequest extends Request implements PeerResetListener {
 						if(getSentPeers().size() > SEND_PEERS_MAX_NUMBER) {
 							wait(Constants.ONE_MINUTE);
 						}
+						if(!addCachedPeers(peer)) {
+							peer.send(clientNetwork, this);
+						}
 						
-						peer.send(clientNetwork, this);
 						getSentPeers().add(peer);
 					} catch (InterruptedException e) {
 						logger.error(e.getMessage(), e);
@@ -143,6 +145,16 @@ public class BootstrapRequest extends Request implements PeerResetListener {
 			}
 		}
 		return;
+	}
+	
+	private boolean addCachedPeers(Peer peer) {
+		Set<Peer> set = BootstrapResponse.toPeersMap.get(peer);
+		if(set != null) {
+			clientNetwork.add(set);
+			logger.debug("BootstrapRequest peer={} set={}", peer, set);
+			return true;
+		}
+		return false;
 	}
 	
 	private Set<Peer> sortByClosest(Set<Peer> peers) {
@@ -190,7 +202,10 @@ public class BootstrapRequest extends Request implements PeerResetListener {
 							wait(Constants.ONE_MINUTE);
 						}
 						
-						peer.send(clientNetwork, this);
+						if(!addCachedPeers(peer)) {
+							peer.send(clientNetwork, this);
+						}
+						
 						getSentPeers().add(peer);
 					} catch (InterruptedException e) {
 						logger.error(e.getMessage(), e);

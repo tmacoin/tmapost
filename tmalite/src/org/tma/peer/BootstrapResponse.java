@@ -9,10 +9,19 @@ package org.tma.peer;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
+import org.tma.util.Constants;
+import org.tma.util.ExpiringMap;
+import org.tma.util.TmaLogger;
 
 public class BootstrapResponse extends Response {
 
 	private static final long serialVersionUID = 9123534275344544318L;
+	private static final TmaLogger logger = TmaLogger.getLogger();
+	public static final ExpiringMap<Peer, Set<Peer>> toPeersMap = new ExpiringMap<>(Constants.TIMEOUT, Constants.MAX_SIZE);
+	
+	
 	private List<Peer> peers;
 	
 	public BootstrapResponse(List<Peer> peers) {
@@ -21,7 +30,10 @@ public class BootstrapResponse extends Response {
 	}
 	
 	public Request getRequest(Network clientNetwork, Peer peer) {
-		clientNetwork.add(new HashSet<Peer>(peers));
+		Set<Peer> set = new HashSet<Peer>(peers);
+		clientNetwork.add(set);
+		toPeersMap.put(peer, set);
+		logger.debug("BootstrapResponse peer={} set={}", peer, set);
 		return new EmptyRequest();
 	}
 
