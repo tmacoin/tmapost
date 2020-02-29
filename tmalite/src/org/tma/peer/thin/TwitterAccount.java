@@ -7,12 +7,17 @@
  *******************************************************************************/
 package org.tma.peer.thin;
 
-public class TwitterAccount {
+import java.io.Serializable;
+
+public class TwitterAccount implements Serializable {
+
+	private static final long serialVersionUID = 2426679355046726832L;
 	
 	private String name;
 	private String tmaAddress;
 	private long timeStamp;
 	private String description;
+	private String transactionId;
 	
 	public String getName() {
 		return name;
@@ -49,6 +54,13 @@ public class TwitterAccount {
 		}
 		TwitterAccount other = (TwitterAccount) obj;
 		return tmaAddress.equals(other.tmaAddress);
+	}
+	
+	public String getTransactionId() {
+		return transactionId;
+	}
+	public void setTransactionId(String transactionId) {
+		this.transactionId = transactionId;
 	}
 
 }
