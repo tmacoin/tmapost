@@ -7,6 +7,7 @@
  *******************************************************************************/
 package org.tma.blockchain;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -14,8 +15,12 @@ import java.util.Map;
 
 import org.tma.util.StringUtil;
 
-public class Keywords {
+public class Keywords implements Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5838720523392669808L;
 	private Map<String, String> map = new HashMap<String, String>();
 	private String hash;
 	private String transactionId;
