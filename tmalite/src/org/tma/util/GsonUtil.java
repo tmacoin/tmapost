@@ -79,13 +79,13 @@ public class GsonUtil {
 				return message;
 			}
 		} catch (IllegalStateException e) {
-			if(e.getMessage().startsWith("Expected BEGIN_OBJECT but was END_DOCUMENT")) {
+			if(e.getMessage().startsWith("Expected BEGIN_OBJECT but was END_DOCUMENT") || e.getMessage().startsWith("Expected BEGIN_OBJECT but was STRING")) {
 				return new DisconnectResponse();
 			}
 			logger.error(e.getMessage(), e);
 			throw e;
 		} catch(JsonSyntaxException | JsonIOException e) {
-			if(e.getCause().getMessage().startsWith("Expected BEGIN_OBJECT but was END_DOCUMENT")) {
+			if(e.getCause().getMessage().startsWith("Expected BEGIN_OBJECT but was END_DOCUMENT") || e.getCause().getMessage().startsWith("Expected BEGIN_OBJECT but was STRING")) {
 				return new DisconnectResponse();
 			}
 			if(e.getCause() instanceof SocketException) {
