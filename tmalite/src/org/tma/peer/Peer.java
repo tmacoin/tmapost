@@ -150,6 +150,7 @@ public class Peer implements Serializable {
 			logger.debug("{} <--> {} Opened socket {}", network.getBlockchainId(), getBlockchainId(), localSocket);
 		}
 		socket = localSocket;
+		setDoDisconnect(false);
 		return localSocket;
 	}
 	
@@ -158,6 +159,7 @@ public class Peer implements Serializable {
 	}
 	
 	public void reset(String reason) {
+		setDoDisconnect(true);
 		Socket localSocket = socket;
 		if(localSocket == null) {
 			return;
@@ -410,7 +412,6 @@ public class Peer implements Serializable {
 					setBlockchainId(response.getBlockchainId());
 
 					if(response.isDoDisconnect()) {
-						doDisconnect = true;
 						network.removePeer(this, "response.isDoDisconnect()");
 						return new Response();
 					}
@@ -566,7 +567,6 @@ public class Peer implements Serializable {
 		}
 		gsonUtil.write(response, writer);
 		if(response.isDoDisconnect()) {
-			doDisconnect = true;
 			network.removePeer(this, "response.isDoDisconnect()");
 			return false;
 		}
@@ -717,6 +717,10 @@ public class Peer implements Serializable {
 			resetListeners = new HashSet<>();
 		}
 		return resetListeners;
+	}
+
+	public void setDoDisconnect(boolean doDisconnect) {
+		this.doDisconnect = doDisconnect;
 	}
 
 }
