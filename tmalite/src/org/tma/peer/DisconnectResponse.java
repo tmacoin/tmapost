@@ -11,8 +11,27 @@ public class DisconnectResponse extends Response {
 
 	private static final long serialVersionUID = 3195199252345630404L;
 	
+	private String reason;
+	
+	public DisconnectResponse(String reason) {
+		this.reason = reason;
+	}
+
 	protected int retrieveBlockchainId() {
 		return 0;
+	}
+
+	public String getReason() {
+		return reason;
+	}
+
+	public void setReason(String reason) {
+		this.reason = reason;
+	}
+
+	@Override
+	public String toString() {
+		return reason;
 	}
 
 }

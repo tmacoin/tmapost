@@ -474,7 +474,7 @@ public class Peer implements Serializable {
 			return true;
 		}
 		if (message instanceof DisconnectResponse) {
-			network.removePeer(this, "DisconnectResponse");
+			network.removePeer(this, message.toString());
 			return false;
 		}
 		if (message instanceof PoisonPillResponse) {
@@ -482,7 +482,7 @@ public class Peer implements Serializable {
 			setNetworkIdentifier(response.getNetworkIdentifier());
 			BlockingQueue<Response> responseQueue = getResponses(response.getCorrelationId());
 			responseQueue.offer(response);
-			network.removePeer(this, "PoisonPillResponse");
+			network.removePeer(this, message.toString());
 			return false;
 		}
 		if (message instanceof Response) {

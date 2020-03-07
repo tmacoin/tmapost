@@ -80,16 +80,16 @@ public class GsonUtil {
 			}
 		} catch (IllegalStateException e) {
 			if(e.getMessage().startsWith("Expected BEGIN_OBJECT but was END_DOCUMENT") || e.getMessage().startsWith("Expected BEGIN_OBJECT but was STRING")) {
-				return new DisconnectResponse();
+				return new DisconnectResponse(e.getMessage());
 			}
 			logger.error(e.getMessage(), e);
 			throw e;
 		} catch(JsonSyntaxException | JsonIOException e) {
 			if(e.getCause().getMessage().startsWith("Expected BEGIN_OBJECT but was END_DOCUMENT") || e.getCause().getMessage().startsWith("Expected BEGIN_OBJECT but was STRING")) {
-				return new DisconnectResponse();
+				return new DisconnectResponse(e.getMessage());
 			}
 			if(e.getCause() instanceof SocketException) {
-				return new DisconnectResponse();
+				return new DisconnectResponse(e.getMessage());
 			}
 			if(e.getCause() instanceof EOFException) {
 				return null;
