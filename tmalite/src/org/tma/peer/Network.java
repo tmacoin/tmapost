@@ -126,8 +126,7 @@ public class Network implements Serializable {
 		Set<Peer> peers = getAllPeers();
 		for(Peer peer: peers) {
 			if(!peer.isConnected() || !peer.isBlockchainIdSet() || peer.isDoDisconnect()) {
-				getToPeers().remove(peer); 
-				getLocals().remove(peer);
+				removePeer(peer, "removedUnconnectedPeers");
 			}
 		}
 	}
