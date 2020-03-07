@@ -146,7 +146,9 @@ public class Peer implements Serializable {
 		localSocket.connect(iNetAddress, CONNECT_TIMEOUT);
 		
 		Network network = Network.getInstance();
-		logger.debug("{} <--> {} Opened socket {}", network.getBlockchainId(), getBlockchainId(), localSocket);
+		if(network.getBlockchainId() == getBlockchainId()) {
+			logger.debug("{} <--> {} Opened socket {}", network.getBlockchainId(), getBlockchainId(), localSocket);
+		}
 		socket = localSocket;
 		return localSocket;
 	}
@@ -165,7 +167,9 @@ public class Peer implements Serializable {
 			if (localSocket != null) {
 				localSocket.close();
 				Network network = Network.getInstance();
-				logger.debug("{} <--> {} Closed socket {} {} fromPeer={} localPeer={} reason={}", network.getBlockchainId(), getBlockchainId(), localSocket, networkIdentifier, fromPeer, localPeer, reason);
+				if(network.getBlockchainId() == getBlockchainId()) {
+					logger.debug("{} <--> {} Closed socket {} {} fromPeer={} localPeer={} reason={}", network.getBlockchainId(), getBlockchainId(), localSocket, networkIdentifier, fromPeer, localPeer, reason);
+				}
 			}
 		} catch (IOException e) {
 			logger.error(e.getMessage(), e);
