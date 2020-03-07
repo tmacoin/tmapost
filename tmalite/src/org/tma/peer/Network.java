@@ -55,7 +55,7 @@ public class Network implements Serializable {
 	private void resetAll() {
 		setNetworkStarted(false);
 		for(Peer peer: getAllPeers()) {
-			removePeer(peer);
+			removePeer(peer, "resetAll");
 		}
 		new GetBootstrapPowerRequest(this).start();
 		logger.info("Your shard id is {}", getBootstrapBlockchainId());
@@ -116,10 +116,10 @@ public class Network implements Serializable {
 		toPeers.addAll(set);
 	}
 	
-	public synchronized void removePeer(Peer peer) {
+	public synchronized void removePeer(Peer peer, String reason) {
 		getToPeers().remove(peer);
 		getLocals().remove(peer);
-		peer.reset();
+		peer.reset(reason);
 	}
 	
 	public synchronized void removedUnconnectedPeers() {
@@ -136,7 +136,7 @@ public class Network implements Serializable {
 		Set<Peer> peers = getAllPeers();
 		for(Peer peer: peers) {
 			if(peer.getBlockchainId() != getBootstrapBlockchainId()) {
-				removePeer(peer);
+				removePeer(peer, "removeNonMyPeers");
 			}
 		}
 	}

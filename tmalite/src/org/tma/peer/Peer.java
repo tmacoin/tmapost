@@ -155,18 +155,17 @@ public class Peer implements Serializable {
 		return socket;
 	}
 	
-	public void reset() {
-		
-		if(socket == null && writer == null && reader == null && !receiverStarted && !senderStarted && responseCounter == 0) {
+	public void reset(String reason) {
+		Socket localSocket = socket;
+		if(localSocket == null) {
 			return;
 		}
 		
 		try {
-			Socket localSocket = socket;
 			if (localSocket != null) {
 				localSocket.close();
 				Network network = Network.getInstance();
-				logger.debug("{} <--> {} Closed socket {} {} fromPeer={} localPeer={}", network.getBlockchainId(), getBlockchainId(), localSocket, networkIdentifier, fromPeer, localPeer);
+				logger.debug("{} <--> {} Closed socket {} {} fromPeer={} localPeer={} reason={}", network.getBlockchainId(), getBlockchainId(), localSocket, networkIdentifier, fromPeer, localPeer, reason);
 			}
 		} catch (IOException e) {
 			logger.error(e.getMessage(), e);
@@ -240,21 +239,21 @@ public class Peer implements Serializable {
 				getWriter();
 				getReader();
 			} catch (SocketTimeoutException e) {
-				network.removePeer(this);
+				network.removePeer(this, e.getMessage());
 				return false;
 			} catch (ConnectException e) {
-				network.removePeer(this);
+				network.removePeer(this, e.getMessage());
 				return false;
 			} catch (NoRouteToHostException e) {
-				network.removePeer(this);
+				network.removePeer(this, e.getMessage());
 				return false;
 			} catch (IOException e) {
-				network.removePeer(this);
+				network.removePeer(this, e.getMessage());
 				return false;
 			} catch (Throwable e) {
 				logger.error("iNetAddress={}", iNetAddress);
 				logger.error(e.getMessage(), e);
-				network.removePeer(this);
+				network.removePeer(this, e.getMessage());
 				return false;
 			}
 
@@ -272,7 +271,7 @@ public class Peer implements Serializable {
 	public void send(Network network, Request firstRequest) {
 		try {
 			if(REQUESTS_QUEUE_SIZE == getRequests().size() ) {
-				network.removePeer(this);
+				network.removePeer(this, "getRequests().size()=" + getRequests().size());
 				firstRequest.onSendComplete(this);
 				return;
 			}
@@ -323,10 +322,8 @@ public class Peer implements Serializable {
 				if(request instanceof PoisonPillRequest) {
 					break;
 				}
-				if (doSend(network, request).isSuccess()) {
-					
-				} else {
-					network.removePeer(this);
+				if (!doSend(network, request).isSuccess()) {
+					network.removePeer(this, "doSend did not return success");
 					break;
 				}
 			} catch (InterruptedException e) {
@@ -371,20 +368,19 @@ public class Peer implements Serializable {
 					gsonUtil.write(request, writer);
 					BlockingQueue<Response> responseQueue = getResponses(firstRequest.getCorrelationId());
 					if(!senderStarted) {
-						network.removePeer(this);
+						network.removePeer(this, "!senderStarted");
 						clearResponses();
 						return new Response();
 					}
 					response = responseQueue.poll(WAIT_PERIOD_MINUTES, TimeUnit.MINUTES);
 					if(response == null) {
-						network.removePeer(this);
+						network.removePeer(this, "response == null");
 						clearResponses();
 						return new Response();
 					}
 					
 					if(!response.isValid()) {
-						//logger.error("received response from peer version {} which is older than current version {}. Disconnecting.", response.getVersion(), Request.VERSION);
-						network.removePeer(this);
+						network.removePeer(this, "!response.isValid()");
 						clearResponses();
 						return new Response();
 					}
@@ -396,13 +392,13 @@ public class Peer implements Serializable {
 						if (size > 0) {
 							logger.error("getResponses().size()={}", size);
 						}
-						network.removePeer(this);
+						network.removePeer(this, "PoisonPillResponse");
 						return new Response();
 					}
 					if(response.getCorrelationId() != firstRequest.getCorrelationId()) {
 						logger.error("response.getCorrelationId()={}, firstRequest.getCorrelationId()={}", response.getCorrelationId(), firstRequest.getCorrelationId());
 						logger.error("response={}, firstRequest={}", response, firstRequest);
-						network.removePeer(this);
+						network.removePeer(this, "response.getCorrelationId() != firstRequest.getCorrelationId()");
 						return new Response();
 					}
 
@@ -411,11 +407,11 @@ public class Peer implements Serializable {
 
 					if(response.isDoDisconnect()) {
 						doDisconnect = true;
-						network.removePeer(this);
+						network.removePeer(this, "response.isDoDisconnect()");
 						return new Response();
 					}
 					if(getNetworkIdentifier() !=null && !network.isMate(getBlockchainId()) && isBlockchainIdSet()) {
-						network.removePeer(this);
+						network.removePeer(this, "getNetworkIdentifier() !=null && !network.isMate(getBlockchainId()) && isBlockchainIdSet()");
 						return new Response();
 					}
 					save();
@@ -425,21 +421,21 @@ public class Peer implements Serializable {
 				}
 			} while (response.hasNext());
 		} catch (IllegalStateException e) {
-			network.removePeer(this);
+			network.removePeer(this, e.getMessage());
 			return new Response();
 		} catch (SocketException e) {
-			network.removePeer(this);
+			network.removePeer(this, e.getMessage());
 			return new Response();
 		} catch (JsonIOException e) {
-			network.removePeer(this);
+			network.removePeer(this, e.getMessage());
 			return new Response();
 		} catch (IOException e) {
-			network.removePeer(this);
+			network.removePeer(this, e.getMessage());
 			return new Response();
 		} catch (Throwable e) {
 	    	logger.error("iNetAddress={}", iNetAddress);
 			logger.error(e.getMessage(), e);
-			network.removePeer(this);
+			network.removePeer(this, e.getMessage());
 			return new Response();
 		} finally {
 			synchronized (getResponses()) {
@@ -473,7 +469,7 @@ public class Peer implements Serializable {
 			return true;
 		}
 		if (message instanceof DisconnectResponse) {
-			network.removePeer(this);
+			network.removePeer(this, "DisconnectResponse");
 			return false;
 		}
 		if (message instanceof PoisonPillResponse) {
@@ -481,8 +477,7 @@ public class Peer implements Serializable {
 			setNetworkIdentifier(response.getNetworkIdentifier());
 			BlockingQueue<Response> responseQueue = getResponses(response.getCorrelationId());
 			responseQueue.offer(response);
-			reset();
-			network.removePeer(this);
+			network.removePeer(this, "PoisonPillResponse");
 			return false;
 		}
 		if (message instanceof Response) {
@@ -532,8 +527,7 @@ public class Peer implements Serializable {
 			response.setCorrelationId(request.getCorrelationId());
 			response.setNetworkIdentifier(network.getNetworkIdentifier());
 			gsonUtil.write(response, writer);
-			reset();
-			network.removePeer(this);
+			network.removePeer(this, "Connected to itself or double connected or request invalid");
 			
 			return false;
 		}
@@ -556,7 +550,7 @@ public class Peer implements Serializable {
 		}
 		response.setCorrelationId(request.getCorrelationId());
 		if(writer == null) {
-			network.removePeer(this);
+			network.removePeer(this, "writer == null");
 			return false;
 		}
 		response.setNetworkIdentifier(network.getNetworkIdentifier());
@@ -569,8 +563,7 @@ public class Peer implements Serializable {
 		gsonUtil.write(response, writer);
 		if(response.isDoDisconnect()) {
 			doDisconnect = true;
-			reset();
-			network.removePeer(this);
+			network.removePeer(this, "response.isDoDisconnect()");
 			return false;
 		}
 		return true;
@@ -606,7 +599,7 @@ public class Peer implements Serializable {
 				}
 			}
 		}
-		network.removePeer(this);
+		network.removePeer(this, "outside receive()");
 		poisonResponses();
 		receiverStarted = false;
 		senderStarted = false;
