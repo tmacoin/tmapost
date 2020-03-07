@@ -22,7 +22,6 @@ import java.net.SocketTimeoutException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -48,8 +47,7 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 
 public class Peer implements Serializable {
-	
-	public static final Comparator<Peer> FIRSTSEEN_COMPARATOR = new FirstSeenComparator();
+
 	private static final TmaLogger logger = TmaLogger.getLogger();
 	private static final Map<String, String> connectedNetworkIdentifiers =  Collections.synchronizedMap(new QueueMap<String, String>(1));
 	private static final Listeners listeners = Listeners.getInstance();
@@ -62,8 +60,6 @@ public class Peer implements Serializable {
 	public static final int CONNECT_TIMEOUT = 10000;
 	
 	private InetSocketAddress iNetAddress;
-    private long firstSeen;
-    private int failCount = 0;
     private boolean fromPeer;
     private boolean localPeer;
     
@@ -114,8 +110,6 @@ public class Peer implements Serializable {
 
 	private Peer(InetSocketAddress iNetAddress) {
 		this.iNetAddress = iNetAddress;
-		firstSeen = System.currentTimeMillis();
-		seenNow();
 	}
 
 	public InetSocketAddress getiNetAddress() {
@@ -136,35 +130,6 @@ public class Peer implements Serializable {
 		Peer peer = (Peer)object;
 		return toString().equals(peer.toString());
 	}
-	
-    /**
-     * A FirstSeenComparator is capable of comparing Node objects according to
-     * time first seen.
-     **/
-    public static class FirstSeenComparator implements Comparator<Peer> {
-        /**
-         * Compare two objects which must both be of type <code>Node</code>
-         * and determine which is seen first. If <code>o1</code> is seen before
-         * <code>o2</code> a negative integer is returned, etc.
-         **/
-        public int compare(Peer peer1, Peer peer2) {
-            return (int) (peer1.firstSeen - peer2.firstSeen);
-        }
-    }
-	
-	/**
-     * Increments the failure counter and returns the new value.
-     **/
-    public int incFailCount() {
-    	if(++failCount > Network.STALE) {
-    		peers.remove(toString());
-    	}
-        return failCount;
-    }
-
-    public void seenNow() {
-        failCount = 0;
-    }
 
 	public int hashCode() {
 		return toString().hashCode();
@@ -275,21 +240,21 @@ public class Peer implements Serializable {
 				getWriter();
 				getReader();
 			} catch (SocketTimeoutException e) {
-				network.removeIfStale(this);
+				network.removePeer(this);
 				return false;
 			} catch (ConnectException e) {
-				network.removeIfStale(this);
+				network.removePeer(this);
 				return false;
 			} catch (NoRouteToHostException e) {
-				network.removeIfStale(this);
+				network.removePeer(this);
 				return false;
 			} catch (IOException e) {
-				network.removeIfStale(this);
+				network.removePeer(this);
 				return false;
 			} catch (Throwable e) {
 				logger.error("iNetAddress={}", iNetAddress);
 				logger.error(e.getMessage(), e);
-				network.removeIfStale(this);
+				network.removePeer(this);
 				return false;
 			}
 
@@ -307,7 +272,7 @@ public class Peer implements Serializable {
 	public void send(Network network, Request firstRequest) {
 		try {
 			if(REQUESTS_QUEUE_SIZE == getRequests().size() ) {
-				network.removeIfStale(this);
+				network.removePeer(this);
 				firstRequest.onSendComplete(this);
 				return;
 			}
@@ -359,11 +324,10 @@ public class Peer implements Serializable {
 					break;
 				}
 				if (doSend(network, request).isSuccess()) {
-					seenNow();
+					
 				} else {
-					if(network.removeIfStale(this)) {
-						break;
-					}
+					network.removePeer(this);
+					break;
 				}
 			} catch (InterruptedException e) {
 				break;
@@ -407,13 +371,13 @@ public class Peer implements Serializable {
 					gsonUtil.write(request, writer);
 					BlockingQueue<Response> responseQueue = getResponses(firstRequest.getCorrelationId());
 					if(!senderStarted) {
-						network.removeIfStale(this);
+						network.removePeer(this);
 						clearResponses();
 						return new Response();
 					}
 					response = responseQueue.poll(WAIT_PERIOD_MINUTES, TimeUnit.MINUTES);
 					if(response == null) {
-						network.removeIfStale(this);
+						network.removePeer(this);
 						clearResponses();
 						return new Response();
 					}
@@ -461,7 +425,7 @@ public class Peer implements Serializable {
 				}
 			} while (response.hasNext());
 		} catch (IllegalStateException e) {
-			network.removeIfStale(this);
+			network.removePeer(this);
 			return new Response();
 		} catch (SocketException e) {
 			network.removePeer(this);
@@ -470,12 +434,12 @@ public class Peer implements Serializable {
 			network.removePeer(this);
 			return new Response();
 		} catch (IOException e) {
-			network.removeIfStale(this);
+			network.removePeer(this);
 			return new Response();
 		} catch (Throwable e) {
 	    	logger.error("iNetAddress={}", iNetAddress);
 			logger.error(e.getMessage(), e);
-			network.removeIfStale(this);
+			network.removePeer(this);
 			return new Response();
 		} finally {
 			synchronized (getResponses()) {
@@ -592,7 +556,7 @@ public class Peer implements Serializable {
 		}
 		response.setCorrelationId(request.getCorrelationId());
 		if(writer == null) {
-			network.removeIfStale(this);
+			network.removePeer(this);
 			return false;
 		}
 		response.setNetworkIdentifier(network.getNetworkIdentifier());
@@ -642,7 +606,7 @@ public class Peer implements Serializable {
 				}
 			}
 		}
-		network.removeIfStale(this);
+		network.removePeer(this);
 		poisonResponses();
 		receiverStarted = false;
 		senderStarted = false;
@@ -703,8 +667,6 @@ public class Peer implements Serializable {
 
 	public Map<Integer, BlockingQueue<Response>> getResponses() {
 		if(responses == null) {
-			firstSeen = System.currentTimeMillis();
-	    	seenNow();
 			responses = Collections.synchronizedMap(new HashMap<Integer, BlockingQueue<Response>>());
 		}
 		return responses;

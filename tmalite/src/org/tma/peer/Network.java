@@ -116,27 +116,10 @@ public class Network implements Serializable {
 		toPeers.addAll(set);
 	}
 	
-	public boolean removeIfStale(Peer peer) {
-		
-		if(peer.incFailCount() > Network.STALE) {
-			removePeer(peer);
-			return true;
-		}
-		if(peer.isFromPeer()) {
-			removePeer(peer);
-			return true;
-		}
+	public synchronized void removePeer(Peer peer) {
+		getToPeers().remove(peer);
+		getLocals().remove(peer);
 		peer.reset();
-		return false;
-	}
-	
-	public synchronized boolean removePeer(Peer peer) {
-		boolean result = getToPeers().remove(peer) || getLocals().remove(peer);
-		if(result) {
-			peer.reset();
-		}
-		peer.seenNow();
-		return result;
 	}
 	
 	public synchronized void removedUnconnectedPeers() {
