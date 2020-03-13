@@ -7,7 +7,11 @@
  *******************************************************************************/
 package org.tma.peer.thin;
 
-public class Ratee {
+import java.io.Serializable;
+
+public class Ratee implements Serializable {
+
+	private static final long serialVersionUID = -1993236778248003479L;
 	
 	private String name;
 	private String description;
