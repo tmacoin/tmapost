@@ -137,7 +137,7 @@ public class CreateTwitterAction extends AbstractAction implements Caller {
 		Set<TransactionOutput> inputs = inputList.get(i++);
 		
 		Keywords keywords = new Keywords();
-		keywords.getMap().put("create", account.getText());
+		keywords.put("create", account.getText());
 		
 		Transaction transaction = new Transaction(wallet.getPublicKey(), twitterTmaAddress, Coin.SATOSHI, Coin.SATOSHI, 
 				inputs, wallet.getPrivateKey(), description.getText(), null, keywords);

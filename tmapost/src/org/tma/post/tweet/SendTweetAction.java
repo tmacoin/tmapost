@@ -106,7 +106,7 @@ public class SendTweetAction extends AbstractAction implements Caller {
 		if(!names.isEmpty()) {
 			String accountName = names.iterator().next();
 			keywords = new Keywords();
-			keywords.getMap().put("from", accountName);
+			keywords.put("from", accountName);
 		} else {
 			logger.error("Tmitter account is not created yet");
 			return;

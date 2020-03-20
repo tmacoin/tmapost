@@ -167,7 +167,7 @@ public class AddRatingAction extends AbstractAction implements Caller {
 		
 		Keywords accountKeywords = (Keywords)ResponseHolder.getInstance().getObject(getKeywordsRequest.getCorrelationId());
 		
-		if(accountKeywords == null || accountKeywords.getMap().isEmpty()) {
+		if(accountKeywords == null || accountKeywords.isEmpty()) {
 			label.setText("Could not retrieve any keywords for " + accountName);
 			return false;
 		}
@@ -178,8 +178,8 @@ public class AddRatingAction extends AbstractAction implements Caller {
 		Coin amount = Coin.SATOSHI.multiply(2);
 		List<Coin> totals = new ArrayList<Coin>();
 		totals.add(amount);
-		for(String word: accountKeywords.getMap().keySet()) {
-			if(word.equals(accountKeywords.getMap().get(word))) {
+		for(String word: accountKeywords.keySet()) {
+			if(word.equals(accountKeywords.get(word))) {
 				totals.add(amount);
 			}
 		}
@@ -192,10 +192,10 @@ public class AddRatingAction extends AbstractAction implements Caller {
 		}
 		
 		Keywords keywords = new Keywords();
-		keywords.getMap().put("rater", wallet.getTmaAddress());
-		keywords.getMap().put("ratee", accountName);
-		keywords.getMap().put("transactionId", transactionId.getText());
-		keywords.getMap().put("rating", SwingUtil.getSelectedButtonText(bgroup));
+		keywords.put("rater", wallet.getTmaAddress());
+		keywords.put("ratee", accountName);
+		keywords.put("transactionId", transactionId.getText());
+		keywords.put("rating", SwingUtil.getSelectedButtonText(bgroup));
 	
 		Transaction transaction = new Transaction(wallet.getPublicKey(), ratee, Coin.SATOSHI, Coin.SATOSHI, 
 				inputList.get(i++), wallet.getPrivateKey(), comment.getText().trim(), null, keywords);
@@ -203,12 +203,10 @@ public class AddRatingAction extends AbstractAction implements Caller {
 		new SendTransactionRequest(network, transaction).start();
 		logger.debug("sent {}", transaction);
 		
-		Map<String, String> map = new HashMap<String, String>(keywords.getMap());
-		map.remove("rater");
-		for(String word: accountKeywords.getMap().keySet()) {
-			if(word.equals(accountKeywords.getMap().get(word))) {
-				Keywords words = new Keywords();
-				words.getMap().putAll(map);
+		for(String word: accountKeywords.keySet()) {
+			if(word.equals(accountKeywords.get(word))) {
+				Keywords words = keywords.copy();
+				words.remove("rater");
 				transaction = new Transaction(wallet.getPublicKey(), StringUtil.getTmaAddressFromString(word), Coin.SATOSHI, Coin.SATOSHI, 
 						inputList.get(i++), wallet.getPrivateKey(), comment.getText().trim(), null, words);
 				transaction.setApp(Applications.RATING);

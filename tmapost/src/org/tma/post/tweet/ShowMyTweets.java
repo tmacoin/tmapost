@@ -128,7 +128,7 @@ public class ShowMyTweets extends AbstractAction implements Caller {
 
 				Tweet title = null;
 				for(Tweet tweet: list) {
-					if(tweet.getKeywords() != null && tweet.getKeywords().getMap().get("create") != null) {
+					if(tweet.getKeywords() != null && tweet.getKeywords().get("create") != null) {
 						title = tweet;
 					}
 				}
@@ -136,7 +136,7 @@ public class ShowMyTweets extends AbstractAction implements Caller {
 				TwitterHelper twitterHelper = new TwitterHelper(frame);
 				
 				if(title != null) {
-					twitterHelper.print(panel, title.getKeywords().getMap().get("create"));
+					twitterHelper.print(panel, title.getKeywords().get("create"));
 					twitterHelper.print(panel, title.getText());
 				}
 				
@@ -144,7 +144,7 @@ public class ShowMyTweets extends AbstractAction implements Caller {
 				 
 				while(i.hasNext()) {
 					Tweet t = i.next();
-				    if (t.getKeywords() != null && (t.getKeywords().getMap().get("create") != null || t.getKeywords().getMap().get("transactionId") != null)) {
+				    if (t.getKeywords() != null && (t.getKeywords().get("create") != null || t.getKeywords().get("transactionId") != null)) {
 				        i.remove();
 				    }
 				}

@@ -10,7 +10,6 @@ package org.tma.post.rating;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import javax.swing.AbstractAction;
@@ -64,6 +63,10 @@ public class CreateRateeAction extends AbstractAction implements Caller {
 			log("Post title can not be blank");
 			return;
 		}
+		if(account.getText().length() > Keywords.KEYWORD_MAX_LENGTH) {
+			log("Post title can not be longer than " + Keywords.KEYWORD_MAX_LENGTH + " characters");
+			return;
+		}
 		if(StringUtil.isEmpty(description.getText())) {
 			log("Description can not be blank");
 			return;
@@ -115,10 +118,10 @@ public class CreateRateeAction extends AbstractAction implements Caller {
 		
 		Set<TransactionOutput> inputs = inputList.get(i++);
 		Keywords keywords = new Keywords();
-		keywords.getMap().put("create", accountName);
-		keywords.getMap().put("first", accountName);
+		keywords.put("create", accountName);
+		keywords.put("first", accountName);
 		for(String word: words) {
-			keywords.getMap().put(word, word);
+			keywords.put(word, word);
 		}
 		
 		Transaction transaction = new Transaction(wallet.getPublicKey(), ratee, Coin.SATOSHI, Coin.SATOSHI, 
@@ -127,17 +130,14 @@ public class CreateRateeAction extends AbstractAction implements Caller {
 		new SendTransactionRequest(network, transaction).start();
 		logger.debug("sent {}", transaction);
 		
-		Map<String, String> map = keywords.getMap();
-		
 		for(String word: words) {
-			keywords = new Keywords();
-			keywords.getMap().putAll(map);
-			keywords.getMap().put("transactionId", transaction.getTransactionId());
-			keywords.getMap().put("first", word);
+			Keywords keywordsLoop = keywords.copy();
+			keywordsLoop.put("transactionId", transaction.getTransactionId());
+			keywordsLoop.put("first", word);
 			inputs = inputList.get(i++);
 			String recipient = StringUtil.getTmaAddressFromString(word);
 			Transaction keyWordTransaction = new Transaction(wallet.getPublicKey(), recipient, Coin.SATOSHI, Coin.SATOSHI, 
-					inputs, wallet.getPrivateKey(), description.getText(), null, keywords);
+					inputs, wallet.getPrivateKey(), description.getText(), null, keywordsLoop);
 			keyWordTransaction.setApp(Applications.RATING);
 			new SendTransactionRequest(network, keyWordTransaction).start();
 			logger.debug("sent {}", keyWordTransaction);

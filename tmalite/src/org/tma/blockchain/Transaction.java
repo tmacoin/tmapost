@@ -287,7 +287,7 @@ public class Transaction implements Serializable {
 		return "transaction from " + getSenderAddress() + " to " + getRecipient() + ", amount " + getValue().toNumberOfCoins() + 
 				", getInputsValue()=" + getInputsValue() + ", #inputs=" + getInputs().size() + ", getFee()=" + getFee() + (data == null? "": ", data=" + data)
 				 + (expiringData == null? "": ", expiringData=" + expiringData) + (app == null? "": ", app=" + app)
-				 + (keywords == null? "": ", keywords=" + keywords.getMap());
+				 + (keywords == null? "": ", keywords=" + keywords);
 	}
 	
 	public String getData() {
@@ -335,7 +335,7 @@ public class Transaction implements Serializable {
 	}
 
 	public void setKeywords(Keywords keywords) {
-		if(keywords != null && keywords.getMap().isEmpty()) {
+		if(keywords != null && keywords.isEmpty()) {
 			return;
 		}
 		if(keywords != null && !keywords.isValid()) {

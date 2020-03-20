@@ -12,15 +12,18 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.tma.util.StringUtil;
+import org.tma.util.TmaLogger;
 
 public class Keywords implements Serializable {
-	
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 5838720523392669808L;
+	private static final TmaLogger logger = TmaLogger.getLogger();
+	public static final int KEYWORD_MAX_LENGTH = 64;
+	
+	
 	private Map<String, String> map = new HashMap<String, String>();
 	private String hash;
 	private String transactionId;
@@ -32,7 +35,7 @@ public class Keywords implements Serializable {
 		return hash;
 	}
 
-	public Map<String, String> getMap() {
+	private Map<String, String> getMap() {
 		return map;
 	}
 
@@ -52,25 +55,80 @@ public class Keywords implements Serializable {
 	}
 	
 	public boolean isValid() {
-		int MAX_LENGTH = 64;
 		if(getMap().isEmpty()) {
+			logger.debug("map is empty");
 			return false;
 		}
 		for(String key: getMap().keySet()) {
-			if(key.length() > MAX_LENGTH) {
+			if(key.length() > KEYWORD_MAX_LENGTH) {
+				logger.debug("key is too long");
 				return false;
 			}
-			if(getMap().get(key).length() > MAX_LENGTH) {
+			if(getMap().get(key).length() > KEYWORD_MAX_LENGTH) {
+				logger.debug("value is too long");
 				return false;
 			}
 		}
-		if(!calculateHash().equals(hash)) {
+		if(!calculateHash().equals(getHash())) {
+			logger.debug("calculateHash()={}, hash={}", calculateHash(), hash);
 			return false;
 		}
 		
 		return true;
 	}
-
 	
+	public void put(String key, String value) {
+		if(key == null) {
+			throw new RuntimeException("key cannot be null");
+		}
+		if(key.length() > KEYWORD_MAX_LENGTH) {
+			throw new RuntimeException("key cannot be longer than " + KEYWORD_MAX_LENGTH + " characters");
+		}
+		if(value == null) {
+			throw new RuntimeException("value cannot be null");
+		}
+		if(value.length() > KEYWORD_MAX_LENGTH) {
+			throw new RuntimeException("value cannot be longer than " + KEYWORD_MAX_LENGTH + " characters");
+		}
+		getMap().put(key, value);
+		
+	}
+	
+	public void putAll(Map<String, String> map) {
+		for(String key: map.keySet()) {
+			put(key, map.get(key));
+		}
+	}
+	
+	public void putAll(Keywords keywords) {
+		putAll(keywords.getMap());
+	}
+	
+	public boolean isEmpty() {
+		return getMap().isEmpty();
+	}
+
+	public String get(String key) {
+		return getMap().get(key);
+	}
+	
+	public Set<String> keySet() {
+		return getMap().keySet();
+	}
+
+	@Override
+	public String toString() {
+		return getMap().toString();
+	}
+	
+	public Keywords copy() {
+		Keywords keywords = new Keywords();
+		keywords.putAll(getMap());
+		return keywords;
+	}
+	
+	public String remove(String key) {
+		return getMap().remove(key);
+	}
 	
 }

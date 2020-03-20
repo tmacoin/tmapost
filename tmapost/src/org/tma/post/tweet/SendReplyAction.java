@@ -96,11 +96,11 @@ public class SendReplyAction extends AbstractAction implements Caller {
 		Set<TransactionOutput> inputs = inputList.get(i++);
 		
 		Keywords keywords = new Keywords();
-		keywords.getMap().put("transactionId", tweet.getTransactionId());
+		keywords.put("transactionId", tweet.getTransactionId());
 		Collection<String> names = wallets.getNames(Wallets.TWITTER);
 		if (!names.isEmpty()) {
 			String accountName = names.iterator().next();
-			keywords.getMap().put("from", accountName);
+			keywords.put("from", accountName);
 		} else {
 			label.setText("You have not created your tmitter account yet.");
 			return;

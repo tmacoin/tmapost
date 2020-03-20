@@ -73,7 +73,7 @@ public class TwitterAccountMouseAdapter extends MouseAdapter {
 
 				Tweet title = null;
 				for(Tweet tweet: list) {
-					if(tweet.getKeywords() != null && tweet.getKeywords().getMap().get("create") != null) {
+					if(tweet.getKeywords() != null && tweet.getKeywords().get("create") != null) {
 						title = tweet;
 					}
 				}
@@ -101,7 +101,7 @@ public class TwitterAccountMouseAdapter extends MouseAdapter {
 				 
 				while(i.hasNext()) {
 					Tweet t = i.next();
-				    if (t.getKeywords() != null && (t.getKeywords().getMap().get("create") != null || t.getKeywords().getMap().get("transactionId") != null)) {
+				    if (t.getKeywords() != null && (t.getKeywords().get("create") != null || t.getKeywords().get("transactionId") != null)) {
 				        i.remove();
 				    }
 				}

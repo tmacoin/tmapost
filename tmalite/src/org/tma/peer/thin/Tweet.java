@@ -77,7 +77,7 @@ public class Tweet implements Serializable {
 		if(keywords == null) {
 			return getSenderAddress();
 		}
-		String from = keywords.getMap().get("from");
+		String from = keywords.get("from");
 		if(from == null) {
 			return getSenderAddress();
 		}

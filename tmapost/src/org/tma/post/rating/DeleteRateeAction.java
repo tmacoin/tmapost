@@ -91,7 +91,7 @@ public class DeleteRateeAction extends AbstractAction implements Caller {
 		
 		Keywords accountKeywords = (Keywords)ResponseHolder.getInstance().getObject(getKeywordsRequest.getCorrelationId());
 		
-		if(accountKeywords == null || accountKeywords.getMap().isEmpty()) {
+		if(accountKeywords == null || accountKeywords.isEmpty()) {
 			label.setText("Could not retrieve any keywords for identifier " + transactionId);
 			return;
 		}
@@ -102,8 +102,8 @@ public class DeleteRateeAction extends AbstractAction implements Caller {
 		Coin amount = Coin.SATOSHI.multiply(2);
 		List<Coin> totals = new ArrayList<Coin>();
 		totals.add(amount);
-		for(String word: accountKeywords.getMap().keySet()) {
-			if(word.equals(accountKeywords.getMap().get(word))) {
+		for(String word: accountKeywords.keySet()) {
+			if(word.equals(accountKeywords.get(word))) {
 				totals.add(amount);
 			}
 		}
@@ -117,7 +117,7 @@ public class DeleteRateeAction extends AbstractAction implements Caller {
 		}
 
 		Keywords keywords = new Keywords();
-		keywords.getMap().put("delete", transactionId);
+		keywords.put("delete", transactionId);
 		
 		Transaction transaction = new Transaction(wallet.getPublicKey(), rateeTmaAddress, Coin.SATOSHI, Coin.SATOSHI, 
 				inputList.get(i++), wallet.getPrivateKey(), null, null, keywords);
@@ -125,10 +125,10 @@ public class DeleteRateeAction extends AbstractAction implements Caller {
 		new SendTransactionRequest(network, transaction).start();
 		logger.debug("sent {}", transaction);
 		
-		for(String word: accountKeywords.getMap().keySet()) {
-			if(word.equals(accountKeywords.getMap().get(word))) {
+		for(String word: accountKeywords.keySet()) {
+			if(word.equals(accountKeywords.get(word))) {
 				Keywords words = new Keywords();
-				words.getMap().put("delete", transactionId);
+				words.put("delete", transactionId);
 				Transaction keyWordTransaction = new Transaction(wallet.getPublicKey(), StringUtil.getTmaAddressFromString(word), Coin.SATOSHI, Coin.SATOSHI, 
 						inputList.get(i++), wallet.getPrivateKey(), null, null, words);
 				keyWordTransaction.setApp(Applications.RATING);
