@@ -51,7 +51,25 @@ public class Keywords implements Serializable {
 		this.transactionId = transactionId;
 	}
 	
-	
+	public boolean isValid() {
+		int MAX_LENGTH = 64;
+		if(getMap().isEmpty()) {
+			return false;
+		}
+		for(String key: getMap().keySet()) {
+			if(key.length() > MAX_LENGTH) {
+				return false;
+			}
+			if(getMap().get(key).length() > MAX_LENGTH) {
+				return false;
+			}
+		}
+		if(!calculateHash().equals(hash)) {
+			return false;
+		}
+		
+		return true;
+	}
 
 	
 	

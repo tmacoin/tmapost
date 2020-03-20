@@ -170,6 +170,9 @@ public class Transaction implements Serializable {
 	}
 	
 	public boolean isTransactionValid() throws CreateTransactionException {
+		if(getKeywords() != null && !getKeywords().isValid()) {
+			throw new CreateTransactionException("Keywords are not valid");
+		}
 		if (!verifySignature()) {
 			throw new CreateTransactionException("Transaction signature is not valid");
 		}
@@ -334,6 +337,9 @@ public class Transaction implements Serializable {
 	public void setKeywords(Keywords keywords) {
 		if(keywords != null && keywords.getMap().isEmpty()) {
 			return;
+		}
+		if(keywords != null && !keywords.isValid()) {
+			throw new RuntimeException("Keywords are not valid");
 		}
 		this.keywords = keywords;
 	}
