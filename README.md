@@ -16,9 +16,9 @@ Installation instructions:
 3. If you already have keys.csv file with existing keys you can just copy it to config folder, otherwise it will create new key. 
 4. Start it by running tmapost.sh or tmabost.bat depending on your operating system.
 
-It will ask you to enter passphrase and confirm it. In case you have existing key it will ask you to enter passphrase for it.
+It will ask you to enter passphrase and confirm it. In case you have existing key it will ask you to enter passphrase for it.<br>
 
-![Passphrase](https://raw.githubusercontent.com/tmacoin/tmapost/master/tmapost/images/image001.png)
+<img style="float: left;" src="(https://raw.githubusercontent.com/tmacoin/tmapost/master/tmapost/images/image001.png)>
 
 It will then start network by connecting to full peers specified in peers.config and locals.config in case you have full instances running on your local network.
 
