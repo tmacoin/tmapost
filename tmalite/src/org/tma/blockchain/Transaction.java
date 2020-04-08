@@ -45,6 +45,7 @@ public class Transaction implements Serializable {
 	private TransactionData expiringData;
 	private String app;
 	private Keywords keywords;
+	private long timeStamp;
 	
 	public Transaction() {
 		
@@ -342,6 +343,14 @@ public class Transaction implements Serializable {
 			throw new RuntimeException("Keywords are not valid");
 		}
 		this.keywords = keywords;
+	}
+
+	public long getTimeStamp() {
+		return timeStamp;
+	}
+
+	public void setTimeStamp(long timeStamp) {
+		this.timeStamp = timeStamp;
 	}
 	
 }
